@@ -4,14 +4,13 @@ namespace App\Http\Controllers\OnlineMenuController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Burgers;
-use App\Models\ComboMeals;
-use App\Models\Coupon;
-use App\Models\BeveragesName;
-use App\Models\Beverages;
-use App\Models\Order;
-use App\Models\Tax;
+use App\Models\OrderBurger;
+use App\Models\OrderComboMeal;
+use App\Models\OrderCoupon;
+use App\Models\OrderBeverageName;
+use App\Models\OrderBeverage;
+use App\Models\OrderOrder;
+use App\Models\OrderTax;
 
 class MenuController extends Controller
 {
@@ -32,38 +31,37 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
-        if (Tax::exists())
+        if (OrderTax::exists())
         {
-            $tax = Tax::select('tax', 'percentage')->get();
+            $tax = OrderTax::select('tax', 'percentage')->get();
         }
-        else { $tax = collect(new Tax); }
+        else { $tax = collect(new OrderTax); }
 
-        if (Burgers::exists())
+        if (OrderBurger::exists())
         {
-            $burgers = Burgers::select('id', 'name', 'price')->get();
+            $burgers = OrderBurger::select('id', 'name', 'price')->get();
         }
-        else { $burgers = collect(new Burgers); }
+        else { $burgers = collect(new OrderBurger); }
         
-        if (ComboMeals::exists()) 
+        if (OrderComboMeal::exists()) 
         {
-            $combos = ComboMeals::select('id', 'name', 'price')->get();
+            $combos = OrderComboMeal::select('id', 'name', 'price')->get();
         }
-        else { $combos = collect(new ComboMeals); }
+        else { $combos = collect(new OrderComboMeal); }
 
-        if (BeveragesName::exists()) 
+        if (OrderBeverageName::exists()) 
         {
-            $beverages = DB::table('beverages')
-                ->join('beverages_names', 'beverages.beverages_names_id', '=', 'beverages_names.id')
-                ->join('beverages_sizes', 'beverages.beverages_sizes_id', '=', 'beverages_sizes.id')
-                ->select('beverages_names.name', 'beverages_sizes.size', 'beverages.price', 'beverages.id')->get();
+            $beverages = OrderBeverage::join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
+                ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
+                ->select('order_beverage_names.name', 'order_beverage_sizes.size', 'order_beverages.price', 'order_beverages.id')->get();
         }
-        else { $beverages = collect(new Beverages); }
+        else { $beverages = collect(new OrderBeverage); }
 
-        if (Order::exists()) 
+        if (OrderOrder::exists()) 
         {
-            $orders = Order::where('users_id', $request->user()->id)->select('order_number')->distinct()->get();
+            $orders = OrderOrder::where('user_id', $request->user()->id)->select('order_number')->distinct()->get();
         }
-        else { $orders = collect(new Order);}
+        else { $orders = collect(new OrderOrder);}
 
         return view('home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'tax'));
     }
@@ -71,7 +69,7 @@ class MenuController extends Controller
     public function checkCoupon(Request $request, $code)
     {
         /* check voucher validity */
-        $coupon = Coupon::where('code', $code)->select('discount')->get();
+        $coupon = OrderCoupon::where('code', $code)->select('discount')->get();
 
         if ($coupon->count() > 0) 
         {
@@ -90,11 +88,11 @@ class MenuController extends Controller
         $qty = $request->input('quantity');
 
         /* check voucher validity */
-        $coupon = Coupon::where('code', $request->input('code'))->select('id', 'discount')->get();
+        $coupon = OrderCoupon::where('code', $request->input('code'))->select('id', 'discount')->get();
 
-        if (Order::exists()) 
+        if (OrderOrder::exists()) 
         {
-            $order_number = Order::select('order_number')->max('order_number') + 1;
+            $order_number = OrderOrder::select('order_number')->max('order_number') + 1;
         }
         else { $order_number = 1000;}
 
@@ -133,16 +131,16 @@ class MenuController extends Controller
                         $combo_meals_qty = intval($value);
                     }
 
-                    $create_order = Order::create([
+                    $create_order = OrderOrder::create([
                         'order_number' => $order_number,
-                        'users_id' => $request->user()->id,
-                        'burgers_id' => $burgers_id,
+                        'user_id' => $request->user()->id,
+                        'order_burger_id' => $burgers_id,
                         'burgers_qty' => $burgers_qty,
-                        'beverages_id' => $beverages_id,
+                        'order_beverage_id' => $beverages_id,
                         'beverages_qty' => $beverages_qty,
-                        'combo_meals_id' => $combo_meals_id,
+                        'order_combo_meal_id' => $combo_meals_id,
                         'combo_meals_qty' => $combo_meals_qty,
-                        'coupons_id' => $coupon_id,
+                        'order_coupon_id' => $coupon_id,
                     ]);
 
                     if ($create_order->id > 0)
@@ -161,33 +159,29 @@ class MenuController extends Controller
     {
         $result = 0;
 
-        $coupons = DB::table('orders')
-            ->join('coupons', 'orders.coupons_id', '=', 'coupons.id')
-            ->select('coupons.code', 'coupons.discount')
+        $coupons = OrderOrder::join('order_coupons', 'orders.order_coupon_id', '=', 'order_coupons.id')
+            ->select('order_coupons.code', 'order_coupons.discount')
             ->where('order_number', $order_number)->distinct()->get();
 
-        $burgers = DB::table('orders')
-            ->join('burgers', 'orders.burgers_id', '=', 'burgers.id')
-            ->select('burgers.name', 'burgers.price', 'orders.burgers_qty')
+        $burgers = OrderOrder::join('order_burgers', 'order_orders.order_burger_id', '=', 'order_burgers.id')
+            ->select('order_burgers.name', 'order_burgers.price', 'order_orders.burgers_qty')
             ->where('order_number', $order_number)->get();
 
-        $beverages = DB::table('orders')
-            ->join('beverages', 'orders.beverages_id', '=', 'beverages.id')
-            ->join('beverages_names', 'beverages.beverages_names_id', '=', 'beverages_names.id')
-            ->join('beverages_sizes', 'beverages.beverages_sizes_id', '=', 'beverages_sizes.id')
-            ->select('beverages_names.name', 'beverages.price', 'orders.beverages_qty', 'beverages_sizes.size')
+        $beverages = OrderOrder::join('order_beverages', 'order_orders.order_beverage_id', '=', 'order_beverages.id')
+            ->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
+            ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
+            ->select('order_beverage_names.name', 'order_beverages.price', 'order_orders.beverages_qty', 'order_beverage_sizes.size')
             ->where('order_number', $order_number)->get();
 
-        $combos = DB::table('orders')
-            ->join('combo_meals', 'orders.combo_meals_id', '=', 'combo_meals.id')
-            ->select('combo_meals.name', 'combo_meals.price', 'orders.combo_meals_qty')
+        $combos = OrderOrder::join('order_combo_meals', 'order_orders.order_combo_meal_id', '=', 'order_combo_meals.id')
+            ->select('order_combo_meals.name', 'order_combo_meals.price', 'order_orders.combo_meals_qty')
             ->where('order_number', $order_number)->get();
 
         if (Tax::exists())
         {
-            $tax = Tax::select('tax', 'percentage')->get();
+            $tax = OrderTax::select('tax', 'percentage')->get();
         }
-        else { $tax = collect(new Tax); }
+        else { $tax = collect(new OrderTax); }
 
         $merged = $burgers->merge($beverages);
         $merged2 = $merged->merge($combos);

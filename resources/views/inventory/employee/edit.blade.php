@@ -40,13 +40,16 @@
                                     <tr>
                                         <td class="text-center">{{ $user->user_id }}</td>
                                         <td class="text-center">{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
+                                        <!-- standalone system -->
                                         <!-- <td class="text-center">{{ $user->user_type }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('inventory.employee.edit.access', $user->user_id) }} " class="btn btn-outline-primary">Edit Access Level</a>
                                         </td> -->
-                                        <!-- cosolitaed system  -->
+                                        <!-- End -->
+                                        <!-- consolidated system  -->
                                         <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
                                         <td class="text-center text-danger">{{ __('Not standalone system only') }}</td>
+                                        <!-- End -->
                                         <td class="text-center">
                                             <form method="POST" action="{{ route('inventory.employee.delete') }}">
                                                 @csrf
