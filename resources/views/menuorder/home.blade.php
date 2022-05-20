@@ -201,7 +201,7 @@
                     @php
                         $developer = 'Gene Arthur Sedan';
                     @endphp
-                    <x-footer :dev="$developer"></x-footer>
+                    <x-footer-menu :dev="$developer"></x-footer-menu>
                 </div>
             </div>
         </div>

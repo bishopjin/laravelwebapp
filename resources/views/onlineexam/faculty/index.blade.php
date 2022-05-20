@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
@@ -12,12 +12,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('subject.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.subject.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('exam.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.exam.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -62,7 +62,7 @@
                                                     <tr>
                                                         <td>{{ $index }}</td>
                                                         <td>
-                                                            <a href="{{ route('faculty.show.student.score', $student->id) }}" class="text-decoration-none fw-bold">
+                                                            <a href="{{ route('online.faculty.show.student.score', $student->id) }}" class="text-decoration-none fw-bold">
                                                                 {{ $student->lastname }}, {{ $student->firstname }} {{ $student->middlename }}
                                                             </a>
                                                         </td>

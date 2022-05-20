@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('student.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
+                        <a href="{{ route('online.student.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -53,7 +53,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-11">
                                     <label class="fw-bold pb-2">{{ __('Subject: ') }}{{ $exams[0]->subject }}</label>
-                                    <form method="POST" action="{{ route('student.exam.save') }}" id="examForm">
+                                    <form method="POST" action="{{ route('online.student.exam.save') }}" id="examForm">
                                         @csrf
                                         <input type="hidden" name="exams_id" value="{{ $exams[0]->id }}">
                                         @isset($questions)

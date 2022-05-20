@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('onlineexamlayouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
@@ -41,7 +41,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <form method="POST" action="{{ route('student.exam') }}">
+                                            <form method="POST" action="{{ route('online.student.exam') }}">
                                                 @csrf
                                                 <label class="fw-bold pb-2">{{ __('Examination Code') }}</label>
                                                 <div class="form-group">

@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
@@ -12,7 +12,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('course.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.course.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Course') }}
                         </a>
                     </li>
@@ -138,7 +138,7 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('subject.edit') }}" class="p-md-4">
+                    <form method="POST" action="{{ route('online.subject.edit') }}" class="p-md-4">
                         @csrf
                         <div class="form-group mb-3">
                             <input type="text" name="subject" id="subjectname" class="form-control" autocomplete="off">

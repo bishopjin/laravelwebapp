@@ -9,7 +9,7 @@ class ExamController extends Controller
 {
     protected function Index(Request $request)
     {
-        if($request->user()->access_level === 1)
+        if($request->user()->access_level === 1) 
         {
             return redirect()->route('admin.index');
         }

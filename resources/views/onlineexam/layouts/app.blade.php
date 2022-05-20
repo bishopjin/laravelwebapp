@@ -28,7 +28,7 @@
     <div>
         @guest
             <main class="py-4 min-vh-100 d-flex align-items-center">
-                @yield('content')
+                @yield('onlinecontent')
             </main>
         @else
             <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm sticky-top">
@@ -36,13 +36,13 @@
                     @php
                         if(Auth::user()->access_level === 1)
                         {
-                            $route_name = 'admin.index';
+                            $route_name = 'online.admin.index';
                         }
                         elseif(Auth::user()->access_level === 2)
                         {
-                            $route_name = 'faculty.index';
+                            $route_name = 'online.faculty.index';
                         }
-                        else { $route_name = 'student.index'; }
+                        else { $route_name = 'online.student.index'; }
                     @endphp
                     <a class="navbar-brand me-4" href="{{ route($route_name) }}">
                         {{ __('Online Examination - Laravel') }}
@@ -115,13 +115,13 @@
                                     @php
                                         if(Auth::user()->access_level === 1)
                                         {
-                                            $profile_route = 'admin.profile.edit';
+                                            $profile_route = 'online.admin.profile.edit';
                                         }
                                         elseif(Auth::user()->access_level === 2)
                                         {
-                                            $profile_route = 'faculty.profile.edit';
+                                            $profile_route = 'online.faculty.profile.edit';
                                         }
-                                        else { $profile_route = 'student.profile.edit'; }
+                                        else { $profile_route = 'online.student.profile.edit'; }
                                     @endphp
                                     <a class="dropdown-item" href="{{ route($profile_route, Auth::user()->id) }}">
                                         <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
@@ -142,7 +142,7 @@
             </nav>
 
             <main class="py-4">
-                @yield('content')
+                @yield('onlinecontent')
             </main>
         @endguest
         <!-- back -->

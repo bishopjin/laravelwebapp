@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('admin.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.admin.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
-                            <form method="POST" action="{{ route('course.save') }}">
+                            <form method="POST" action="{{ route('online.course.save') }}">
                                 @csrf
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col">
@@ -112,7 +112,7 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('course.edit') }}" class="p-md-4">
+                    <form method="POST" action="{{ route('online.course.edit') }}" class="p-md-4">
                         @csrf
                         <div class="form-group mb-3">
                             <input type="text" name="course" id="coursename" class="form-control" autocomplete="off">

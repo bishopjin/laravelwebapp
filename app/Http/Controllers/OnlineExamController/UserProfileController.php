@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Courses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+ 
 class UserProfileController extends Controller
 {
     protected function Show(Request $request, $id)

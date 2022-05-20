@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\ExamScore;
 use App\Models\Courses;
 use App\Models\ExamQuestions;
-use App\Models\ExamSelections;
+use App\Models\ExamSelections; 
 
 class StudentController extends Controller
 {

@@ -5,46 +5,45 @@ namespace App\Http\Controllers\OnlineExamController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use App\Models\Courses;
+use App\Models\OnlineCourse;
 use App\Models\User;
-use App\Models\Exam;
-use App\Models\ExamScore;
-use App\Models\Subjects;
+use App\Models\OnlineExam;
+use App\Models\OnlineExamScore;
+use App\Models\OnlineSubject; 
 
 class AdminController extends Controller
 {
     protected function Index()
     {	
-    	$result = DB::table('user')
-    			->join('course', 'user.course_id', '=', 'course.id')
-    			->join('gender', 'user.gender_id', '=', 'gender.id')
-    			->join('access_levels', 'user.access_level', '=', 'access_levels.id')
-                ->where('user.id', '>', 1)
-    			->select('user.id', 'user.firstname', 'user.middlename', 'user.lastname',
-    			'course.course', 'gender.gender', 'access_levels.access_level', 'user.isactive')->paginate(10);
+    	$result = User::join('online_courses', 'users.online_course_id', '=', 'online_courses.id')
+    			->join('genders', 'users.gender_id', '=', 'genders.id')
+    			->join('online_access_levels', 'users.access_level', '=', 'online_access_levels.id')
+                ->where('users.id', '>', 1)
+    			->select('users.id', 'users.firstname', 'users.middlename', 'users.lastname',
+    			'online_courses.course', 'genders.gender', 'online_access_levels.access_level', 'users.isactive')
+                ->paginate(10);
 
-        if (Subjects::exists())
+        if (OnlineSubject::exists())
         {
-            $subject_list = DB::table('subjects')
-                ->join('user', 'subjects.user_id', '=', 'user.id')
-                ->select('subjects.id', 'subjects.subject', 'user.lastname', 'user.middlename', 'user.firstname')->paginate(10);
+            $subject_list = OnlineSubject::join('users', 'online_subjects.user_id', '=', 'users.id')
+                ->select('online_subjects.id', 'online_subjects.subject', 'users.lastname', 
+                    'users.middlename', 'users.firstname')->paginate(10);
 
-            return view('admin.index')->with(compact('result', 'subject_list'));
+            return view('online.admin.index')->with(compact('result', 'subject_list'));
         }
-        else { return view('admin.index')->with(compact('result')); }
+        else { return view('online.admin.index')->with(compact('result')); }
     }
 
     protected function ShowCourse()
     {
-    	if (Courses::exists()) {
-    		$course_list = Courses::where('id', '>', 1)->select('id', 'course')->paginate(10);
+    	if (OnlineCourse::exists()) {
+    		$course_list = OnlineCourse::where('id', '>', 1)->select('id', 'course')->paginate(10);
 
-    		return view('admin.course')->with(compact('course_list'));
+    		return view('online.admin.course')->with(compact('course_list'));
     	}
     	else 
     	{
-    		return view('admin.course');
+    		return view('online.admin.course');
     	}
     }
 
@@ -55,11 +54,11 @@ class AdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('course.show')->withErrors($validator)->withInput();
+            return redirect()->route('online.course.show')->withErrors($validator)->withInput();
         }
         else
         {
-        	$add_course = Courses::create([
+        	$add_course = OnlineCourse::create([
         		'course' => $request->input('course'),
         	]);
 
@@ -77,11 +76,11 @@ class AdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('course.show')->withErrors($validator)->withInput();
+            return redirect()->route('online.course.show')->withErrors($validator)->withInput();
         }
         else
         {
-        	$course_edit = Courses::where('id', $request->input('course_id'))
+        	$course_edit = OnlineCourse::where('id', $request->input('course_id'))
     			->update(['course' => $request->input('course')]);
 
     		return redirect()->back();
@@ -102,11 +101,11 @@ class AdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('admin.index')->withErrors($validator)->withInput();
+            return redirect()->route('online.admin.index')->withErrors($validator)->withInput();
         }
         else
         {
-            $course_edit = Subjects::where('id', $request->input('subject_id'))
+            $course_edit = OnlineSubject::where('id', $request->input('subject_id'))
                 ->update(['subject' => $request->input('subject')]);
 
             return redirect()->back();

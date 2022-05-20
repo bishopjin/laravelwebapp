@@ -4,15 +4,14 @@ namespace App\Http\Controllers\OnlineExamController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
-use App\Models\Courses;
-use App\Models\Exam;
-use App\Models\ExamQuestions;
-use App\Models\ExamSelections;
-use App\Models\Subjects;
+use App\Models\OnlineCourse;
+use App\Models\OnlineExam; 
+use App\Models\OnlineExamQuestion;
+use App\Models\OnlineExamSelection;
+use App\Models\OnlineSubject;
 
 class FacultyController extends Controller
 {

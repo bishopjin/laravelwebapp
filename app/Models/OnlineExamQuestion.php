@@ -17,6 +17,6 @@ class OnlineExamQuestion extends Model
 
     protected function selection()
     {
-    	return $this->hasMany(ExamSelections::class);
+    	return $this->hasMany(OnlineExamSelection::class);
     }
 }

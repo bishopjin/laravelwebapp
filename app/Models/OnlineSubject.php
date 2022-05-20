@@ -13,6 +13,6 @@ class OnlineSubject extends Model
 
     protected function exam_question()
     {
-    	return $this->belongsTo(Exam::class);
+    	return $this->belongsTo(OnlineExam::class);
     }
 }

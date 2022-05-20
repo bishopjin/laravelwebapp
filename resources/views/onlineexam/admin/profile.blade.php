@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 <div class="container pt-4" id="app">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card">
                 <div class="card-header bg-primary text-light">{{ __('Edit Profile') }}</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.profile.save', Auth::user()->id) }}">
+                    <form method="POST" action="{{ route('online.admin.profile.save', Auth::user()->id) }}">
                         @csrf
                         @foreach ($user_details as $details)
                             <div class="row mb-3 justify-content-center">

@@ -17,6 +17,6 @@ class OnlineExamSelection extends Model
 
     protected function exam_question()
     {
-    	return $this->belongsTo(ExamQuestions::class);
+    	return $this->belongsTo(OnlineExamQuestion::class);
     }
 }

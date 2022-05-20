@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('onlineexam.layouts.app')
 
-@section('content')
+@section('onlinecontent')
 	<div class="container">
         <div class="row">
             <div class="col">
