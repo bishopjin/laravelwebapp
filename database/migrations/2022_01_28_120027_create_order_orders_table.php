@@ -17,12 +17,8 @@ class CreateOrderOrdersTable extends Migration
             $table->id();
             $table->bigInteger('order_number');
             $table->integer('user_id');
-            $table->integer('order_burger_id');
-            $table->integer('burgers_qty');
-            $table->integer('order_beverage_id');
-            $table->integer('beverages_qty');
-            $table->integer('order_combo_meal_id');
-            $table->integer('combo_meals_qty');
+            $table->integer('item_id');
+            $table->integer('item_qty');
             $table->integer('order_coupon_id');
             $table->timestamps();
         });

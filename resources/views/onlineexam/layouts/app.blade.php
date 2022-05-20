@@ -60,10 +60,10 @@
                                         {{ __('Maintenance') }}
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-left mt-1 border-0 bg-primary" aria-labelledby="navbarDropdownSettings">
-                                        <a class="dropdown-item" href="{{ route('admin.index') }}">
+                                        <a class="dropdown-item" href="{{ route('online.admin.index') }}">
                                             {{ __('Dashboard') }}
                                         </a>
-                                        <a class="dropdown-item" href="{{ route('course.show') }}">
+                                        <a class="dropdown-item" href="{{ route('online.course.show') }}">
                                             {{ __('Courses') }}
                                         </a>
                                     </div>
@@ -145,16 +145,6 @@
                 @yield('onlinecontent')
             </main>
         @endguest
-        <!-- back -->
-        <div class="container">
-            <div class="row fixed-bottom d-flex justify-content-center ps-2">
-                <div class="col">
-                    <a href="/" class="btn btn-outline-light rounded-circle mb-2 p-3">
-                        <span class="small font-weight-bold">Main</span>
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>

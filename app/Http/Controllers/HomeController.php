@@ -26,8 +26,8 @@ class HomeController extends Controller
             elseif ($urlPath == 'online-exam') {
                 return redirect()->route('online.dashboard.index');
             }
-            else {
-                return redirect()->route('menu.dashboard.index');
+            elseif ($urlPath == 'menu-ordering') {
+                return redirect()->route('order.dashboard.index');
             }
         }
         else {

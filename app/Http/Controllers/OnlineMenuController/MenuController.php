@@ -63,7 +63,32 @@ class MenuController extends Controller
         }
         else { $orders = collect(new OrderOrder);}
 
-        return view('home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'tax'));
+        if (session('user_access') == '1')
+        {
+            if (OrderCoupon::exists())
+            {
+                $coupons = OrderCoupon::select('id', 'code', 'discount')->get();
+            }
+            else { $coupons = collect(new OrderCoupon); }
+
+            if (OrderTax::exists())
+            {
+                $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
+            }
+            else { $taxes = collect(new OrderTax); }
+
+            if (OrderOrder::exists()) 
+            {
+                $ordersall = OrderOrder::select('order_number')->paginate(10);
+            }
+            else { $ordersall = collect(new OrderOrder);}
+
+            return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'ordersall', 'taxes', 'coupons'));
+        }
+        else 
+        {
+            return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'tax'));
+        }
     }
 
     public function checkCoupon(Request $request, $code)
@@ -83,12 +108,11 @@ class MenuController extends Controller
     /* save order */
     public function store(Request $request)
     {
-        $discount = 0; $coupon_id = 0;
-        $data = $request->input('order');
+        $coupon_id = 0; $keyArr = []; $count = 0; $orderNumber = 0;
         $qty = $request->input('quantity');
 
         /* check voucher validity */
-        $coupon = OrderCoupon::where('code', $request->input('code'))->select('id', 'discount')->get();
+        $coupon = OrderCoupon::where('code', $request->input('code'))->select('id')->get();
 
         if (OrderOrder::exists()) 
         {
@@ -99,96 +123,96 @@ class MenuController extends Controller
         if ($coupon->count() > 0) 
         {
             $coupon_id = intval($coupon[0]['id']);
-            $discount = floatval($coupon[0]['discount']);
         }
         
-        foreach ($data as $item) {
-            $val_arr = explode('_', $item);
+        foreach ($qty as $key => $value) 
+        {
+            $keyArr = explode('_', $key);
 
-            foreach ($qty as $key => $value) {
-                if ($item === $key) 
-                {
-                    $burgers_id = 0;
-                    $burgers_qty = 0;
-                    $beverages_id = 0;
-                    $beverages_qty = 0;
-                    $combo_meals_id = 0;
-                    $combo_meals_qty = 0;
+            $create_order = OrderOrder::create([
+                'order_number' => $order_number,
+                'user_id' => $request->user()->id,
+                'item_id' => intval($keyArr[1]),
+                'item_qty' => intval($value),
+                'order_coupon_id' => $coupon_id,
+            ]);
 
-                    if (str_contains($key, 'burger')) 
-                    {
-                        $burgers_id = intval($val_arr[1]);
-                        $burgers_qty = intval($value);
-                    }
-                    else if (str_contains($key, 'beverage')) 
-                    {
-                        $beverages_id = $val_arr[1];
-                        $beverages_qty = intval($value);
-                    }
-                    else
-                    {
-                        $combo_meals_id = $val_arr[1];
-                        $combo_meals_qty = intval($value);
-                    }
-
-                    $create_order = OrderOrder::create([
-                        'order_number' => $order_number,
-                        'user_id' => $request->user()->id,
-                        'order_burger_id' => $burgers_id,
-                        'burgers_qty' => $burgers_qty,
-                        'order_beverage_id' => $beverages_id,
-                        'beverages_qty' => $beverages_qty,
-                        'order_combo_meal_id' => $combo_meals_id,
-                        'combo_meals_qty' => $combo_meals_qty,
-                        'order_coupon_id' => $coupon_id,
-                    ]);
-
-                    if ($create_order->id > 0)
-                    {
-                        $response = $create_order->order_number;
-                    }
-                    else { $response = 0; }
-                    break;
-                }
+            if ($create_order->id > 0) 
+            {
+                $count++;
             }
         }
-        return response()->json($response);
+
+        if ($count > 0) 
+        {
+            $orderNumber = $order_number;
+        }
+
+        return response()->json($orderNumber);
     }
 
     public function view(Request $request, $order_number)
     {
-        $result = 0;
-
-        $coupons = OrderOrder::join('order_coupons', 'orders.order_coupon_id', '=', 'order_coupons.id')
-            ->select('order_coupons.code', 'order_coupons.discount')
-            ->where('order_number', $order_number)->distinct()->get();
-
-        $burgers = OrderOrder::join('order_burgers', 'order_orders.order_burger_id', '=', 'order_burgers.id')
-            ->select('order_burgers.name', 'order_burgers.price', 'order_orders.burgers_qty')
-            ->where('order_number', $order_number)->get();
-
-        $beverages = OrderOrder::join('order_beverages', 'order_orders.order_beverage_id', '=', 'order_beverages.id')
-            ->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
-            ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
-            ->select('order_beverage_names.name', 'order_beverages.price', 'order_orders.beverages_qty', 'order_beverage_sizes.size')
-            ->where('order_number', $order_number)->get();
-
-        $combos = OrderOrder::join('order_combo_meals', 'order_orders.order_combo_meal_id', '=', 'order_combo_meals.id')
-            ->select('order_combo_meals.name', 'order_combo_meals.price', 'order_orders.combo_meals_qty')
-            ->where('order_number', $order_number)->get();
-
-        if (Tax::exists())
+        $result = [];
+        
+        if (OrderTax::exists())
         {
             $tax = OrderTax::select('tax', 'percentage')->get();
+            array_push($result, array('TAX' => $tax));
         }
         else { $tax = collect(new OrderTax); }
 
-        $merged = $burgers->merge($beverages);
-        $merged2 = $merged->merge($combos);
-        $merged3 = $merged2->merge($tax);
-        $merged4 = $merged3->merge($coupons);
+        $orders = OrderOrder::select('item_qty', 'item_id', 'order_coupon_id', 'order_number', 'user_id')
+            ->where('order_number', $order_number)->get();
 
-        $result = $merged4->all();
+        if ($orders->count() > 0) 
+        {
+            $order = [];
+            foreach ($orders as $item_order) {
+                $data = [];
+                $coupon_code = 0;
+                $coupon_discount = 0;
+                $size = '0';
+
+                if (intval($item_order->order_coupon_id) > 0)
+                {
+                    $coupon = OrderCoupon::find(intval($item_order->order_coupon_id))->select('code', 'discount')->first();
+                    if ($coupon->count() > 0) 
+                    {
+                        $coupon_code = $coupon->code;
+                        $coupon_discount = $coupon->discount;
+                    }
+                }
+
+                if (intval($item_order->item_id) > 20000 && intval($item_order->item_id) < 30000) 
+                {
+                    $beverage = OrderBeverage::find(intval($item_order->item_id))->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
+                                    ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
+                                    ->select('order_beverage_names.name', 'order_beverage_sizes.size')->first();
+                    $item = $beverage->name;
+                    $size = $beverage->size;
+                }
+                elseif (intval($item_order->item_id) > 30000 && intval($item_order->item_id) < 40000) 
+                {   
+                    $combo = OrderComboMeal::find(intval($item_order->item_id))->select('name', 'price')->first();
+                    $item = $combo->name;
+                    $price = $combo->price;
+                }
+                else
+                {
+                    $burger = OrderBurger::find(intval($item_order->item_id))->select('name', 'price')->first();
+                    $item = $burger->name;
+                    $price = $burger->price;
+                }
+                
+                $data = array('ItemName' => $item, 'ItemQty' => $item_order->item_qty, 'ItemSize' => $size,
+                    'ItemPrice' => $price, 'CouponCode' => $coupon_code, 'Discount' => $coupon_discount);
+
+                array_push($order, $data);
+            }
+
+            array_push($result, array('ORDER' => $order));
+        }
 
         return response()->json($result);
     }

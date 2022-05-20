@@ -12,12 +12,8 @@ class OrderOrder extends Model
     protected $fillable = [
     	'order_number',
     	'user_id',
-    	'order_burger_id',
-    	'burgers_qty',
-    	'order_beverage_id',
-    	'beverages_qty',
-    	'order_combo_meal_id',
-    	'combo_meals_qty',
+    	'item_id',
+        'item_qty',
     	'order_coupon_id',
     ];
 }

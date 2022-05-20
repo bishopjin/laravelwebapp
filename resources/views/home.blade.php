@@ -1,6 +1,6 @@
-@extends('onlineexam.layouts.app')
+@extends('layouts.app')
 
-@section('onlinecontent')
+@section('content')
 	<div class="container">
         <div class="row">
             <div class="col">
@@ -110,9 +110,14 @@
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Proceed:') }}</div>
-                        <div class="d-flex">
-                            <a href="#" class="btn btn-outline-primary w-100 rounded-pill">
-                                {{ __('Dashboard') }}
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '1']) }}"
+                                class="btn btn-outline-primary w-100 rounded-pill">
+                                {{ __('Maintenance Dashboard') }}
+                            </a>
+                            <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '2']) }}" 
+                                class="btn btn-outline-primary w-100 rounded-pill">
+                                {{ __('Customer Dashboard') }}
                             </a>
                         </div>
                     </div>

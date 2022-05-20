@@ -71,7 +71,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 	Route::prefix('online-exam')->group(function() {
 		Route::get('/', [ExamController::class, 'Index'])->name('online.dashboard.index');
 		Route::prefix('admin')->group(function () {
-			Route::get('/', [AdminController::class, 'Index'])->name('online.admin.index');
+			Route::get('/show', [AdminController::class, 'Index'])->name('online.admin.index');
 			Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
 			Route::post('/course/save', [AdminController::class, 'SaveCourse'])->name('online.course.save');
 			ROute::post('/course/edit', [AdminController::class, 'EditCourse'])->name('online.course.edit');
@@ -82,7 +82,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 		});
 
 		Route::prefix('faculty')->group(function () {
-			Route::get('/', [FacultyController::class, 'Index'])->name('online.faculty.index');
+			Route::get('/show', [FacultyController::class, 'Index'])->name('online.faculty.index');
 			Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.show');
 			Route::post('/subject/save', [FacultyController::class, 'SaveSubject'])->name('online.subject.save');
 			Route::get('/examination', [FacultyController::class, 'ExaminationShow'])->name('online.exam.show');
@@ -95,7 +95,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 		});
 
 		Route::prefix('student')->group(function () {
-			Route::get('/', [StudentController::class, 'Index'])->name('online.student.index');
+			Route::get('/show', [StudentController::class, 'Index'])->name('online.student.index');
 			Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam');
 			Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.save');
 			Route::post('profile/{id}', [UserProfileController::class, 'Save'])->name('online.student.profile.save');
@@ -106,7 +106,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 /* END */
 /* Online Menu route */
 Route::prefix('menu-ordering')->group(function() {
-	Route::get('/show', [MenuController::class, 'index'])->name('order.dashboard.index');
+	Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index');
 	Route::post('/order', [MenuController::class, 'store'])->name('order.save');
 	Route::get('/checkCoupon/{code}', [MenuController::class, 'checkCoupon'])->name('order.check.coupon');
 	Route::get('/order/details/{order_number}', [MenuController::class, 'view'])->name('order.details.view');
