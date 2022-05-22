@@ -267,7 +267,7 @@
         /* get all checked order */
         function getAllOrder(discount) {
             var allcheck = $('#orderMenu input:checked');
-            var content = '', name, price, size = '', discounted = 0, total = 0, qty = 0, taxpercent = 0, totalTax = 0, subtotal = 0;
+            var content = '', name, price, discounted = 0, total = 0, qty = 0, taxpercent = 0, totalTax = 0, subtotal = 0;
             arr = [], qty_object = {};
 
             $(modalHeader).html('Order Summary');
@@ -287,6 +287,7 @@
                 content += '<div class="row px-5 pb-2"><div class="col-6 fw-bold">Name</div><div class="col-3 fw-bold">Quantity</div><div class="col-3 fw-bold">Amount</div></div>'; 
 
                 for (var i = 0; i < arr.length; i++) {
+                    var size = '';
                     name = $('#' + arr[i]).html();
                     price = parseFloat($('#' + arr[i].replace('_', '_price_')).html());
                     qty = parseInt($('#' + arr[i].replace('_', '_qty_')).html());
@@ -378,6 +379,7 @@
                         content += `<hr><div class="row px-5 pb-2"><div class="col-9">Sub Total</div><div class="col-3">${subtotal}</div></div>`;
 
                         tax.forEach(function(tax) {
+                            taxpercent = 0;
                             taxpercent += (subtotal * parseFloat(tax.percentage));
                             totaltax += taxpercent;
                             content += `<div class="row px-5 pb-2"><div class="col-9">${tax.tax} ${parseFloat(tax.percentage) * 100}%</div><div class="col-3">+ ${taxpercent.toFixed(2)}</div></div>`;
@@ -403,6 +405,7 @@
 
         /* submit order */
         $(checkout).on('click', function () {
+            $(exitBtn).show();
             if ($(code).val()) {
                 $.ajax({
                     url: '{{ url()->full() }}/checkCoupon/' + $(code).val(),

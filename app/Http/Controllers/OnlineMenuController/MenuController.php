@@ -170,7 +170,7 @@ class MenuController extends Controller
 
         if ($coupon->count() > 0) 
         {
-            $response = $coupon[0]['discount'];
+            $response = $coupon[0]->discount;
         }
         else { $response = false; }
 
@@ -250,7 +250,7 @@ class MenuController extends Controller
 
                 if (intval($item_order->order_coupon_id) > 0)
                 {
-                    $coupon = OrderCoupon::find(intval($item_order->order_coupon_id))->select('code', 'discount')->first();
+                    $coupon = OrderCoupon::where('id', intval($item_order->order_coupon_id))->select('code', 'discount')->first();
                     if ($coupon->count() > 0) 
                     {
                         $coupon_code = $coupon->code;
@@ -260,7 +260,7 @@ class MenuController extends Controller
 
                 if (intval($item_order->item_id) > 20000 && intval($item_order->item_id) < 30000) 
                 {
-                    $beverage = OrderBeverage::find(intval($item_order->item_id))
+                    $beverage = OrderBeverage::where('order_beverages.id', intval($item_order->item_id))
                                     ->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
                                     ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
                                     ->select('order_beverage_names.name', 'order_beverage_sizes.size')
@@ -271,13 +271,13 @@ class MenuController extends Controller
                 }
                 elseif (intval($item_order->item_id) > 30000 && intval($item_order->item_id) < 40000) 
                 {   
-                    $combo = OrderComboMeal::find(intval($item_order->item_id))->select('name')->first();
+                    $combo = OrderComboMeal::where('id', intval($item_order->item_id))->select('name')->first();
                     $item = $combo->name;
                     $price = $item_order->item_price;
                 }
                 else
                 {
-                    $burger = OrderBurger::find(intval($item_order->item_id))->select('name')->first();
+                    $burger = OrderBurger::where('id', intval($item_order->item_id))->select('name')->first();
                     $item = $burger->name;
                     $price = $item_order->item_price;
                 }
