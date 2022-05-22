@@ -9,7 +9,11 @@ class OrderBeverage extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+    	'order_beverage_name_id',
+    	'order_beverage_size_id',
+    	'price'
+    ];
 
     protected $casts = [
     	'order_beverage_name_id' => 'integer',

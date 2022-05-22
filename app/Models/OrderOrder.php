@@ -14,6 +14,7 @@ class OrderOrder extends Model
     	'user_id',
     	'item_id',
         'item_qty',
+        'item_price',
     	'order_coupon_id',
     ];
 }

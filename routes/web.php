@@ -106,10 +106,16 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 /* END */
 /* Online Menu route */
 Route::prefix('menu-ordering')->group(function() {
+	/* Admin and Customer route */
 	Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index');
+	/* Customer route */
 	Route::post('/order', [MenuController::class, 'store'])->name('order.save');
 	Route::get('/checkCoupon/{code}', [MenuController::class, 'checkCoupon'])->name('order.check.coupon');
 	Route::get('/order/details/{order_number}', [MenuController::class, 'view'])->name('order.details.view');
+
+	/* Admin Maintenance route */
+	Route::post('/item/add', [MenuController::class, 'AddItem'])->name('order.admin.add');
+	Route::post('/item/edit', [MenuController::class, 'EditItem'])->name('order.admin.edit');
 });
 /* END */
 /* Payroll route */

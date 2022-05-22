@@ -19,18 +19,7 @@
     <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/resources/css/app.css') }}" rel="stylesheet">
 
-    <!-- Scripts -->
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLWK4D22DW"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag("js", new Date());
-
-      gtag("config", "G-QLWK4D22DW");
-    </script> -->
 </head>
 <body>
     <div id="appHome">
@@ -43,6 +32,13 @@
                 @yield('content')
             </main>
         @endguest
-    </div>
+    </div> 
+
+    <!-- Scripts -->
+    <script src="{{ asset('public/js/app.js') }}" defer></script>
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

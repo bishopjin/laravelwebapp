@@ -48,7 +48,7 @@
                                         <!-- End -->
                                         <!-- consolidated system  -->
                                         <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
-                                        <td class="text-center text-danger">{{ __('Not standalone system only') }}</td>
+                                        <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
                                         <!-- End -->
                                         <td class="text-center">
                                             <form method="POST" action="{{ route('inventory.employee.delete') }}">

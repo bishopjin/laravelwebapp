@@ -170,23 +170,41 @@
                         </div>
                         <div class="row pt-3">
                             <div class="col-md-6">
-                                <div class="p-md-3 p-2">
-                                    <div class="fw-bold fs-5">Orders</div>
-                                    <div class="px-md-5" id="orders">
-                                        @isset($orders)
-                                            @foreach($orders as $order)
-                                                @php
-                                                    $title = 'Order # '.$order->order_number;
-                                                @endphp
-                                                <div>
-                                                    <a href="javascript:void(0);" class="text-decoration-none fw-bold orderSum" 
-                                                        id="{{ $order->order_number }}">{{ $title }}</a>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="p-md-3 p-2">
+                                                <div class="fw-bold fs-5">{{ __('Orders') }}</div>
+                                                <div class="px-md-5" id="orders">
+                                                    @isset($orders)
+                                                        @foreach($orders as $order)
+                                                            @php
+                                                                $title = 'Order # '.$order->order_number;
+                                                            @endphp
+                                                            <div>
+                                                                <a href="javascript:void(0);" class="text-decoration-none fw-bold orderSum" 
+                                                                    id="{{ $order->order_number }}">{{ $title }}</a>
+                                                            </div>
+                                                        @endforeach
+                                                    @endisset
                                                 </div>
-                                            @endforeach
-                                        @endisset
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="p-md-3 p-2">
+                                                <div class="fw-bold fs-5">{{ __('Discount Coupon') }}</div>
+                                                <div class="px-md-3">
+                                                    @isset($coupons)
+                                                        @foreach($coupons as $code)
+                                                            <div class="fw-bold">{{ $code->code }} &nbsp; {{ $code->discount * 100 }} {{ __('%') }}</div>
+                                                        @endforeach
+                                                    @endisset
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
                             <div class="col-md-6 px-md-5">
                                 <div class="form-group pb-3">
                                     <label>{{ __('Coupon Code') }}</label>
@@ -240,11 +258,12 @@
         var minusBtn = $('.minusBtn');
         var orderSum = $('.orderSum');
         var noError = true;
-        var tax = @json($tax);
+        var tax = @json($taxes);
         var arr = [], qty_object = {};
 
         $(closeDialog).hide();
-        $(exitBtn).hide();
+        $(exitBtn).show();
+
         /* get all checked order */
         function getAllOrder(discount) {
             var allcheck = $('#orderMenu input:checked');
@@ -258,6 +277,7 @@
             });
 
             if (arr.length === 0) {
+                $(exitBtn).show();
                 $(responseContent).html('<div class="text-center">No Order</div>');
                 $(closeDialog).hide();
                 noError = false;
@@ -272,7 +292,7 @@
                     qty = parseInt($('#' + arr[i].replace('_', '_qty_')).html());
                     subtotal += (price * qty);
                     /* set the qty */
-                    qty_object[arr[i]] = qty;
+                    qty_object[arr[i]] = qty + '_' + price;
 
                     if (arr[i].includes('beverage')) {
                         size = '(' + $('#' + arr[i].replace('_', '_size_')).html() + ')';
@@ -390,6 +410,7 @@
                     dataType: 'json',
                     success: function(result, status, xhr) {
                         if (!result) {
+                            $(exitBtn).show();
                             $(closeDialog).hide();
                             $(modalHeader).html('Invalid');
                             $(responseContent).html('Invalid Coupon Code');

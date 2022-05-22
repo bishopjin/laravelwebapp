@@ -19,6 +19,7 @@ class CreateOrderOrdersTable extends Migration
             $table->integer('user_id');
             $table->integer('item_id');
             $table->integer('item_qty');
+            $table->float('item_price');
             $table->integer('order_coupon_id');
             $table->timestamps();
         });

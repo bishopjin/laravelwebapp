@@ -29,22 +29,22 @@
             </div>
         </div>
 
-        <div class="row py-4">
+        <div class="row pt-2">
             <div class="col">
-                <div class="h3 text-center">{{ __('Select Application') }}</div>
+                <div class="h3 text-center">{{ __('Laravel Web Application') }}</div>
             </div>
         </div>
-
-        <div class="row justify-content-center pb-3">
-            <div class="col-md-4 pb-md-0 pb-3">
-                <div class="card shadow">
+        <hr>
+        <div class="row justify-content-center py-2">
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-database" aria-hidden="true"></i>&nbsp;
                         {{ __('Inventory System') }}
                     </h4>   
                     
                     <div class="card-body">
-                        {{ __('Inventory web application capability:') }}<br>
+                        <span class="fw-bold">{{ __('Inventory Feature:') }}</span><br>
                         &nbsp; {{ __('- View item inventory') }}<br>
                         &nbsp; {{ __('- Add new item') }}<br>
                         &nbsp; {{ __('- Add new stock') }}<br>
@@ -69,21 +69,36 @@
                 </div>
             </div>
             <!--  -->
-            <div class="col-md-4  pb-md-0 pb-3">
-                <div class="card shadow">
+            <div class="col-md-4  pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
                         {{ __('Online Examination System') }}
                     </h4>   
                     
                     <div class="card-body">
-                        {{ __('Under development') }}
+                        <span class="fw-bold">{{ __('Online Examination Feature:') }}</span> <br>
+                        &nbsp; {{ __('- Create an online examination for the student.') }}<br>
+                        &nbsp; {{ __('- Faculty can create an examination form based on subject and generate an examination code.') }}<br>
+                        &nbsp; {{ __('- This code will serve as an access for the student to take the examination.') }}<br>
+                        &nbsp; {{ __('- Encrypted answer key, so only the creator of the exam knows the answer.') }}
                     </div>
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="#" class="btn btn-outline-primary rounded-pill w-100">
+                            <!-- TEMP -->
+                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
+                                {{ __('Admin') }}
+                            </button>
+                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
+                                {{ __('Faculty') }}
+                            </button>
+                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
+                                {{ __('Student') }}
+                            </button>
+                            <!--  -->
+                            <!-- <a href="#" class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Admin') }}
                             </a>
                             <a href="#" class="btn btn-outline-primary rounded-pill w-100">
@@ -91,44 +106,64 @@
                             </a>
                             <a href="#" class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Student') }}
-                            </a>
+                            </a> -->
                         </div>
                     </div>
                 </div>
             </div>
             <!--  -->
-            <div class="col-md-4 pb-md-0 pb-3">
-                <div class="card shadow">
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-cutlery" aria-hidden="true"></i>&nbsp;
                         {{ __('Menu Ordering System') }}
                     </h4>   
                     
                     <div class="card-body">
-                        {{ __('Under Development') }}
+                        <span class="fw-bold">{{ __('Menu Ordering Feature:') }}</span> <br>
+                        &nbsp; <span class="text-success fw-bold">{{ __('- Single page web application') }}</span> <br>
+                        &nbsp; {{ __('- Create order') }} <br>
+                        &nbsp; {{ __('- Discount and tax applied to the order') }} <br>
+                        &nbsp; {{ __('- Order history') }} <br>
+                        &nbsp; {{ __('- Maintenance page for adding/modifying product, tax and discount.') }}
                     </div>
 
                     <div class="card-footer">
-                        <div class="fw-bold pb-2">{{ __('Proceed:') }}</div>
-                        <div class="d-flex flex-column gap-2">
+                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
+                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
                             <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '1']) }}"
                                 class="btn btn-outline-primary w-100 rounded-pill">
-                                {{ __('Maintenance Dashboard') }}
+                                {{ __('Admin') }}
                             </a>
                             <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '2']) }}" 
                                 class="btn btn-outline-primary w-100 rounded-pill">
-                                {{ __('Customer Dashboard') }}
+                                {{ __('Customer') }}
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <hr>
         <!-- footer -->
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 05-19-2022') }}</span>
+                <span>{{ __('Last Updated : 05-22-2022') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="aModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header h5">{{ __('404') }}</div>
+                <div class="modal-body h4">
+                    {{ __('Sorry, application under re-development.') }}
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-primary rounded-pill" data-dismiss="modal">{{ __('Close') }}</button>
+                </div>
             </div>
         </div>
     </div>

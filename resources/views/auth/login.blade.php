@@ -95,18 +95,15 @@
                             </div>
                         </div>
                     </form>
-                    <!-- <div class="d-flex justify-content-center align-items-center px-md-4">
-                        <div class="small fw-bolder d-flex flex-column">
-                            <span class="text-decoration-underline">Admin account :</span>
-                            <span>Username : admin</span>
-                            <span>Password : 12345678</span>
+                    <div class="row pt-2 justify-content-center">
+                        <div class="col-md-10 d-flex justify-content-start">
+                            <div class="small fw-bolder d-flex flex-column">
+                                <span class="text-decoration-underline">{{ __('Default account :') }}</span>
+                                <span>{{ __('Username : admin') }}</span>
+                                <span>{{ __('Password : 12345678') }}</span>
+                            </div>
                         </div>
-                        <div class="">
-                            <button class="btn btn-outline-success rounded-pill small" id="dwnlink">
-                                {{ __('Download Source Code') }}
-                            </button>
-                        </div>
-                    </div> -->
+                    </div>
                 </div>
                 <div class="card-footer text-center">
                     <x-footer></x-footer>
@@ -161,7 +158,7 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <a href="https://github.com/bishopjin/Inventory-system-laravel" class="btn btn-outline-success rounded-pill" target="_blank">
+                    <a href="https://github.com/bishopjin/laravelwebapp" class="btn btn-outline-success rounded-pill" target="_blank">
                         {{ __('Github') }}
                     </a>
                 </div>

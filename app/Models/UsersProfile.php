@@ -22,11 +22,16 @@ class UsersProfile extends Model
 
     /**
      * The attributes that should be cast.
-     *
+     * 
      * @var array
      */
     protected $casts = [
         'DOB' => 'date',
         'gender_id' => 'integer',
     ];
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
+    }
 }

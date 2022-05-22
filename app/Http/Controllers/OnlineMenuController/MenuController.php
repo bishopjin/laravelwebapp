@@ -11,6 +11,8 @@ use App\Models\OrderBeverageName;
 use App\Models\OrderBeverage;
 use App\Models\OrderOrder;
 use App\Models\OrderTax;
+use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MenuController extends Controller
 {
@@ -31,12 +33,6 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
-        if (OrderTax::exists())
-        {
-            $tax = OrderTax::select('tax', 'percentage')->get();
-        }
-        else { $tax = collect(new OrderTax); }
-
         if (OrderBurger::exists())
         {
             $burgers = OrderBurger::select('id', 'name', 'price')->get();
@@ -63,31 +59,107 @@ class MenuController extends Controller
         }
         else { $orders = collect(new OrderOrder);}
 
+        if (OrderCoupon::exists())
+        {
+            $coupons = OrderCoupon::select('id', 'code', 'discount')->get();
+        }
+        else { $coupons = collect(new OrderCoupon); }
+
+        if (OrderTax::exists())
+        {
+            $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
+        }
+        else { $taxes = collect(new OrderTax); }
+
         if (session('user_access') == '1')
         {
-            if (OrderCoupon::exists())
-            {
-                $coupons = OrderCoupon::select('id', 'code', 'discount')->get();
-            }
-            else { $coupons = collect(new OrderCoupon); }
-
-            if (OrderTax::exists())
-            {
-                $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
-            }
-            else { $taxes = collect(new OrderTax); }
-
             if (OrderOrder::exists()) 
             {
-                $ordersall = OrderOrder::select('order_number')->paginate(10);
-            }
-            else { $ordersall = collect(new OrderOrder);}
+                $result = [];
+                $page = 1;
+                $perPage = 10;
+                $discount = 0;
+                $subTotal = 0;
+                $cur_order_no = 0;
+                $count = 0;
+                $tax = 0;
 
-            return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'ordersall', 'taxes', 'coupons'));
+                $ordersall = OrderOrder::select('order_number', 'item_id', 'item_price', 'item_qty', 'order_coupon_id')->get();
+                
+                $orderCOunt = count($ordersall);
+
+                if ($taxes->count() > 0) {
+                    foreach ($taxes as $value) {
+                        $tax += $value->percentage;
+                    }
+                }
+
+                foreach ($ordersall as $order) {
+                    $count++;
+                     
+                    if ($cur_order_no != 0 && $cur_order_no != intval($order->order_number)) 
+                    {   
+                        array_push($result, array(
+                            'OrderNumber' => $cur_order_no,
+                            'Tax' => $tax,
+                            'SubTotal' => $subTotal,
+                            'Discount' => $discount
+                        ));
+                        $subTotal = 0;
+                        $subTotal += intval($order->item_price) * intval($order->item_qty);
+                        $cur_order_no = intval($order->order_number);
+                    }
+                    else 
+                    {
+                        $cur_order_no = intval($order->order_number);
+                        $subTotal += intval($order->item_price) * intval($order->item_qty);
+                    }
+
+                    if ($order->order_coupon_id > 0) 
+                    {   
+                        $orderCoupon = OrderCoupon::find(intval($order->order_coupon_id))->first();
+                        $discount = $orderCoupon->discount;
+                    }
+                    else 
+                    {
+                        $discount = 0;
+                    }
+
+                    if ($count == $orderCOunt)
+                    {
+                        array_push($result, array(
+                            'OrderNumber' => $cur_order_no,
+                            'Tax' => $tax,
+                            'SubTotal' => $subTotal,
+                            'Discount' => $discount
+                        ));
+                    }
+                }
+
+                $collection = collect($result);
+
+                $pagination = new LengthAwarePaginator(
+                    $collection->forPage($request->page ? : $page, $perPage),
+                    $collection->count(),
+                    $perPage,
+                    $request->page,
+                    ['path' => url()->current()]
+                );
+            }
+            else { 
+                $pagination = collect(new OrderOrder);
+            }
+
+            $users = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
+                    ->join('genders', 'users_profiles.gender_id', '=', 'genders.id')
+                    ->select('users_profiles.firstname', 'users_profiles.middlename', 'users_profiles.lastname',
+                            'genders.gender', 'users.isactive')->paginate(10);
+
+            return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
         }
         else 
         {
-            return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'tax'));
+            return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'taxes', 'coupons'));
         }
     }
 
@@ -108,7 +180,7 @@ class MenuController extends Controller
     /* save order */
     public function store(Request $request)
     {
-        $coupon_id = 0; $keyArr = []; $count = 0; $orderNumber = 0;
+        $coupon_id = 0; $keyArr = []; $valArr = []; $count = 0; $orderNumber = 0;
         $qty = $request->input('quantity');
 
         /* check voucher validity */
@@ -128,12 +200,14 @@ class MenuController extends Controller
         foreach ($qty as $key => $value) 
         {
             $keyArr = explode('_', $key);
+            $valArr = explode('_', $value);
 
             $create_order = OrderOrder::create([
                 'order_number' => $order_number,
                 'user_id' => $request->user()->id,
                 'item_id' => intval($keyArr[1]),
-                'item_qty' => intval($value),
+                'item_qty' => intval($valArr[0]),
+                'item_price' => (float) $valArr[1],
                 'order_coupon_id' => $coupon_id,
             ]);
 
@@ -162,7 +236,7 @@ class MenuController extends Controller
         }
         else { $tax = collect(new OrderTax); }
 
-        $orders = OrderOrder::select('item_qty', 'item_id', 'order_coupon_id', 'order_number', 'user_id')
+        $orders = OrderOrder::select('item_qty', 'item_id', 'order_coupon_id', 'order_number', 'user_id', 'item_price')
             ->where('order_number', $order_number)->get();
 
         if ($orders->count() > 0) 
@@ -186,23 +260,26 @@ class MenuController extends Controller
 
                 if (intval($item_order->item_id) > 20000 && intval($item_order->item_id) < 30000) 
                 {
-                    $beverage = OrderBeverage::find(intval($item_order->item_id))->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
+                    $beverage = OrderBeverage::find(intval($item_order->item_id))
+                                    ->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
                                     ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
-                                    ->select('order_beverage_names.name', 'order_beverage_sizes.size')->first();
+                                    ->select('order_beverage_names.name', 'order_beverage_sizes.size')
+                                    ->first();
                     $item = $beverage->name;
                     $size = $beverage->size;
+                    $price = $item_order->item_price;
                 }
                 elseif (intval($item_order->item_id) > 30000 && intval($item_order->item_id) < 40000) 
                 {   
-                    $combo = OrderComboMeal::find(intval($item_order->item_id))->select('name', 'price')->first();
+                    $combo = OrderComboMeal::find(intval($item_order->item_id))->select('name')->first();
                     $item = $combo->name;
-                    $price = $combo->price;
+                    $price = $item_order->item_price;
                 }
                 else
                 {
-                    $burger = OrderBurger::find(intval($item_order->item_id))->select('name', 'price')->first();
+                    $burger = OrderBurger::find(intval($item_order->item_id))->select('name')->first();
                     $item = $burger->name;
-                    $price = $burger->price;
+                    $price = $item_order->item_price;
                 }
                 
                 $data = array('ItemName' => $item, 'ItemQty' => $item_order->item_qty, 'ItemSize' => $size,
@@ -215,5 +292,176 @@ class MenuController extends Controller
         }
 
         return response()->json($result);
+    }
+
+    /* Admin Maintenance Controller */
+    public function AddItem(Request $request) 
+    {
+        $item_id = intval($request->input('id'));
+        $item_type = $request->input('param0');
+        $item_name = $request->input('param1');
+        $item_size_price = (float) $request->input('param2');
+        $item_price = (float) $request->input('param3');
+
+        $result = $this->sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name, 'AddRecord');
+
+        return response()->json($result);
+    }
+
+    public function EditItem(Request $request)
+    {
+        $item_id = intval($request->input('id'));
+        $item_type = $request->input('param0');
+        $item_name = $request->input('param1');
+        $item_size_price = (float) $request->input('param2');
+        $item_price = (float) $request->input('param3');
+
+        $result = $this->sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name,'EditRecord');
+
+        return response()->json($result);
+    }
+
+    /* service */
+    private function sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name, $queryType)
+    {
+        $recordExist = 'Record already exist.';
+
+        switch ($item_type) 
+        {
+            case 'burger':
+                if ($queryType == 'EditRecord') 
+                {
+                    $result = OrderBurger::find($item_id)->update(['price' => $item_size_price]);
+                }
+                else {
+                    /* check if name exist */
+                    $check = OrderBurger::where('name', $item_name)->get();
+
+                    if ($check->count() > 0) 
+                    {
+                        $result = $recordExist;
+                    }
+                    else
+                    {
+                        /* save */
+                        $create_record = OrderBurger::create([
+                            'name' => $item_name,
+                            'price' => $item_size_price,
+                        ]);
+
+                        $result = $create_record->id;
+                    }
+                }
+                break;
+
+            case 'beverage':
+                if ($queryType == 'EditRecord') 
+                {
+                    $result = OrderBeverage::find($item_id)->update(['price' => $item_price]);
+                }
+                else
+                {
+                    $check = OrderBeverageName::where('name', $item_name)->get();
+
+                    if ($check->count() > 0) 
+                    {
+                        $result = $recordExist;
+                    }
+                    else
+                    {                            
+                        $create_record_name = OrderBeverageName::create([
+                            'name' => $item_name,
+                        ]);
+
+                        if ($create_record_name->id > 0) 
+                        {
+                            $create_record = OrderBeverage::create([
+                                'order_beverage_name_id' => $create_record_name->id,
+                                'order_beverage_size_id' => intval($item_size_price),
+                                'price' => $item_price,
+                            ]);
+                        }
+                        $result = $create_record->id;
+                    }
+                }
+                break;
+
+            case 'combo':
+                if ($queryType == 'EditRecord') 
+                {
+                    $result = OrderComboMeal::find($item_id)->update(['price' => $item_size_price]);
+                }
+                else
+                {
+                    $check = OrderComboMeal::where('name', $item_name)->get();
+
+                    if ($check->count() > 0) 
+                    {
+                        $result = $recordExist;
+                    }
+                    else
+                    {
+                        $create_record = OrderComboMeal::create([
+                            'name' => $item_name,
+                            'price' => $item_size_price,
+                        ]);
+
+                        $result = $create_record->id;
+                    }
+                }
+                break;
+
+            case 'tax':
+                if ($queryType == 'EditRecord') 
+                {
+                    $result = OrderTax::find($item_id)->update(['percentage' => ($item_size_price / 100)]);
+                }
+                else
+                {
+                    $check = OrderTax::where('tax', $item_name)->get();
+
+                    if ($check->count() > 0) 
+                    {
+                        $result = $recordExist;
+                    }
+                    else
+                    {
+                        $create_record = OrderTax::create([
+                            'tax' => $item_name,
+                            'percentage' => ($item_size_price / 100),
+                        ]);
+
+                        $result = $create_record->id;
+                    }
+                }
+                break;
+
+            default:
+                if ($queryType == 'EditRecord') 
+                {
+                    $result = orderCoupon::find($item_id)->update(['discount' => ($item_size_price / 100)]);
+                }
+                else 
+                {
+                    $check = OrderCoupon::where('code', $item_name)->get();
+
+                    if ($check->count() > 0) 
+                    {
+                        $result = $recordExist;
+                    }
+                    else
+                    {
+                        $create_record = OrderCoupon::create([
+                            'code' => $item_name,
+                            'discount' => ($item_size_price / 100),
+                        ]);
+
+                        $result = $create_record->id;
+                    }
+                }
+                break;
+        }
+
+        return $result;
     }
 }
