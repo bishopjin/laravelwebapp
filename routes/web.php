@@ -116,6 +116,11 @@ Route::prefix('menu-ordering')->group(function() {
 	/* Admin Maintenance route */
 	Route::post('/item/add', [MenuController::class, 'AddItem'])->name('order.admin.add');
 	Route::post('/item/edit', [MenuController::class, 'EditItem'])->name('order.admin.edit');
+	/* paginate using ajax */
+	Route::get('/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order');
+	Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order');
+	Route::get('/show/admin/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user');
+	Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon');
 });
 /* END */
 /* Payroll route */

@@ -11,27 +11,27 @@ use App\Models\OnlineExam;
 use App\Models\OnlineExamScore;
 use App\Models\OnlineSubject; 
 
-class AdminController extends Controller
+class AdminController extends Controller 
 {
     protected function Index()
     {	
-    	$result = User::join('online_courses', 'users.online_course_id', '=', 'online_courses.id')
-    			->join('genders', 'users.gender_id', '=', 'genders.id')
+    	$result = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
+                ->join('online_courses', 'users_profiles.online_course_id', '=', 'online_courses.id')
+    			->join('genders', 'users_profiles.gender_id', '=', 'genders.id')
     			->join('online_access_levels', 'users.access_level', '=', 'online_access_levels.id')
                 ->where('users.id', '>', 1)
-    			->select('users.id', 'users.firstname', 'users.middlename', 'users.lastname',
-    			'online_courses.course', 'genders.gender', 'online_access_levels.access_level', 'users.isactive')
-                ->paginate(10);
-
+    			->select('users.id', 'users_profiles.firstname', 'users_profiles.middlename', 'users_profiles.lastname',
+    			         'online_courses.course', 'genders.gender', 'users.isactive')->paginate(10);
+        
         if (OnlineSubject::exists())
         {
             $subject_list = OnlineSubject::join('users', 'online_subjects.user_id', '=', 'users.id')
                 ->select('online_subjects.id', 'online_subjects.subject', 'users.lastname', 
                     'users.middlename', 'users.firstname')->paginate(10);
 
-            return view('online.admin.index')->with(compact('result', 'subject_list'));
+            return view('onlineexam.admin.index')->with(compact('result', 'subject_list'));
         }
-        else { return view('online.admin.index')->with(compact('result')); }
+        else { return view('onlineexam.admin.index')->with(compact('result')); }
     }
 
     protected function ShowCourse()
@@ -39,18 +39,18 @@ class AdminController extends Controller
     	if (OnlineCourse::exists()) {
     		$course_list = OnlineCourse::where('id', '>', 1)->select('id', 'course')->paginate(10);
 
-    		return view('online.admin.course')->with(compact('course_list'));
+    		return view('onlineexam.admin.course')->with(compact('course_list'));
     	}
     	else 
     	{
-    		return view('online.admin.course');
+    		return view('onlineexam.admin.course');
     	}
     }
 
     protected function SaveCourse(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'course' => 'required|string|unique:course|max:255',
+                'course' => 'required|string|unique:online_courses|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -72,7 +72,7 @@ class AdminController extends Controller
     protected function EditCourse(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'course' => 'required|string|unique:course|max:255',
+                'course' => 'required|string|unique:online_courses|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -97,7 +97,7 @@ class AdminController extends Controller
     protected function EditSubject(Request $request)
     {
         $validator = Validator::make($request->all(), [
-                'subject' => 'required|string|unique:subjects|max:255',
+                'subject' => 'required|string|unique:online_subjects|max:255',
         ]);
 
         if ($validator->fails()) {

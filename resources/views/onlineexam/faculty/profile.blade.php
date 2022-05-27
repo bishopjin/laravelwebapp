@@ -43,7 +43,7 @@
                                 </div>
                             </div>
 
-                            @if(Auth::user()->access_level === 3)
+                            @if(session('user_access') == '3')
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col-md-10">
                                         <label for="course">{{ __('Course') }}</label>

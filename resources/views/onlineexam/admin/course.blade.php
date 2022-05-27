@@ -58,27 +58,19 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('#') }}</th>
-                                            <th class="text-center">{{ __('Course') }}</th>
-                                            <th class="text-center">{{ __('Action') }}</th>
+                                            <th>{{ __('Course') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @isset($course_list)
-                                            @foreach($course_list as $index => $course)
+                                            @foreach($course_list as $course)
                                                 @php
-                                                    if($index === 0)
-                                                    {
-                                                        $index+=1;
-                                                    }
-                                                    else { $index++; }
-
                                                     $courseID = 'course'.$course->id;
                                                 @endphp
                                                 <tr>
-                                                    <td>{{ $index }}</td>
-                                                    <td class="text-center" id="{{ $courseID }}">{{ $course->course }}</td>
-                                                    <td class="text-center">
+                                                    <td id="{{ $courseID }}">{{ $course->course }}</td>
+                                                    <td>
                                                         <a href="javascript:void(0)" class="btn btn-outline-success editCourse" id="{{ $course->id }}">{{ __('Edit') }}</a>
                                                     </td>
                                                 </tr>

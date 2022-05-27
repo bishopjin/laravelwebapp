@@ -28,7 +28,6 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Name</th>
                                         <th>Gender</th>
                                         <th>Course</th>
@@ -38,23 +37,15 @@
                                 </thead>
                                 <tbody>
                                     @isset($result)
-                                        @foreach($result as $index => $user)
-                                            @if(($user->access_level === 'Student' AND isset($user->course)) OR $user->access_level === 'Faculty')
-                                                @php
-                                                    if($index === 0)
-                                                    {
-                                                        $index+=1;
-                                                    }
-                                                    else { $index++; }
-                                                @endphp
+                                        @foreach($result as $user)
+                                            @if(session('user_access') == '1')
                                                 <tr>
-                                                    <td>{{ $index }}</td>
                                                     <td>{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
                                                     <td>{{ $user->gender }}</td>
                                                     <td>{{ $user->course ?? 'None' }}</td>
-                                                    <td>{{ $user->access_level }}</td>
+                                                    <td>{{ __('For standalone system only') }}</td>
                                                     <td>
-                                                        <form method="POST" action="{{ route('user.delete') }}">
+                                                        <form method="POST" action="{{ route('online.user.delete') }}">
                                                             @csrf
                                                             <input type="hidden" name="user_id" value="{{ $user->id }}">
                                                             <input type="hidden" name="access_level" value="{{ $user->access_level }}">

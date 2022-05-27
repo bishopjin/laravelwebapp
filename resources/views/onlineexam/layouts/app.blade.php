@@ -34,15 +34,18 @@
             <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm sticky-top">
                 <div class="container">
                     @php
-                        if(Auth::user()->access_level === 1)
+                        if(session('user_access') == '1')
                         {
                             $route_name = 'online.admin.index';
                         }
-                        elseif(Auth::user()->access_level === 2)
+                        elseif(session('user_access') == '2')
                         {
                             $route_name = 'online.faculty.index';
                         }
-                        else { $route_name = 'online.student.index'; }
+                        else 
+                        { 
+                            $route_name = 'online.student.index';
+                        }
                     @endphp
                     <a class="navbar-brand me-4" href="{{ route($route_name) }}">
                         {{ __('Online Examination - Laravel') }}
@@ -54,7 +57,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav me-auto d-block d-md-none">
-                            @if(Auth::user()->access_level === 1)
+                            @if(session('user_access') == '1')
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Maintenance') }}
@@ -70,7 +73,7 @@
                                 </li>
                             @endif
 
-                            @if(Auth::user()->access_level === 1 OR Auth::user()->access_level === 3)
+                            @if(session('user_access') == '1' OR session('user_access') == '3')
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Examination') }}
@@ -86,7 +89,7 @@
                                     </div>
                                 </li>
                             @endif
-                            @if(Auth::user()->access_level === 1 OR Auth::user()->access_level === 2)
+                            @if(session('user_access') == '1' OR session('user_access') == '2')
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Maintenance') }}
@@ -113,27 +116,34 @@
 
                                 <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" aria-labelledby="navbarDropdown">
                                     @php
-                                        if(Auth::user()->access_level === 1)
+                                        if(session('user_access') == '1')
                                         {
                                             $profile_route = 'online.admin.profile.edit';
                                         }
-                                        elseif(Auth::user()->access_level === 2)
+                                        elseif(session('user_access') == '2')
                                         {
                                             $profile_route = 'online.faculty.profile.edit';
                                         }
-                                        else { $profile_route = 'online.student.profile.edit'; }
+                                        else 
+                                        { 
+                                            $profile_route = 'online.student.profile.edit'; 
+                                        }
                                     @endphp
                                     <a class="dropdown-item" href="{{ route($profile_route, Auth::user()->id) }}">
                                         <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item" href="{{ route('home') }}">
+                                        <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
+                                    </a>
+                                    <!--  for standalone system  -->
+                                    <!-- <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Logout') }}
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
-                                    </form>
+                                    </form> -->
                                 </div>
                             </li>
                         </ul>

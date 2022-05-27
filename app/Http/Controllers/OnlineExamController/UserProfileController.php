@@ -5,8 +5,8 @@ namespace App\Http\Controllers\OnlineExamController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Courses;
-use Illuminate\Support\Facades\DB;
+use App\Models\UsersProfile;
+use App\Models\OnlineCourse;
 use Illuminate\Support\Facades\Validator;
  
 class UserProfileController extends Controller
@@ -15,23 +15,38 @@ class UserProfileController extends Controller
     {
         if($request->user()->id == $id)
         {
-            if(User::exists())
+            if(User::exists()) 
             {
-                if ($request->user()->access_level === 1)
+                /* for standalone system */
+                /*if ($request->user()->access_level === 1)
                 {
-                    $view_name = 'admin.profile';
+                    $view_name = 'onlineexam.admin.profile';
                 }
                 elseif ($request->user()->access_level === 2)
                 {
-                    $view_name = 'faculty.profile';
+                    $view_name = 'onlineexam.faculty.profile';
                 }
-                else { $view_name = 'student.profile'; }
+                else { $view_name = 'onlineexam.student.profile'; }*/
 
-                $courses = Courses::where('id', '>', 1)->select('id', 'course')->get();
+                if (session('user_access') == '1')
+                {
+                    $view_name = 'onlineexam.admin.profile';
+                }
+                elseif (session('user_access') == '2')
+                {
+                    $view_name = 'onlineexam.faculty.profile';
+                }
+                else 
+                { 
+                    $view_name = 'onlineexam.student.profile'; 
+                }
 
-                $user_details = User::where('user.id', $id)
-                    ->select('firstname', 'middlename', 'lastname', 'email',
-                                'dateofbirth', 'gender_id', 'course_id')->get();
+                $courses = OnlineCourse::where('id', '>', 1)->select('id', 'course')->get();
+
+                $user_details = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
+                        ->where('users.id', $id)->select('users_profiles.firstname', 'users_profiles.middlename', 
+                                'users_profiles.lastname', 'users_profiles.email', 'users_profiles.DOB', 
+                                'users_profiles.gender_id', 'users_profiles.online_course_id')->get();
                     
                 return view($view_name)->with(compact('user_details', 'courses'));
             }
@@ -55,28 +70,42 @@ class UserProfileController extends Controller
         }
         else
         {
-            $updated = User::where('id', $id)
+            $updated = UsersProfile::where('user_id', $id)
             ->update([
                 'firstname' => $request->input('firstname'),
                 'middlename' => $request->input('middlename') ?? null,
                 'lastname' => $request->input('lastname'),
                 'email' => $request->input('email'),
-                'dateofbirth' => $request->input('dateofbirth'),
+                'DOB' => $request->input('dateofbirth'),
                 'gender_id' => $request->input('gender'),
-                'course_id' => $request->input('course') ?? 1,
+                'online_course_id' => $request->input('course') ?? 1,
             ]);
 
             if ($updated > 0)
-            {
-                if ($request->user()->access_level === 1)
+            {   
+                /* standalone system */
+                /*if ($request->user()->access_level === 1)
                 {
-                    $route_name = 'admin.index';
+                    $route_name = 'online.admin.index';
                 }
                 elseif ($request->user()->access_level === 2)
                 {
-                    $route_name = 'faculty.index';
+                    $route_name = 'online.faculty.index';
                 }
-                else { $route_name = 'student.index'; }
+                else { $route_name = 'online.student.index'; }*/
+
+                if (session('user_access') == '1')
+                {
+                    $route_name = 'online.admin.index';
+                }
+                elseif (session('user_access') == '2')
+                {
+                    $route_name = 'online.faculty.index';
+                }
+                else 
+                { 
+                    $route_name = 'online.student.index'; 
+                }
 
                 return redirect()->route($route_name);
             }

@@ -4,7 +4,7 @@
 <div class="container py-3">
     <div class="row justify-content-center">
         <div class="col">
-            <div class="card">
+            <div class="card"> 
                 <div class="card-header px-0">
                     @php
                         $title = 'Maintenance';
@@ -218,88 +218,15 @@
                         <!-- 3rd row -->
                         <div class="row pt-2 pt-md-3">
                             {{-- Orders --}}
-                            <div class="col d-flex">
-                                <div class="border rounded p-3 w-100">
-                                    <div>
-                                        <span class="fw-bold">{{ __('Orders') }}</span>
-                                    </div>
-                                    <hr>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{ __('Order Number') }}</th>
-                                                    <th>{{ __('Tax (%)') }}</th>
-                                                    <th>{{ __('Discount (%)') }}</th>
-                                                    <th>{{ __('Subtotal') }}</th>
-                                                    <th>{{ __('Total Amount') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @isset($pagination)
-                                                    @foreach($pagination as $order)
-                                                        @php
-                                                            $taxed_amount = ($order['SubTotal'] * $order['Tax']) + $order['SubTotal'];
-                                                        @endphp
-                                                        <tr>
-                                                            <td>{{ $order['OrderNumber'] }}</td>
-                                                            <td>{{ $order['Tax'] * 100 }}</td>
-                                                            <td>{{ $order['Discount'] * 100 }}</td>
-                                                            <td>{{ $order['SubTotal'] }}</td>
-                                                            <td>{{ $taxed_amount - ($taxed_amount * $order['Discount']) }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endisset
-                                            </tbody>
-                                        </table>
-                                        <div class="d-flex justify-content-end">
-                                            @isset($pagination)
-                                                {{ $pagination->links() }}
-                                            @endisset
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col d-flex" id="admin-order">
+                                @include('menuorder.pagination.admin_order')
                             </div>
                         </div>
                         <!-- 4th row -->
                         <div class="row pt-2 pt-md-3">
                             {{-- User --}}
-                            <div class="col d-flex">
-                                <div class="border rounded p-3 w-100">
-                                    <div class="d-flex justify-content-start">
-                                        <span class="fw-bold">{{ __('User List') }}</span>
-                                    </div>
-                                    <hr>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <th>{{ __('Firstname') }}</th>
-                                                <th>{{ __('Middlename') }}</th>
-                                                <th>{{ __('Lastname') }}</th>
-                                                <th>{{ __('Gender') }}</th>
-                                                <th>{{ __('Status') }}</th>
-                                            </thead>  
-                                            <tbody>
-                                                @isset($users)
-                                                    @foreach($users as $user)
-                                                        <tr>
-                                                            <td>{{ $user->firstname }}</td>
-                                                            <td>{{ $user->middlename }}</td>
-                                                            <td>{{ $user->lastname }}</td>
-                                                            <td>{{ $user->gender }}</td>
-                                                            <td>{{ $user->isactive == 1 ? 'Active' : 'Inactive' }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endisset
-                                            </tbody>
-                                        </table>
-                                        <div class="d-flex justify-content-end">
-                                            @isset($users)
-                                                {{ $users->links() }}
-                                            @endisset
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col d-flex" id="admin-user">
+                                @include('menuorder.pagination.admin_user')
                             </div>
                         </div>
                     </form>
@@ -523,7 +450,7 @@
                                 var eleID = param0Val + '_' + result;
 
                                 var drinksContent = `<div class="col-3">
-                                            <span id="${eleID}_input2">${param2Val}</span>
+                                            <span id="${eleID}_input2">${param2Val == '1' ? 'Medium' : 'Large'}</span>
                                         </div>
                                         <div class="col-2">
                                             <span id="${eleID}_input3">${param3Val}</span>
@@ -563,6 +490,45 @@
 
             $(saveItemBtn).hide();
         });
+        
+        /* pagination */
+        $(document).on('click', '.pagination a', function(event){
+            event.preventDefault(); 
+            var page, 
+                url,
+                link = $(this).attr('href');
+
+            if (link.includes('page=')) {
+                page = link.split('page=');
+                url = 'order?page=';
+            }
+            else {
+                page = link.split('user=');
+                url = 'user?user=';
+            }
+            fetch_data(url, page[1]);
+        });
+
+        function fetch_data(url, page){
+            var eleID;
+
+            $.ajax({
+                url: `{{ url()->full() }}/show/admin/${url}` + page,
+                type: 'GET',
+                success : function(data) {
+                    if (url == 'order?page=') {
+                        eleID = '#admin-order';
+                    }
+                    else {
+                        eleID = '#admin-user';
+                    }
+                    $(eleID).html(data);
+                },
+                error : function(error) {
+                    alert(JSON.stringify(error))
+                }
+            });
+        }
     });
 </script>
 @endsection

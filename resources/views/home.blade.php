@@ -89,19 +89,17 @@
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
                             <!-- TEMP -->
                             <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
-                                {{ __('Admin') }}
-                            </button>
-                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
                                 {{ __('Faculty') }}
                             </button>
                             <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
                                 {{ __('Student') }}
                             </button>
-                            <!--  -->
-                            <!-- <a href="#" class="btn btn-outline-primary rounded-pill w-100">
+                            
+                            
+                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Admin') }}
                             </a>
-                            <a href="#" class="btn btn-outline-primary rounded-pill w-100">
+                            <!-- <a href="#" class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Faculty') }}
                             </a>
                             <a href="#" class="btn btn-outline-primary rounded-pill w-100">
@@ -150,6 +148,15 @@
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
                 <span>{{ __('Last Updated : 05-22-2022') }}</span>
+            </div>
+        </div>   
+        <div class="row py-2 py-md-3">
+            <div class="col-md-11">
+                <span class="small">{{ __('Hosted : ') }} 
+                    <a href="https://www.infinityfree.net/">{{ __('infinityfree.net') }}</a>
+                </span> 
+                <br>
+                <span class="small">{{ __('SSL Certificate : ZeroSSL (Free)') }}</span>
             </div>
         </div>
     </div>

@@ -16,6 +16,7 @@
                         <div class="row">
                             {{-- Burger --}}
                             <div class="col-md-4 d-flex">
+
                                 <div class="border rounded p-3 w-100">
                                     <div class="fw-bold fs-5 text-center pb-2">{{ __('Burgers') }}</div>
                                     @isset($burgers)
@@ -62,8 +63,8 @@
                                         @endforeach
                                     @endisset
                                 </div>
-                            </div>
 
+                            </div>
                             {{-- Beverages --}}
                             <div class="col-md-4 d-flex">
                                 <div class="border rounded p-3 w-100">
@@ -169,43 +170,19 @@
                             </div>
                         </div>
                         <div class="row pt-3">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-6">
-                                            <div class="p-md-3 p-2">
-                                                <div class="fw-bold fs-5">{{ __('Orders') }}</div>
-                                                <div class="px-md-5" id="orders">
-                                                    @isset($orders)
-                                                        @foreach($orders as $order)
-                                                            @php
-                                                                $title = 'Order # '.$order->order_number;
-                                                            @endphp
-                                                            <div>
-                                                                <a href="javascript:void(0);" class="text-decoration-none fw-bold orderSum" 
-                                                                    id="{{ $order->order_number }}">{{ $title }}</a>
-                                                            </div>
-                                                        @endforeach
-                                                    @endisset
-                                                </div>
-                                            </div>
+                                        <div class="col-6" id="orders">
+                                            @include('menuorder.pagination.customer_order')
                                         </div>
-                                        <div class="col-6">
-                                            <div class="p-md-3 p-2">
-                                                <div class="fw-bold fs-5">{{ __('Discount Coupon') }}</div>
-                                                <div class="px-md-3">
-                                                    @isset($coupons)
-                                                        @foreach($coupons as $code)
-                                                            <div class="fw-bold">{{ $code->code }} &nbsp; {{ $code->discount * 100 }} {{ __('%') }}</div>
-                                                        @endforeach
-                                                    @endisset
-                                                </div>
-                                            </div>
+                                        <div class="col-6" id="disc">
+                                            @include('menuorder.pagination.order_discount')
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 px-md-5">
+                            <div class="col-md-4">
                                 <div class="form-group pb-3">
                                     <label>{{ __('Coupon Code') }}</label>
                                     <input type="text" name="code" class="form-control" id="code">
@@ -229,12 +206,53 @@
     </div>
 </div>
 {{-- overlay / modal --}}
-<div class="modal pt-md-5 pt-3" role="dialog" aria-labelledby="checkOutModal" aria-hidden="true" id="checkOutModal" tabindex="-1">
+<div class="modal pt-md-5 pt-3 fade" role="dialog" aria-labelledby="oDModal" aria-hidden="true" id="oDModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-light" id="modalHeader"></div>
             <div class="modal-body">
-                <div id="responseContent"></div>
+                <div id="responseContent">
+                    @include('menuorder.template.order_details')
+                </div>
+            </div>
+            <div class="modal-footer py-2 d-flex justify-content-between">
+                <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn">
+                    {{ __('Cancel') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- order summary modal --}}
+<div class="modal pt-md-5 pt-3 fade" role="dialog" aria-labelledby="checkOutModal" aria-hidden="true" id="checkOutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">{{ __('Order Summary') }}</div>
+            <div class="modal-body">
+                <div class="row px-5 pb-2">
+                    <div class="col-6 fw-bold">{{ __('Name') }}</div>
+                    <div class="col-3 fw-bold">{{ __('Quantity') }}</div>
+                    <div class="col-3 fw-bold">{{ __('Amount') }}</div>
+                </div>
+                <!-- Loop here -->
+                <div class="" id="aordr"></div>
+                <!-- End Loop -->
+                <hr>
+                <div class="row px-5 pb-2">
+                    <div class="col-9">{{ __('Sub Total') }}</div>
+                    <div class="col-3" id="oss"></div>
+                </div>
+                <div id="taxID">
+                </div>
+                <div class="row px-5">
+                    <div class="col-9 fw-bold" id="disID"></div>
+                    <div class="col-3 fw-bold" id="disVal"></div>
+                </div>
+                <hr>
+                <div class="row px-5 pb-2">
+                    <div class="col-9 fw-bold fs-5">Total</div>
+                    <div class="col-3 fw-bold fs-5" id="totID"></div>
+                </div>
             </div>
             <div class="modal-footer py-2 d-flex justify-content-between">
                 <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn">
@@ -248,43 +266,43 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var checkout = $('#checkout');
-        var closeDialog = $('#closeDialog');
-        var modalHeader = $('#modalHeader');
-        var responseContent = $('#responseContent');
-        var exitBtn = $('#exitBtn');
-        var modal = $('#checkOutModal');
-        var code = $('#code');
-        var plusBtn = $('.plusBtn');
-        var minusBtn = $('.minusBtn');
-        var orderSum = $('.orderSum');
-        var noError = true;
-        var tax = @json($taxes);
-        var arr = [], qty_object = {};
+            closeDialog = $('#closeDialog'),
+            modalHeader = $('#modalHeader'),
+            responseContent = $('#responseContent'),
+            exitBtn = $('#exitBtn'),
+            modal = $('#checkOutModal'),
+            code = $('#code'),
+            plusBtn = $('.plusBtn'),
+            minusBtn = $('.minusBtn'),
+            orderSum = $('.orderSum'),
+            aordr = $('#aordr'),
+            taxID = $('#taxID'),
+            noError = true,
+            tax = @json($taxes),
+            arr = [], qty_object = {},
+            current_page = 1;
 
         $(closeDialog).hide();
-        $(exitBtn).show();
 
-        /* get all checked order */
+        /* get all checked order ||  */
         function getAllOrder(discount) {
             var allcheck = $('#orderMenu input:checked');
             var content = '', name, price, discounted = 0, total = 0, qty = 0, taxpercent = 0, totalTax = 0, subtotal = 0;
             arr = [], qty_object = {};
 
-            $(modalHeader).html('Order Summary');
-
+            $(aordr).html('');
+            $(taxID).html('');
             allcheck.each(function () {
                 arr.push($(this).val());
             });
 
             if (arr.length === 0) {
-                $(exitBtn).show();
-                $(responseContent).html('<div class="text-center">No Order</div>');
+                $(aordr).html('<div class="text-center">No Order</div>');
                 $(closeDialog).hide();
                 noError = false;
             }
             else {
                 $(closeDialog).html('Confirm').show();
-                content += '<div class="row px-5 pb-2"><div class="col-6 fw-bold">Name</div><div class="col-3 fw-bold">Quantity</div><div class="col-3 fw-bold">Amount</div></div>'; 
 
                 for (var i = 0; i < arr.length; i++) {
                     var size = '';
@@ -299,24 +317,31 @@
                         size = '(' + $('#' + arr[i].replace('_', '_size_')).html() + ')';
                     }
 
-                    content += `<div class="row px-5"><div class="col-6">${name}&nbsp;${size}</div><div class="col-3">${qty}</div><div class="col-3">${price * qty}</div></div>`;
+                    $(aordr).append(`<div class="row px-5">
+                                <div class="col-6">${name}&nbsp;${size}</div>
+                                <div class="col-3">${qty}</div>
+                                <div class="col-3">${price * qty}</div>
+                            </div>`);
                 }
-                content += `<hr><div class="row px-5 pb-2"><div class="col-9">Sub Total</div><div class="col-3">${subtotal}</div></div>`;
+
+                $('#oss').html(subtotal);
                 
                 for(var i = 0; i < tax.length; i++){
                     taxpercent = subtotal * parseFloat(tax[i]['percentage']);
-                    content += `<div class="row px-5 pb-2"><div class="col-9">${tax[i]['tax']} ${parseFloat(tax[i]['percentage']) * 100}%</div><div class="col-3">+ ${taxpercent.toFixed(2)}</div></div>`;
+                    $(taxID).append(`<div class="row px-5 pb-2">
+                                <div class="col-9">${tax[i]['tax']} ${parseFloat(tax[i]['percentage']) * 100}%</div>
+                                <div class="col-3">+ ${taxpercent.toFixed(2)}</div>
+                            </div>`);
                     totalTax += taxpercent;
                 }
 
                 discounted = (totalTax + subtotal) * parseFloat(discount);
                 total = (totalTax + subtotal) - discounted;
-                content += `<div class="row px-5"><div class="col-9 fw-bold">Discount ${discount * 100}%</div><div class="col-3 fw-bold">- ${discounted.toFixed(2)}</div></div>`;
-                content += `<hr><div class="row px-5 pb-2"><div class="col-9 fw-bold fs-5">Total</div><div class="col-3 fw-bold fs-5">${total.toFixed(2)}</div></div>`;
-                $(responseContent).html(content);
+                $('#disID').html(`Discount ${discount * 100}%`);
+                $('#disVal').html(`- ${discounted.toFixed(2)}`);
+                $('#totID').html(`${total.toFixed(2)}`);
                 noError = true;
             }
-            //alert(JSON.stringify(arr)); alert(JSON.stringify(qty_object));
         }
 
         /* add qty */
@@ -340,60 +365,24 @@
         });
 
         /* show order details */
-        $('body').on('click', '.orderSum', function () {
-            let eleId = this.id, content = '', size = '', qty = 0, price = 0, subtotal = 0, totaltax = 0,
-                totalAmount = 0, taxpercent = 0, discounted = 0;
+        $(document).on('click', '.orderSum', function () {
+            let eleId = this.id;
             noError = false;
 
-            $(exitBtn).hide();
-            $(modal).show();
-            $(closeDialog).html('Close').show();
             $(modalHeader).html('Order Details');
-            $(responseContent).html(`<div class="d-flex align-items-center ps-3"><span class="spinner-border spinner-border-sm"></span><span class="ps-2">Loading data please wait...</span></div>`);
+            $(responseContent).html(`<div class="d-flex align-items-center ps-3">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <span class="ps-2">Loading data please wait...</span>
+                </div>`);
         
             $.ajax({
                 url: '{{ url()->full() }}/order/details/' + eleId,
                 type: 'GET',
-                dataType: 'json',
                 success: function (result, status, xhr) {
                     $(modalHeader).html('Order Details');
                     $(responseContent).html('');
-
-                    content += `<div class="row px-5 pb-2"><div class="col-6 fw-bold">Name</div><div class="col-3 fw-bold">Quantity</div><div class="col-3 fw-bold">Amount</div></div>`;
-                    if (result.length > 0) {
-                        var tax = result[0].TAX;
-                        var order = result[1].ORDER;
-                        var discount = 0, discount_code = '0', subtotal = 0, totaltax = 0, discounted = 0, taxpercent = 0;
-
-                        //alert(JSON.stringify(order))
-                        order.forEach(function(item) {
-                            var total = parseInt(item.ItemQty) * parseInt(item.ItemPrice), 
-                                size = item.ItemSize == '0' ? '' : item.ItemSize;
-
-                            discount_code = item.CouponCode;
-                            discount = item.Discount;
-                            subtotal += total;
-
-                            content += `<div class="row px-5"><div class="col-6">${item.ItemName}&nbsp;${size}</div><div class="col-3">${item.ItemQty}</div><div class="col-3">${total}</div></div>`;
-                        });
-                        content += `<hr><div class="row px-5 pb-2"><div class="col-9">Sub Total</div><div class="col-3">${subtotal}</div></div>`;
-
-                        tax.forEach(function(tax) {
-                            taxpercent = 0;
-                            taxpercent += (subtotal * parseFloat(tax.percentage));
-                            totaltax += taxpercent;
-                            content += `<div class="row px-5 pb-2"><div class="col-9">${tax.tax} ${parseFloat(tax.percentage) * 100}%</div><div class="col-3">+ ${taxpercent.toFixed(2)}</div></div>`;
-                        });
-
-                        discounted = (totaltax + subtotal) * parseFloat(discount);
-
-                        content += `<div class="row px-5"><div class="col-9 fw-bold">Discount ${discount * 100}%</div><div class="col-3 fw-bold">- ${discounted.toFixed(2)}</div></div>`;
-                        content += `<div class="row px-5"><div class="col fw-bold">Coupon Code : ${discount_code}</div></div>`;
-
-                        totalAmount = (totaltax + subtotal) - discounted;
-                        content += `<hr><div class="row px-5 pb-2"><div class="col-9 fw-bold fs-5">Total</div><div class="col-3 fw-bold fs-5">${totalAmount.toFixed(2)}</div></div>`;
-                    }
-                    $(responseContent).html(content);
+                    $(exitBtn).html('Close');
+                    $(responseContent).html(result);
                 },
                 error: function (xhr, status, error) {
                     $(closeDialog).hide();
@@ -405,7 +394,6 @@
 
         /* submit order */
         $(checkout).on('click', function () {
-            $(exitBtn).show();
             if ($(code).val()) {
                 $.ajax({
                     url: '{{ url()->full() }}/checkCoupon/' + $(code).val(),
@@ -413,7 +401,6 @@
                     dataType: 'json',
                     success: function(result, status, xhr) {
                         if (!result) {
-                            $(exitBtn).show();
                             $(closeDialog).hide();
                             $(modalHeader).html('Invalid');
                             $(responseContent).html('Invalid Coupon Code');
@@ -451,11 +438,8 @@
                             let allcheck = $('#orderMenu input:checked');
                             title = 'Order # ' + result;
                             eleId = result;
-                            /* add the new order */
-                            $('#orders').append(`<div>
-                                    <a href="javascript:void(0);" class="text-decoration-none fw-bold orderSum" 
-                                        id="${eleId}">${title}</a>
-                                </div>`);
+                            
+                            fetch_data(current_page);
                             /* clear the selection */
                             allcheck.each(function () {
                                 $('#' + this.id).prop('checked', false);
@@ -477,10 +461,46 @@
                     }
                 });
             }
-            else {
-                $('.modal').hide();
-            }
         });
+
+        /* pagination */
+        $(document).on('click', '.pagination a', function(event){
+            var page, delim, link;
+            event.preventDefault(); 
+            page = $(this).attr('href');
+
+            if (page.includes('page=')) {
+                delim = 'page=';
+                link = '/show/page?page=';
+            }
+            else {
+                delim = 'coupon=';
+                link = '/show/coupon?coupon=';
+            }
+
+            current_page = page.split(delim)[1];
+            fetch_data(current_page, link);
+        });
+
+        function fetch_data(page, link){
+            var eleID;
+            $.ajax({
+                url: `{{ url()->full() }}${link}` + page,
+                type: 'GET',
+                success : function(data) {
+                    if (link.includes('page=')) {
+                        eleID = '#orders';
+                    }
+                    else {
+                        eleID = '#disc';
+                    }
+                    $(eleID).html(data);
+                },
+                error : function(error) {
+                    alert(error)
+                }
+            });
+        }
     });
 </script>
 @endsection

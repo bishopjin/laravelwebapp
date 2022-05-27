@@ -9,5 +9,5 @@ class OnlineCourse extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course',];
+    protected $fillable = ['course'];
 }

@@ -33,6 +33,9 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
+        $page = 1;
+        $perPage = 10;
+
         if (OrderBurger::exists())
         {
             $burgers = OrderBurger::select('id', 'name', 'price')->get();
@@ -55,7 +58,16 @@ class MenuController extends Controller
 
         if (OrderOrder::exists()) 
         {
-            $orders = OrderOrder::where('user_id', $request->user()->id)->select('order_number')->distinct()->get();
+            $orderA = OrderOrder::where('user_id', $request->user()->id)->select('order_number')->distinct()->get();
+            $collection = collect($orderA);
+
+            $orders = new LengthAwarePaginator(
+                    $collection->forPage($request->page ? : $page, $perPage),
+                    $collection->count(),
+                    $perPage,
+                    $request->page,
+                    ['path' => url()->current()]
+                );
         }
         else { $orders = collect(new OrderOrder);}
 
@@ -73,92 +85,15 @@ class MenuController extends Controller
 
         if (session('user_access') == '1')
         {
-            if (OrderOrder::exists()) 
-            {
-                $result = [];
-                $page = 1;
-                $perPage = 10;
-                $discount = 0;
-                $subTotal = 0;
-                $cur_order_no = 0;
-                $count = 0;
-                $tax = 0;
+            $pagination = $this->GetAllOrder($request, $taxes);
 
-                $ordersall = OrderOrder::select('order_number', 'item_id', 'item_price', 'item_qty', 'order_coupon_id')->get();
-                
-                $orderCOunt = count($ordersall);
-
-                if ($taxes->count() > 0) {
-                    foreach ($taxes as $value) {
-                        $tax += $value->percentage;
-                    }
-                }
-
-                foreach ($ordersall as $order) {
-                    $count++;
-                     
-                    if ($cur_order_no != 0 && $cur_order_no != intval($order->order_number)) 
-                    {   
-                        array_push($result, array(
-                            'OrderNumber' => $cur_order_no,
-                            'Tax' => $tax,
-                            'SubTotal' => $subTotal,
-                            'Discount' => $discount
-                        ));
-                        $subTotal = 0;
-                        $subTotal += intval($order->item_price) * intval($order->item_qty);
-                        $cur_order_no = intval($order->order_number);
-                    }
-                    else 
-                    {
-                        $cur_order_no = intval($order->order_number);
-                        $subTotal += intval($order->item_price) * intval($order->item_qty);
-                    }
-
-                    if ($order->order_coupon_id > 0) 
-                    {   
-                        $orderCoupon = OrderCoupon::find(intval($order->order_coupon_id))->first();
-                        $discount = $orderCoupon->discount;
-                    }
-                    else 
-                    {
-                        $discount = 0;
-                    }
-
-                    if ($count == $orderCOunt)
-                    {
-                        array_push($result, array(
-                            'OrderNumber' => $cur_order_no,
-                            'Tax' => $tax,
-                            'SubTotal' => $subTotal,
-                            'Discount' => $discount
-                        ));
-                    }
-                }
-
-                $collection = collect($result);
-
-                $pagination = new LengthAwarePaginator(
-                    $collection->forPage($request->page ? : $page, $perPage),
-                    $collection->count(),
-                    $perPage,
-                    $request->page,
-                    ['path' => url()->current()]
-                );
-            }
-            else { 
-                $pagination = collect(new OrderOrder);
-            }
-
-            $users = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
-                    ->join('genders', 'users_profiles.gender_id', '=', 'genders.id')
-                    ->select('users_profiles.firstname', 'users_profiles.middlename', 'users_profiles.lastname',
-                            'genders.gender', 'users.isactive')->paginate(10);
+            $users = $this->GetAllUsers();
 
             return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
         }
         else 
         {
+            $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
             return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'taxes', 'coupons'));
         }
     }
@@ -227,12 +162,9 @@ class MenuController extends Controller
 
     public function view(Request $request, $order_number)
     {
-        $result = [];
-        
         if (OrderTax::exists())
         {
             $tax = OrderTax::select('tax', 'percentage')->get();
-            array_push($result, array('TAX' => $tax));
         }
         else { $tax = collect(new OrderTax); }
 
@@ -287,11 +219,8 @@ class MenuController extends Controller
 
                 array_push($order, $data);
             }
-
-            array_push($result, array('ORDER' => $order));
         }
-
-        return response()->json($result);
+        return view('menuorder.template.order_details')->with(compact('order', 'tax'))->render();
     }
 
     /* Admin Maintenance Controller */
@@ -361,27 +290,48 @@ class MenuController extends Controller
                 }
                 else
                 {
-                    $check = OrderBeverageName::where('name', $item_name)->get();
+                    $notInRecord = true;
+                    $recordAdded = false;
+
+                    $check = OrderBeverageName::where('name', $item_name)->select('id')->get();
 
                     if ($check->count() > 0) 
                     {
-                        $result = $recordExist;
+                        $findDrinks = OrderBeverage::where([
+                            ['order_beverage_name_id', '=', $check[0]->id],
+                            ['order_beverage_size_id', '=', $item_size_price],
+                        ])->get();
+
+                        if ($findDrinks->count() > 0) 
+                        {
+                            $notInRecord = false;
+                        }
                     }
-                    else
-                    {                            
+                    else 
+                    {
                         $create_record_name = OrderBeverageName::create([
                             'name' => $item_name,
                         ]);
 
                         if ($create_record_name->id > 0) 
                         {
-                            $create_record = OrderBeverage::create([
-                                'order_beverage_name_id' => $create_record_name->id,
-                                'order_beverage_size_id' => intval($item_size_price),
-                                'price' => $item_price,
-                            ]);
+                            $recordAdded = true;
                         }
+                    }
+                    
+                    if ($notInRecord)
+                    {                            
+                        $create_record = OrderBeverage::create([
+                            'order_beverage_name_id' => $recordAdded ? $create_record_name->id : $check[0]->id,
+                            'order_beverage_size_id' => intval($item_size_price),
+                            'price' => $item_price,
+                        ]);
+    
                         $result = $create_record->id;
+                    }
+                    else
+                    {
+                        $result = $recordExist;
                     }
                 }
                 break;
@@ -463,5 +413,160 @@ class MenuController extends Controller
         }
 
         return $result;
+    }
+
+    /**/
+    public function GetCustOrderPaginate(Request $request)
+    {
+        if ($request->ajax()) 
+        {
+            $page = 1;
+            $perPage = 10;
+
+            if (OrderOrder::exists()) 
+            {
+                $orderA = OrderOrder::where('user_id', $request->user()->id)->select('order_number')->distinct()->get();
+                $collection = collect($orderA);
+
+                $orders = new LengthAwarePaginator(
+                        $collection->forPage($request->page ? : $page, $perPage),
+                        $collection->count(),
+                        $perPage,
+                        $request->page,
+                        ['path' => url()->current()]
+                    );
+            }
+            else { $orders = collect(new OrderOrder); }
+
+            return view('menuorder.pagination.customer_order')->with(compact('orders'))->render();
+        }
+    }
+
+    public function GetAdminOrderPaginate(Request $request)
+    {
+        if ($request->ajax())
+        {
+            if (OrderTax::exists())
+            {
+                $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
+            }
+            else { $taxes = collect(new OrderTax); }
+
+            $pagination = $this->GetAllOrder($request, $taxes);
+
+            return view('menuorder.pagination.admin_order')->with(compact('pagination'))->render();
+        }
+    }
+
+    public function GetDiscountPaginate(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
+
+            return view('menuorder.pagination.order_discount')->with(compact('coupons'))->render();
+        }
+    }
+
+    public function GetAdminUserPaginate(Request $request)
+    {
+        if ($request->ajax()) 
+        {
+            $users = $this->GetAllUsers();
+
+            return view('menuorder.pagination.admin_user')->with(compact('users'))->render();
+        }
+    }
+
+    /* services */
+    private function GetAllUsers()
+    {
+        $users = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
+                    ->join('genders', 'users_profiles.gender_id', '=', 'genders.id')
+                    ->select('users_profiles.firstname', 'users_profiles.middlename', 'users_profiles.lastname',
+                            'genders.gender', 'users.isactive')->paginate(10, ['*'], 'user');
+
+        return $users;
+    }
+    private function GetAllOrder($request, $taxes)
+    {
+        if (OrderOrder::exists()) 
+        {
+            $result = [];
+            $page = 1;
+            $perPage = 10;
+            $discount = 0;
+            $subTotal = 0;
+            $cur_order_no = 0;
+            $count = 0;
+            $tax = 0;
+
+            $ordersall = OrderOrder::select('order_number', 'item_id', 'item_price', 'item_qty', 'order_coupon_id')->get();
+            
+            $orderCOunt = count($ordersall);
+
+            if ($taxes->count() > 0) {
+                foreach ($taxes as $value) {
+                    $tax += $value->percentage;
+                }
+            }
+
+            foreach ($ordersall as $order) {
+                $count++;
+                 
+                if ($cur_order_no != 0 && $cur_order_no != intval($order->order_number)) 
+                {   
+                    array_push($result, array(
+                        'OrderNumber' => $cur_order_no,
+                        'Tax' => $tax,
+                        'SubTotal' => $subTotal,
+                        'Discount' => $discount
+                    ));
+                    $subTotal = 0;
+                    $subTotal += intval($order->item_price) * intval($order->item_qty);
+                    $cur_order_no = intval($order->order_number);
+                }
+                else 
+                {
+                    $cur_order_no = intval($order->order_number);
+                    $subTotal += intval($order->item_price) * intval($order->item_qty);
+                }
+
+                if ($order->order_coupon_id > 0) 
+                {   
+                    $orderCoupon = OrderCoupon::find(intval($order->order_coupon_id))->first();
+                    $discount = $orderCoupon->discount;
+                }
+                else 
+                {
+                    $discount = 0;
+                }
+
+                if ($count == $orderCOunt)
+                {
+                    array_push($result, array(
+                        'OrderNumber' => $cur_order_no,
+                        'Tax' => $tax,
+                        'SubTotal' => $subTotal,
+                        'Discount' => $discount
+                    ));
+                }
+            }
+
+            $collection = collect($result);
+
+            $pagination = new LengthAwarePaginator(
+                $collection->forPage($request->page ? : $page, $perPage),
+                $collection->count(),
+                $perPage,
+                $request->page,
+                ['path' => url()->current()]
+            );
+        }
+        else { 
+            $pagination = collect(new OrderOrder);
+        }
+
+        return $pagination; 
     }
 }

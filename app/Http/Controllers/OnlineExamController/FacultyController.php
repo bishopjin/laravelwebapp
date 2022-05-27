@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\OnlineCourse;
 use App\Models\OnlineExam; 
+use App\Models\OnlineExamScore;
 use App\Models\OnlineExamQuestion;
 use App\Models\OnlineExamSelection;
 use App\Models\OnlineSubject;
@@ -17,43 +18,41 @@ class FacultyController extends Controller
 {
     protected function Index(Request $request)
     {
-    	$exam_list = DB::table('exams')
-    		->join('subjects', 'exams.subjects_id', '=', 'subjects.id')
-			->where('exams.user_id', $request->user()->id)
-			->select('exams.exam_code', 'exams.timer', 'subjects.subject')->paginate(10);
+    	$exam_list = OnlineExam::join('online_subjects', 'online_exams.online_subject_id', '=', 'online_subjects.id')
+			->where('online_exams.user_id', $request->user()->id)
+			->select('online_exams.exam_code', 'online_exams.timer', 'online_subjects.subject')->paginate(10);
 
-    	$student_list = DB::table('exams')
-    		->join('exam_scores', 'exams.id', '=', 'exam_scores.exams_id')
-    		->join('user', 'exam_scores.user_id', '=', 'user.id')
-    		->join('course', 'user.course_id', '=', 'course.id')
-    		->join('gender', 'user.gender_id', '=', 'gender.id')
-            ->where('exams.user_id', $request->user()->id)
-    		->select('user.id', 'user.lastname', 'user.middlename', 'user.firstname', 
-                'course.course', 'gender.gender')->paginate(10);
+    	$student_list = OnlineExam::join('online_exam_scores', 'online_exams.id', '=', 'online_exam_scores.online_exam_id')
+    		->join('users', 'online_exam_scores.user_id', '=', 'users.id')
+            ->join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
+    		->join('online_courses', 'users.online_course_id', '=', 'online_courses.id')
+    		->join('genders', 'users.gender_id', '=', 'genders.id')
+            ->where('online_exams.user_id', $request->user()->id)
+    		->select('users.id', 'users_profiles.lastname', 'users_profiles.middlename', 
+                    'users_profiles.firstname', 'course.course', 'gender.gender')->paginate(10);
         
-    	return view('faculty.index')->with(compact('student_list', 'exam_list'));
+    	return view('onlineexam.faculty.index')->with(compact('student_list', 'exam_list'));
     }
 
     protected function ShowScore(Request $request, $id)
     {
         $student_detail = User::select('lastname', 'middlename', 'firstname')->find($id);
         
-        $exam_result = DB::table('exam_scores')
-            ->join('exams', 'exam_scores.exams_id', '=', 'exams.id')
-            ->where('exam_scores.user_id', '=', $id, 'AND', 'exams.user_id', '=', $request->user()->id)
-            ->select('exams.exam_code', 'exam_scores.exam_score', 'exam_scores.total_question')->get();
+        $exam_result = OnlineExamScore::join('online_exams', 'online_exam_scores.online_exam_id', '=', 'online_exams.id')
+            ->where('online_exam_scores.user_id', '=', $id, 'AND', 'online_exams.user_id', '=', $request->user()->id)
+            ->select('online_exams.exam_code', 'online_exam_scores.exam_score', 'online_exam_scores.total_question')->get();
         
-        return view('faculty.examDetails')->with(compact('student_detail', 'exam_result'));
+        return view('onlineexam.faculty.examDetails')->with(compact('student_detail', 'exam_result'));
     }
 
     protected function ExaminationShow()
     {
-    	if (Subjects::exists()) 
+    	if (OnlineSubject::exists()) 
     	{
-    		$subjects = Subjects::select('id', 'subject')->get();
-    		return view('faculty.exam')->with(compact('subjects'));
+    		$subjects = OnlineSubject::select('id', 'subject')->get();
+    		return view('onlineexam.faculty.exam')->with(compact('subjects'));
     	}
-    	else { return view('faculty.exam'); }
+    	else { return view('onlineexam.faculty.exam'); }
     	
     }
 
@@ -67,9 +66,9 @@ class FacultyController extends Controller
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
 
-        if (Subjects::exists()) 
+        if (OnlineSubject::exists()) 
         {
-            $subjects = Subjects::where('id', $request->input('subject'))->select('subject')->get();
+            $subjects = OnlineSubject::where('id', $request->input('subject'))->select('subject')->get();
         }
 
         if ($subjects)
@@ -84,11 +83,11 @@ class FacultyController extends Controller
 
             $gen_exam_code = $subjects[0]['subject'].'-'.$randomChar;
 
-            $exam_code = Exam::create([
+            $exam_code = OnlineExam::create([
                 'exam_code' => $gen_exam_code,
                 'timer' => $request->input('examTimer'),
                 'user_id' => $request->user()->id,
-                'subjects_id' => $request->input('subject'),
+                'online_subject_id' => $request->input('subject'),
             ]);
 
             $exam_code_id = $exam_code->id;
@@ -98,8 +97,8 @@ class FacultyController extends Controller
     	{
     		foreach ($data as $key => $value) {
 	    		if (str_contains($key, 'question')) {
-	    			$question = ExamQuestions::create([
-	    				'exams_id' => $exam_code_id,
+	    			$question = OnlineExamQuestion::create([
+	    				'online_exam_id' => $exam_code_id,
 	    				'question' => $value,
 	    			]);
 
@@ -110,14 +109,14 @@ class FacultyController extends Controller
 	    			else { $exam_created = false; break; }
 	    		}
 	    		elseif (str_contains($key, 'answer')) {
-	    			$answer = ExamQuestions::where('id', $q_id)
+	    			$answer = OnlineExamQuestion::where('id', $q_id)
 	    				->update(['key_to_correct' => Crypt::encryptString($value)]);
 
 	    			if ($answer > 0) { $exam_created = true; }
 	    			else { $exam_created = false; break; }
 	    		}
 	    		elseif (str_contains($key, 'selection')) {
-	    			$selection = ExamSelections::create([
+	    			$selection = OnlineExamSelection::create([
 	    				'exam_questions_id' => $q_id,
                         'exams_id' => $exam_code_id,
 	    				'selection' => $value,
@@ -135,7 +134,7 @@ class FacultyController extends Controller
     	}
     	else { $exam_status = 'Failed to create examination.'; }
 
-    	return view('faculty.exam')->with(compact('exam_status'));
+    	return view('onlineexam.faculty.exam')->with(compact('exam_status'));
     }
 
     protected function ExaminationView(Request $request)
@@ -145,15 +144,15 @@ class FacultyController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('faculty.exam')->withErrors($validator)->withInput();
+            return redirect()->route('online.faculty.exam')->withErrors($validator)->withInput();
         }
         else {
         	$exam_code = $request->input('exam_code');
 
-        	$exams = Exam::where('exam_code', $exam_code)->get()->shuffle();
+        	$exams = OnlineExam::where('exam_code', $exam_code)->get()->shuffle();
 
         	if ($exams->count() > 0) {
-        		$examQuestions = ExamQuestions::where('exams_id', $exams[0]['id'])
+        		$examQuestions = OnlineExamQuestion::where('online_exam_id', $exams[0]['id'])
 	        		->select('id', 'question', 'key_to_correct')
                     ->get()->shuffle()
                     ->map(function($key_answer) {
@@ -161,13 +160,13 @@ class FacultyController extends Controller
                         return $key_answer;
                     });
 
-	        	$examSelection = ExamSelections::where('exams_id', $exams[0]['id'])
-	        		->select('id', 'exam_questions_id', 'selection')->get()->shuffle();
+	        	$examSelection = OnlineExamSelection::where('online_exam_id', $exams[0]->id)
+	        		->select('id', 'online_exam_question_id', 'selection')->get()->shuffle();
 
-	        	return view('faculty.exam')->with(compact('exams', 'examQuestions', 'examSelection', 'exam_code'));
+	        	return view('onlineexam.faculty.exam')->with(compact('exams', 'examQuestions', 'examSelection', 'exam_code'));
         	}
         	else {
-        		return view('faculty.exam')->with(compact('exams', 'exam_code'));
+        		return view('onlineexam.faculty.exam')->with(compact('exams', 'exam_code'));
         	}
         }
     }
@@ -176,7 +175,7 @@ class FacultyController extends Controller
     {
     	$new_key = $request->input('key_to_correct');
 
-    	$update_key = ExamQuestions::where('id', intval($request->input('id')))
+    	$update_key = OnlineExamQuestion::where('id', intval($request->input('id')))
     		->update(['key_to_correct' => Crypt::encryptString($request->input('key_to_correct'))]);
 
     	return response()->json($new_key);
@@ -184,26 +183,26 @@ class FacultyController extends Controller
 
     protected function ShowSubject(Request $request)
     {
-    	if(Subjects::exists())
+    	if(OnlineSubject::exists())
     	{
-    		$subject_list = Subjects::select('subject')->paginate(10);
+    		$subject_list = OnlineSubject::select('subject')->paginate(10);
 
-    		return view('faculty.subject')->with(compact('subject_list'));
+    		return view('onlineexam.faculty.subject')->with(compact('subject_list'));
     	}
-    	else { return view('faculty.subject'); }
+    	else { return view('onlineexam.faculty.subject'); }
     }
 
     protected function SaveSubject(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'subject' => 'required|string|unique:subjects|max:255',
+                'subject' => 'required|string|unique:online_subjects|max:255',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('subject.show')->withErrors($validator)->withInput();
+            return redirect()->route('online.subject.show')->withErrors($validator)->withInput();
         }
         else {
-        	$subject_add = Subjects::create([
+        	$subject_add = OnlineSubject::create([
         			'subject' => $request->input('subject'),
         			'user_id' => $request->user()->id,
         		]);
