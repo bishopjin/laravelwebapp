@@ -248,7 +248,8 @@
             <div class="modal-header" id="modalHead"></div>
             <div class="modal-body">
                 <div class="container">
-                    <div class="row d-flex justify-content-center" id="modalContent"></div>
+                    <div class="row justify-content-center" id="modalContent"></div>
+                    <div class="row justify-content-center py-2" id="eMsg"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -263,11 +264,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var additembtn = $('.add-item-btn'),
-            edititembtn = $('.edit-item-btn'),
-            saveItemBtn = $('#saveItemBtn'),
+        var saveItemBtn = $('#saveItemBtn'),
             modalHead = $('#modalHead'),
             modalContent = $('#modalContent'),
+            eMsg = $('#eMsg'),
             modalHeader = '', postType = '';
 
         /* Change the content of the modal */
@@ -275,6 +275,7 @@
             var contents = '', itemIDArr = [], itemID, selectionID;
             selectionID = id;
             postType = header;
+            $(eMsg).html('');
 
             if (selectionID.includes('burger')) {
                 modalHeader = `${header} Item (Burger)`;
@@ -384,11 +385,12 @@
         }
 
         /* add item button */
-        $(additembtn).on('click', function () {
+        $(document).on('click', '.add-item-btn', function () {
             itemModalContent(this.id, 'Add');
         });
+
         /* edit item button */
-        $(edititembtn).on('click', function () {
+        $(document).on('click', '.edit-item-btn', function () {
             itemModalContent(this.id, 'Edit');
         });
 
@@ -421,10 +423,53 @@
                 param3 : param3Val
             };
 
-            //alert(JSON.stringify(data))
             /* check input */
             if (param1Val && param2Val && param3Val) {
                 dataReady = true;
+            }
+            else {
+                var fieldName = '';
+                if (!param1Val) {
+                    $('#param1').addClass('is-invalid');
+                    fieldName += 'Name';
+                }
+                else {
+                    $('#param1').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                if (!param2Val) {
+                    $('#param2').addClass('is-invalid');
+                    fieldName += fieldName.length > 0 ? ', ' : '';
+
+                    if (item_ID == 'beverage') {
+                        fieldName += (item_ID == 'beverage' ? 'Drink Size' : 'Price');
+                    }
+                    else {
+                        switch (item_ID) {
+                            case 'coupon':
+                                fieldName += 'Coupon Discount';
+                            break;
+                            case 'tax':
+                                fieldName += 'Tax Percentage';
+                            break;
+                            default:
+                                fieldName += 'Price';       
+                        }
+                    } 
+                }
+                else {
+                    $('#param2').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                if (item_ID == 'beverage' && !param3Val) {
+                    fieldName += fieldName.length > 0 ? ', ' : '';
+                    $('#param3').addClass('is-invalid');
+                    fieldName += 'Price ';
+                }
+                else {
+                    $('#param3').removeClass('is-invalid').addClass('is-valid');
+                }
+                $(eMsg).html(`${fieldName} field is required.`).css('color' , '#f00');
             }
 
             if (dataReady) {
@@ -474,11 +519,13 @@
                                         </div>
                                     </div>`);
                             }
+                            $(saveItemBtn).hide();
                         }
                         else { 
                             $(modalHead).html('Failed').css('color', '#f00');
                             $(modalContent).html(JSON.stringify(result));
-                        }                
+                        }
+                        $(eMsg).html('');                
                     },
                     error: function(xhr, status, error) {
                         $(modalHead).html('Error').css('color', '#f00');
@@ -487,8 +534,6 @@
                     }
                 });
             }
-
-            $(saveItemBtn).hide();
         });
         
         /* pagination */

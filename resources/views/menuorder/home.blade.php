@@ -286,12 +286,22 @@
 
         /* get all checked order ||  */
         function getAllOrder(discount) {
-            var allcheck = $('#orderMenu input:checked');
-            var content = '', name, price, discounted = 0, total = 0, qty = 0, taxpercent = 0, totalTax = 0, subtotal = 0;
+            var allcheck = $('#orderMenu input:checked'),
+                oss = $('#oss'),
+                disID = $('#disID'),
+                disVal = $('#disVal'),
+                totID = $('#totID'),
+                content = '', name, price, discounted = 0, total = 0, qty = 0, taxpercent = 0, totalTax = 0, subtotal = 0;
             arr = [], qty_object = {};
 
+            /* reset */
             $(aordr).html('');
             $(taxID).html('');
+            $(disID).html('Discount 0%');
+            $(disVal).html('0');
+            $(totID).html('0');
+            $(oss).html('0');
+
             allcheck.each(function () {
                 arr.push($(this).val());
             });
@@ -323,9 +333,7 @@
                                 <div class="col-3">${price * qty}</div>
                             </div>`);
                 }
-
-                $('#oss').html(subtotal);
-                
+                /* calculate tax */
                 for(var i = 0; i < tax.length; i++){
                     taxpercent = subtotal * parseFloat(tax[i]['percentage']);
                     $(taxID).append(`<div class="row px-5 pb-2">
@@ -337,9 +345,11 @@
 
                 discounted = (totalTax + subtotal) * parseFloat(discount);
                 total = (totalTax + subtotal) - discounted;
-                $('#disID').html(`Discount ${discount * 100}%`);
-                $('#disVal').html(`- ${discounted.toFixed(2)}`);
-                $('#totID').html(`${total.toFixed(2)}`);
+                /* render */
+                $(oss).html(subtotal);
+                $(disID).html(`Discount ${discount * 100}%`);
+                $(disVal).html(`- ${discounted.toFixed(2)}`);
+                $(totID).html(`${total.toFixed(2)}`);
                 noError = true;
             }
         }
