@@ -61,7 +61,8 @@
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
                                             <label for="dateofbirth" class="">{{ __('Date of Birth') }}</label>
-                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" name="dateofbirth" value="{{ $details->DOB }}" required/>
+                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" 
+                                                name="dateofbirth" value="{{ $details->DOB }}" required/>
 
                                             @error('dateofbirth')
                                                 <span class="invalid-feedback" role="alert">

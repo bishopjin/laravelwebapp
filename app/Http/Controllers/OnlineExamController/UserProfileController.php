@@ -17,17 +17,6 @@ class UserProfileController extends Controller
         {
             if(User::exists()) 
             {
-                /* for standalone system */
-                /*if ($request->user()->access_level === 1)
-                {
-                    $view_name = 'onlineexam.admin.profile';
-                }
-                elseif ($request->user()->access_level === 2)
-                {
-                    $view_name = 'onlineexam.faculty.profile';
-                }
-                else { $view_name = 'onlineexam.student.profile'; }*/
-
                 if (session('user_access') == '1')
                 {
                     $view_name = 'onlineexam.admin.profile';
@@ -83,17 +72,6 @@ class UserProfileController extends Controller
 
             if ($updated > 0)
             {   
-                /* standalone system */
-                /*if ($request->user()->access_level === 1)
-                {
-                    $route_name = 'online.admin.index';
-                }
-                elseif ($request->user()->access_level === 2)
-                {
-                    $route_name = 'online.faculty.index';
-                }
-                else { $route_name = 'online.student.index'; }*/
-
                 if (session('user_access') == '1')
                 {
                     $route_name = 'online.admin.index';

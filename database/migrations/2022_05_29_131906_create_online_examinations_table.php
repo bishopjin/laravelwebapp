@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOnlineExamScoresTable extends Migration
+class CreateOnlineExaminationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateOnlineExamScoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('online_exam_scores', function (Blueprint $table) {
+        Schema::create('online_examinations', function (Blueprint $table) {
             $table->id();
             $table->integer('online_exam_id');
             $table->integer('user_id');
+            $table->integer('faculty_id');
             $table->integer('total_question');
-            $table->integer('exam_score');
+            $table->integer('exam_score')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateOnlineExamScoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('online_exam_scores');
+        Schema::dropIfExists('online_examinations');
     }
 }

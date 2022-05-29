@@ -1,4 +1,4 @@
-@extends('onlineexamlayouts.app')
+@extends('onlineexam.layouts.app')
 
 @section('onlinecontent')
 <div class="container">
@@ -11,11 +11,11 @@
                             {{ __('Dashboard') }}
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a href="#" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
 
@@ -33,7 +33,10 @@
                                             <div>
                                                 <div class="pb-2">
                                                     <span class="fw-bold">{{ __('Name: ') }}</span>
-                                                    {{ auth::user()->lastname }}, {{ auth::user()->firstname }} {{ auth::user()->middlename }}
+                                                    @php
+                                                        $user = auth::user()->userprofile;
+                                                    @endphp
+                                                    {{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}
                                                 </div>
                                                 <div>
                                                     <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course['course'] }}</span>
@@ -76,11 +79,15 @@
                                                 <div class="col-md-6 d-grid gap-2 pb-md-0 pb-2">
                                                     <div class="fw-bolder">
                                                         <span class="">{{ __('Exam Code: ') }}</span>
-                                                        <span class="text-info">{{ $score->exam_code }}</span>
+                                                        <span class="text-info">{{ $score->onlineexam->exam_code }}</span>
                                                     </div>
                                                     <div class="fw-bolder">
-                                                        <span class="">{{ __('Subject: ') }}</span>
-                                                        {{ $score->subject }}
+                                                        @foreach($subjects as $subject)
+                                                            @if($subject->id == $score->onlineexam->id)
+                                                                <span class="">{{ __('Subject: ') }}</span>
+                                                                {{ $subject->onlinesubject->subject }}
+                                                            @endif
+                                                        @endforeach
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 d-grid gap-2">

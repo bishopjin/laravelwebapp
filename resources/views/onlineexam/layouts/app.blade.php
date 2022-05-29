@@ -59,9 +59,9 @@
                         <ul class="navbar-nav me-auto d-block d-md-none">
                             @if(session('user_access') == '1')
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <!-- <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Maintenance') }}
-                                    </a>
+                                    </a> -->
                                     <div class="dropdown-menu dropdown-menu-left mt-1 border-0 bg-primary" aria-labelledby="navbarDropdownSettings">
                                         <a class="dropdown-item" href="{{ route('online.admin.index') }}">
                                             {{ __('Dashboard') }}
@@ -74,7 +74,7 @@
                             @endif
 
                             @if(session('user_access') == '1' OR session('user_access') == '3')
-                                <li class="nav-item dropdown">
+                                <!-- <li class="nav-item dropdown">
                                     <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Examination') }}
                                     </a>
@@ -87,10 +87,10 @@
                                             {{ __('Exam Result') }}
                                         </a>
                                     </div>
-                                </li>
+                                </li> -->
                             @endif
                             @if(session('user_access') == '1' OR session('user_access') == '2')
-                                <li class="nav-item dropdown">
+                                <!-- <li class="nav-item dropdown">
                                     <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ __('Maintenance') }}
                                     </a>
@@ -103,7 +103,7 @@
                                             {{ __('Examination List') }}
                                         </a>
                                     </div>
-                                </li>
+                                </li> -->
                             @endif
                         </ul>
 

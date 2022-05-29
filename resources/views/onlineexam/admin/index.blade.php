@@ -36,22 +36,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @isset($result)
-                                        @foreach($result as $user)
+                                    @isset($userProfile)
+                                        @foreach($userProfile as $user)
                                             @if(session('user_access') == '1')
                                                 <tr>
                                                     <td>{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
-                                                    <td>{{ $user->gender }}</td>
-                                                    <td>{{ $user->course ?? 'None' }}</td>
+                                                    <td>{{ $user->gender->gender }}</td>
+                                                    <td>{{ $user->onlinecourse->course }}</td>
                                                     <td>{{ __('For standalone system only') }}</td>
                                                     <td>
                                                         <form method="POST" action="{{ route('online.user.delete') }}">
                                                             @csrf
-                                                            <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                                            <input type="hidden" name="access_level" value="{{ $user->access_level }}">
-                                                            <input type="hidden" name="isactive" value="{{ $user->isactive }}">
-                                                            <input type="submit" value="@if($user->isactive) Disable Account @else Enable Account @endif" 
-                                                                class="btn @if($user->isactive) btn-outline-danger @else btn-outline-success @endif">
+                                                            <input type="hidden" name="user_id" value="{{ $user->user->id }}">
+                                                            <input type="hidden" name="access_level" value="{{ $user->user->access_level }}">
+                                                            <input type="hidden" name="isactive" value="{{ $user->user->isactive }}">
+                                                            <input type="submit" value="@if($user->user->isactive) Disable Account @else Enable Account @endif" 
+                                                                class="btn @if($user->user->isactive) btn-outline-danger @else btn-outline-success @endif">
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -61,8 +61,8 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
-                                @isset($result)
-                                    {{ $result->links() }}
+                                @isset($userProfile)
+                                    {{ $userProfile->links() }}
                                 @endisset
                             </div>
                         </div>
@@ -74,27 +74,22 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Subject</th>
                                         <th>Created By</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @isset($subject_list)
-                                        @foreach($subject_list as $index => $subject)
+                                    @isset($subjects)
+                                        @foreach($subjects as $subject)
                                             @php
-                                                if($index === 0)
-                                                {
-                                                    $index+=1;
-                                                }
-                                                else { $index++; }
                                                 $subjectID = 'subject'.$subject->id;
                                             @endphp
                                             <tr>
-                                                <td>{{ $index }}</td>
                                                 <td id="{{ $subjectID }}">{{ $subject->subject }}</td>
-                                                <td>{{ $subject->lastname }}, {{ $subject->firstname }} {{ $subject->middlename }}</td>
+                                                <td>{{ $subject->userprofile->lastname }},&nbsp;
+                                                    {{ $subject->userprofile->firstname }} 
+                                                    {{ $subject->userprofile->middlename }}</td>
                                                 <td>
                                                     <a href="javascript:void(0)" class="btn btn-outline-success editSubject" id="{{ $subject->id }}">Edit</a>
                                                 </td>
@@ -104,8 +99,8 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
-                                @isset($subject_list)
-                                    {{ $subject_list->links() }}
+                                @isset($subjects)
+                                    {{ $subjects->links() }}
                                 @endisset
                             </div>
                         </div>

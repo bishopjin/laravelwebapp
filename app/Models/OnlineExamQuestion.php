@@ -15,7 +15,12 @@ class OnlineExamQuestion extends Model
     	'online_subject_id' => 'integer',
     ];
 
-    protected function selection()
+    public function exam()
+    {
+        return $this->belongsTo(OnlineExam::class, 'online_exam_id', 'id');
+    }
+
+    public function examselection()
     {
     	return $this->hasMany(OnlineExamSelection::class);
     }

@@ -69,47 +69,6 @@
                 </div>
             </div>
             <!--  -->
-            <div class="col-md-4  pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100">
-                    <h4 class="card-header d-flex align-items-baseline">
-                        <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
-                        {{ __('Online Examination System') }}
-                    </h4>   
-                    
-                    <div class="card-body">
-                        <span class="fw-bold">{{ __('Online Examination Feature:') }}</span> <br>
-                        &nbsp; {{ __('- Create an online examination for the student.') }}<br>
-                        &nbsp; {{ __('- Faculty can create an examination form based on subject and generate an examination code.') }}<br>
-                        &nbsp; {{ __('- This code will serve as an access for the student to take the examination.') }}<br>
-                        &nbsp; {{ __('- Encrypted answer key, so only the creator of the exam knows the answer.') }}
-                    </div>
-
-                    <div class="card-footer">
-                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <!-- TEMP -->
-                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
-                                {{ __('Faculty') }}
-                            </button>
-                            <button type="button" class="btn btn-outline-primary rounded-pill w-100" data-toggle="modal" data-target="#aModal">
-                                {{ __('Student') }}
-                            </button>
-                            
-                            
-                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Admin') }}
-                            </a>
-                            <!-- <a href="#" class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Faculty') }}
-                            </a>
-                            <a href="#" class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Student') }}
-                            </a> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--  -->
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
                 <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
@@ -141,6 +100,42 @@
                     </div>
                 </div>
             </div>
+            <!--  -->
+            <div class="col-md-4  pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100">
+                    <h4 class="card-header d-flex align-items-baseline">
+                        <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
+                        {{ __('Online Examination System') }}
+                    </h4>   
+                    
+                    <div class="card-body">
+                        <span class="fw-bold">{{ __('Online Examination Feature:') }}</span> <br>
+                        &nbsp; {{ __('- Create an online examination for the student.') }}<br>
+                        &nbsp; {{ __('- Faculty can create an examination form based on subject and generate an examination code.') }}<br>
+                        &nbsp; {{ __('- This code will serve as an access for the student to take the examination.') }}<br>
+                        &nbsp; {{ __('- Encrypted answer key, so only the creator of the exam knows the answer.') }}
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
+                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
+                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" 
+                                class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
+                            </a>
+                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '2']) }}" 
+                                class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
+                            </a>
+                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '3']) }}" class="btn btn-outline-primary rounded-pill w-100">
+                                {{ __('Student') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end -->
+            <!-- next row -->
+            
+            <!-- end -->
         </div>
         <hr>
         <!-- footer -->

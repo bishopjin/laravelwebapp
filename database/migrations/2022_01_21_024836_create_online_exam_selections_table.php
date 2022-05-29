@@ -15,7 +15,6 @@ class CreateOnlineExamSelectionsTable extends Migration
     {
         Schema::create('online_exam_selections', function (Blueprint $table) {
             $table->id();
-            $table->integer('online_exam_id');
             $table->integer('online_exam_question_id');
             $table->string('selection');
             $table->timestamps();

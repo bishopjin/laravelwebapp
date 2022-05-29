@@ -16,24 +16,6 @@ class CheckAccessLevel
      */
     public function handle(Request $request, Closure $next)
     {
-        /* for standalone system */
-        /*if(!str_contains($request->url(), 'admin') AND $request->user()->access_level === 1)
-        {
-            return redirect()->route('online.admin.index');
-        }
-        elseif(!str_contains($request->url(), 'faculty') AND $request->user()->access_level === 2)
-        {
-            return redirect()->route('online.faculty.index');
-        }
-        elseif(!str_contains($request->url(), 'student') AND $request->user()->access_level === 3)
-        {
-            return redirect()->route('online.student.index');
-        }
-        else
-        {
-            return $next($request);
-        }*/
-
         if(!str_contains($request->url(), 'admin') AND session('user_access') == '1')
         {
             return redirect()->route('online.admin.index');

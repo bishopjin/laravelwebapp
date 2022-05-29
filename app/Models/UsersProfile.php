@@ -34,4 +34,34 @@ class UsersProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function onlinecourse()
+    {
+        return $this->belongsTo(OnlineCourse::class, 'online_course_id', 'id');
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class);
+    }
+
+    public function onlineaccesslevel()
+    {
+        return $this->belongsTo(OnlineAccessLevel::class, 'online_access_level_id', 'id');
+    }
+
+    public function onlinesubject()
+    {
+        return $this->hasMany(OnlineSubject::class);
+    }
+
+    public function onlineexam()
+    {
+        return $this->hasMany(OnlineExam::class, 'user_id', 'user_id');
+    }
+
+    public function onlineexamination()
+    {
+        return $this->hasMany(OnlineExamination::class);
+    }
 }

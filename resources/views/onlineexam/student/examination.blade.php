@@ -32,10 +32,13 @@
                                         <div class="col-md-6 d-grid pb-md-0 pb-3">
                                             <div>
                                                 <span class="fw-bold">{{ __('Name: ') }}</span>
-                                                {{ auth::user()->lastname }}, {{ auth::user()->firstname }} {{ auth::user()->middlename }}
+                                                @php
+                                                    $user = auth::user()->userprofile;
+                                                @endphp
+                                                {{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}
                                             </div>
                                             <div>
-                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ Session::get('course') }}</span>
+                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ Session::get('course')->course }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -55,6 +58,7 @@
                                     <label class="fw-bold pb-2">{{ __('Subject: ') }}{{ $exams[0]->subject }}</label>
                                     <form method="POST" action="{{ route('online.student.exam.save') }}" id="examForm">
                                         @csrf
+                                        <input type="hidden" name="facultyID" value="{{ $exams[0]->user_id }}">
                                         <input type="hidden" name="exams_id" value="{{ $exams[0]->id }}">
                                         @isset($questions)
                                             @php 
@@ -69,18 +73,16 @@
                                                 @endphp
                                                 <div class="fw-bold">{{ $qNum }}. {{ $question->question }}</div>
 
-                                                @foreach($selections as $selection)
-                                                    @if($question->id === $selection->exam_questions_id)
-                                                        @php 
-                                                            $selNum++; 
-                                                        @endphp
-                                                        <div class="form-check ps-5">
-                                                            <input class="form-check-input" type="radio" name="{{ $question->id }}" value="{{ $selection->selection }}" id="{{ $question->id }}{{ $selNum }}">
-                                                            <label class="form-check-label" for="{{ $question->id }}{{ $selNum }}">
-                                                                {{ $selection->selection }}
-                                                            </label>
-                                                        </div>
-                                                    @endif
+                                                @foreach($question->examselection as $selection)
+                                                     @php 
+                                                        $selNum++; 
+                                                    @endphp
+                                                    <div class="form-check ps-5">
+                                                        <input class="form-check-input" type="radio" name="{{ $question->id }}" value="{{ $selection->selection }}" id="{{ $question->id }}{{ $selNum }}">
+                                                        <label class="form-check-label" for="{{ $question->id }}{{ $selNum }}">
+                                                            {{ $selection->selection }}
+                                                        </label>
+                                                    </div>
                                                 @endforeach
                                             @endforeach
                                         @endisset

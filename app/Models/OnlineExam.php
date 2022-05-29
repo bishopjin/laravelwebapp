@@ -12,4 +12,24 @@ class OnlineExam extends Model
     protected $guarded = [];
 
     protected $casts = ['timer' => 'integer', 'online_subject_id' => 'integer'];
+
+    public function examquestion()
+    {
+    	$this->hasMany(OnlineExamQuestion::class);
+    }
+
+    public function onlinesubject()
+    {
+    	return $this->belongsTo(OnlineSubject::class, 'online_subject_id', 'id');
+    }
+
+    public function userprofile()
+    {
+    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    }
+
+    public function onlineexamination()
+    {
+    	return $this->hasMany(OnlineExamination::class);
+    }
 }

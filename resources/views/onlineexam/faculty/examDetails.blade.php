@@ -38,13 +38,22 @@
                                 <div class="card-header">{{ __('Details') }}</div>
                                 <div class="card-body">
                                     <div class="fw-bold fs-5">{{ __('Student Name: ') }}
-                                        {{ $student_detail->lastname }}, {{ $student_detail->firstname }} {{ $student_detail->middlename }}
+                                        @php
+                                            $last; $first; $middle;
+                                            foreach($exam_result as $result) {
+                                                $last = $result->userprofile->lastname;
+                                                $first = $result->userprofile->firstname;
+                                                $middle = $result->userprofile->middlename;
+                                                break;
+                                            }
+                                        @endphp
+                                        {{ $last }}, {{ $first }} {{ $middle }}
                                     </div>
                                     <hr>
                                     @foreach($exam_result as $result)
                                         <div class="p-2 mb-2 border border-warning rounded">
                                             <div>
-                                                <span class="fw-bold">{{ __('Examination Code : ') }}</span> {{ $result->exam_code }}
+                                                <span class="fw-bold">{{ __('Examination Code : ') }}</span> {{ $result->onlineexam->exam_code }}
                                             </div>
                                             <div>
                                                 <span class="fw-bold">{{ __('Number of Question : ') }}</span> {{ $result->total_question }}

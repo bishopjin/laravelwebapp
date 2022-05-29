@@ -112,9 +112,9 @@
                                 <div class="card-header d-flex justify-content-between border-bottom border-warning">
                                     <span>{{ __('Exam Preview') }}</span>
                                     <span>
-                                        @isset($exam_status)
-                                            {{ $exam_status }}
-                                        @endisset
+                                        @if(\Session::has('exam_status'))
+                                            {{ session('exam_status') }}
+                                        @endif
                                     </span>
                                 </div>
                                 <div class="card-body">
@@ -158,15 +158,6 @@
 
                                                 <div class="fw-bold">{{ $qNum }}. {{ $question->question }}</div>
 
-                                                @foreach($examSelection as $selection)
-                                                    @if($question->id === $selection->exam_questions_id)
-                                                        @php 
-                                                            $selNum++; 
-                                                        @endphp
-                                                        <div class="fw-bold ps-4">{{ $selNum }}. {{ $selection->selection }}</div>
-                                                    @endif
-                                                @endforeach
-                                                
                                                 {{-- key answer --}}
                                                 <form method="" action="" class="pt-1 pb-3 ps-4">
                                                     @csrf
@@ -233,6 +224,8 @@
         });
 
         $(createFormBtn).on('click', function(){
+            /* change the url */
+            window.history.pushState(' ', `{{ ('Laravel Web App v2.0') }}`, '{{ URL::to("/online-exam/faculty/examination") }}');
             let formValid = true;
             $(nswarning).html('');
             $(nqwarning).html('');

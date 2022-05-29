@@ -15,8 +15,8 @@ class OnlineExamSelection extends Model
     	'online_exam_question_id' => 'integer',
     ];
 
-    protected function exam_question()
+    public function examquestion()
     {
-    	return $this->belongsTo(OnlineExamQuestion::class);
+    	return $this->belongsTo(OnlineExamQuestion::class, 'online_exam_question_id', 'id');
     }
 }

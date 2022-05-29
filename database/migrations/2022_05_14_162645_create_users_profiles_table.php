@@ -22,6 +22,7 @@ class CreateUsersProfilesTable extends Migration
             $table->string('email');
             $table->integer('gender_id');
             $table->integer('online_course_id');
+            $table->integer('online_access_level_id')->default(1);
             $table->date('DOB');
             $table->timestamps();
         });

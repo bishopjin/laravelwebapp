@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class OnlineAccessLevel extends Model
 {
     use HasFactory;
+
+    public function userprofile()
+    {
+    	return $this->hasMany(UsersProfile::class);
+    }
 }

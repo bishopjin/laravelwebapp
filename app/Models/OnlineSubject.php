@@ -11,8 +11,14 @@ class OnlineSubject extends Model
 
     protected $guarded = [];
 
-    protected function exam_question()
+    public function onlineexam()
     {
-    	return $this->belongsTo(OnlineExam::class);
+    	return $this->hasMany(OnlineExam::class);
+    }
+
+    public function userprofile()
+    {
+    	/* refered to the user id, instead of userproflie id : reason = from old system */
+    	return $this->belongsTo(UsersProfile::class, 'users_profile_id', 'user_id');
     }
 }

@@ -35,39 +35,41 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('#') }}</th>
-                                            <th class="text-center">{{ __('Student Name') }}</th>
-                                            <th class="text-center">{{ __('Gender') }}</th>
-                                            <th class="text-center">{{ __('Course') }}</th>
+                                            <th>{{ __('Student Name') }}</th>
+                                            <th>{{ __('Gender') }}</th>
+                                            <th>{{ __('Course') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @isset($student_list)
-                                            @php  $current_id = 0; @endphp
+                                            @php  
+                                                $current_id = 0; $course = null; $gender = null;
+                                            @endphp
 
-                                            @foreach($student_list as $index => $student)
-                                                @php
-                                                    if($index === 0){
-                                                        $index += 1;
-                                                    }
-                                                    else {
-                                                        $index++;
-                                                    }
-                                                @endphp
-
-                                                @if($current_id === 0 OR $current_id !== $student->id)
+                                            @foreach($student_list as $student)
+                                                @if(!$course && !$gender)
                                                     @php
-                                                        $current_id = $student->id;
+                                                        foreach($studentProfile as $profile) {
+                                                            $course = $profile->onlinecourse->course;
+                                                            $gender = $profile->gender->gender;
+                                                            break;
+                                                        }
+                                                    @endphp
+                                                @endif
+
+                                                @if($current_id === 0 OR $current_id !== $student->user_id)
+                                                    @php
+                                                        $current_id = $student->user_id;
                                                     @endphp
                                                     <tr>
-                                                        <td>{{ $index }}</td>
                                                         <td>
-                                                            <a href="{{ route('online.faculty.show.student.score', $student->id) }}" class="text-decoration-none fw-bold">
-                                                                {{ $student->lastname }}, {{ $student->firstname }} {{ $student->middlename }}
+                                                            <a href="{{ route('online.faculty.show.student.score', $student->user_id) }}" class="text-decoration-none fw-bold">
+                                                                {{ $student->userprofile->lastname }}, &nbsp;
+                                                                {{ $student->userprofile->firstname }} {{ $student->userprofile->middlename }}
                                                             </a>
                                                         </td>
-                                                        <td class="text-center">{{ $student->gender }}</td>
-                                                        <td class="text-center">{{ $student->course }}</td>
+                                                        <td>{{ $gender }}</td>
+                                                        <td>{{ $course }}</td>
                                                     </tr>
                                                 @endif
                                             @endforeach
@@ -90,25 +92,15 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">{{ __('#') }}</th>
-                                            <th class="text-center">{{ __('Examination Code') }}</th>
-                                            <th class="text-center">{{ __('Subject') }}</th>
-                                            <th class="text-center">{{ __('Timer(in minutes)') }}</th>
+                                            <th>{{ __('Examination Code') }}</th>
+                                            <th>{{ __('Subject') }}</th>
+                                            <th>{{ __('Timer(in minutes)') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @isset($exam_list)
-                                            @foreach($exam_list as $index => $exam)
-                                                @php
-                                                    if($index === 0){
-                                                        $index += 1;
-                                                    }
-                                                    else {
-                                                        $index++;
-                                                    }
-                                                @endphp
+                                            @foreach($exam_list as $exam)
                                                 <tr>
-                                                    <td>{{ $index }}</td>
                                                     <td>{{ $exam->exam_code }}</td>
                                                     <td class="text-center">{{ $exam->subject }}</td>
                                                     <td class="text-center">{{ $exam->timer }}</td>

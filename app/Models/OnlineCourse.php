@@ -10,4 +10,9 @@ class OnlineCourse extends Model
     use HasFactory;
 
     protected $fillable = ['course'];
+
+    public function userprofile()
+    {
+    	return $this->hasMany(UsersProfile::class);
+    }
 }

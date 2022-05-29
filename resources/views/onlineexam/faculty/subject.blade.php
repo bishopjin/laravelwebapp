@@ -36,7 +36,13 @@
                                         @csrf
                                         <div class="form-group d-grid gap-2">
                                             <label class="">{{ __('Subject') }}</label>
-                                            <input type="text" name="subject" class="form-control" value="{{ old('subject') }}" required="" autocomplete="off">
+                                            <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" 
+                                                value="{{ old('subject') }}" required="" autocomplete="off">
+                                            @error('subject')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                             <input type="submit" value="{{ __('Save') }}" class="btn btn-outline-primary w-25 ms-auto">
                                         </div>
                                     </form>
@@ -50,11 +56,13 @@
                                 $header = ['Subject'];
                                 $dataKey = ['subject'];
                             @endphp
-                            <x-datatable :data="$subject_list" 
-                                :title="$title" 
-                                :header="$header" 
-                                :tData="$dataKey">
-                            </x-datatable>
+                            @isset($subject_list)
+                                <x-datatable :data="$subject_list" 
+                                    :title="$title" 
+                                    :header="$header" 
+                                    :tData="$dataKey">
+                                </x-datatable>
+                            @endisset
                         </div>
                     </div>
                 </div>

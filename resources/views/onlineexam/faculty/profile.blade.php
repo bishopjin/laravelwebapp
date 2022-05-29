@@ -61,7 +61,8 @@
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
                                             <label for="dateofbirth" class="">{{ __('Date of Birth') }}</label>
-                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" name="dateofbirth" value="{{ $details->dateofbirth->format('Y-m-d') }}" required/>
+                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" 
+                                                name="dateofbirth" value="{{ $details->DOB }}" required/>
 
                                             @error('dateofbirth')
                                                 <span class="invalid-feedback" role="alert">
@@ -74,11 +75,11 @@
                                             <div class="row">
                                                 <div class="col-6 d-flex align-items-center justify-content-md-around">
                                                     <label class="">Male</label>&nbsp;
-                                                    <input id="male" type="radio" class="" name="gender" value="1" @if(Auth::user()->gender_id === 1) checked @endif>
+                                                    <input id="male" type="radio" class="" name="gender" value="1" @if($details->gender_id === 1) checked @endif>
                                                 </div>
                                                 <div class="col-6 d-flex align-items-center justify-content-md-around">
                                                     <label class="">Female</label>&nbsp;
-                                                    <input id="female" type="radio" name="gender" value="2" @if(Auth::user()->gender_id === 2) checked @endif>
+                                                    <input id="female" type="radio" name="gender" value="2" @if($details->gender_id === 2) checked @endif>
                                                 </div>
                                             </div>
                                             @error('gender')
@@ -107,7 +108,7 @@
                         
                         <div class="row mb-3 justify-content-center pt-3">
                             <div class="col-md-10 d-flex justify-content-between align-items-center">
-                                <a href="{{ url()->previous() }}" class="btn btn-outline-info">Cancel</a>
+                                <a href="{{ route('online.faculty.index') }}" class="btn btn-outline-info">Cancel</a>
                                 <button type="submit" class="btn btn-outline-primary">
                                     {{ __('Save') }}
                                 </button>
