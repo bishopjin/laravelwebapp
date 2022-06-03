@@ -15,23 +15,23 @@
                         </div>
                         <div class="form-group pb-3">
                             <label>Brand</label>
-                            <input type="text" class="form-control" value="{{ $item->brand }}" readonly="">
+                            <input type="text" class="form-control" value="{{ $item->brand->brand }}" readonly="">
                         </div>
                         <div class="form-group pb-3">
                             <label>Size</label>
-                            <input type="text" class="form-control" value="{{ $item->size }}" readonly="">
+                            <input type="text" class="form-control" value="{{ $item->size->size }}" readonly="">
                         </div>
                         <div class="form-group pb-3">
                             <label>Color</label>
-                            <input type="text" class="form-control" value="{{ $item->color }}" readonly="">
+                            <input type="text" class="form-control" value="{{ $item->color->color }}" readonly="">
                         </div>
                         <div class="form-group pb-3">
                             <label>Type</label>
-                            <input type="text" class="form-control" value="{{ $item->type }}" readonly="">
+                            <input type="text" class="form-control" value="{{ $item->type->type }}" readonly="">
                         </div>
                         <div class="form-group pb-3">
                             <label>Category</label>
-                            <input type="text" class="form-control" value="{{ $item->category }}" readonly="">
+                            <input type="text" class="form-control" value="{{ $item->category->category }}" readonly="">
                         </div>
                         <div class="form-group pb-3">
                             <label>Price</label>

@@ -9,10 +9,15 @@ class OnlineExamQuestion extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'question',
+        'key_to_correct',
+        'online_exam_id',
+    ];
 
-    protected $casts = [
-    	'online_subject_id' => 'integer',
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function exam()

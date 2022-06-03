@@ -84,11 +84,11 @@
                     dataType: 'json',
                     success: function(result, status, xhr){
                         if (result.length > 0) {
-                            $('#BID').val(result[0].brand);
-                            $('#CID').val(result[0].color);
-                            $('#SID').val(result[0].size);
-                            $('#TID').val(result[0].type);
-                            $('#CatID').val(result[0].category);
+                            $('#BID').val(result[0].brand.brand);
+                            $('#CID').val(result[0].color.color);
+                            $('#SID').val(result[0].size.size);
+                            $('#TID').val(result[0].type.type);
+                            $('#CatID').val(result[0].category.category);
                             $('#errorMsg').html('');
                         }
                         else {

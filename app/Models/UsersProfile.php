@@ -64,4 +64,19 @@ class UsersProfile extends Model
     {
         return $this->hasMany(OnlineExamination::class);
     }
+
+    public function inventoryreceive()
+    {
+        return $this->hasMany(InventoryItemReceive::class);
+    }
+
+    public function inventoryorder()
+    {
+        return $this->hasMany(InventoryItemOrder::class);
+    }
+
+    public function employeelog()
+    {
+        return $this->hasMany(InventoryEmployeeLog::class);
+    }
 }

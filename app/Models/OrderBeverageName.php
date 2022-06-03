@@ -10,4 +10,14 @@ class OrderBeverageName extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    public function beverage()
+    {
+    	return $this->hasMany(OrderBeverage::class);
+    }
 }

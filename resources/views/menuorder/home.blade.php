@@ -19,12 +19,12 @@
 
                                 <div class="border rounded p-3 w-100">
                                     <div class="fw-bold fs-5 text-center pb-2">{{ __('Burgers') }}</div>
+                                    <div class="row pb-1 small">
+                                        <div class="col-5 fw-bold">{{ __('Name') }}</div>
+                                        <div class="col-3 fw-bold">{{ __('Price') }}</div>
+                                        <div class="col-4 fw-bold">{{ __('Quantity') }}</div>
+                                    </div>
                                     @isset($burgers)
-                                        <div class="row pb-1 small">
-                                            <div class="col-5 fw-bold">{{ __('Name') }}</div>
-                                            <div class="col-3 fw-bold">{{ __('Price') }}</div>
-                                            <div class="col-4 fw-bold">{{ __('Quantity') }}</div>
-                                        </div>
                                         @foreach($burgers as $burger)
                                             @php
                                                 $name = 'burger_'.$burger->id;
@@ -69,13 +69,13 @@
                             <div class="col-md-4 d-flex">
                                 <div class="border rounded p-3 w-100">
                                     <div class="fw-bold fs-5 text-center pb-2">{{ __('Beverages') }}</div>
+                                    <div class="row pb-1 small">
+                                        <div class="col-3 fw-bold">{{ __('Name') }}</div>
+                                        <div class="col-3 fw-bold">{{ __('Size') }}</div>
+                                        <div class="col-3 fw-bold">{{ __('Price') }}</div>
+                                        <div class="col-3 fw-bold">{{ __('Quantity') }}</div>
+                                    </div>
                                     @isset($beverages)
-                                        <div class="row pb-1 small">
-                                            <div class="col-3 fw-bold">{{ __('Name') }}</div>
-                                            <div class="col-3 fw-bold">{{ __('Size') }}</div>
-                                            <div class="col-3 fw-bold">{{ __('Price') }}</div>
-                                            <div class="col-3 fw-bold">{{ __('Quantity') }}</div>
-                                        </div>
                                         @foreach($beverages as $beverage)
                                             @php
                                                 $name = 'beverage_'.$beverage->id;
@@ -88,10 +88,10 @@
                                             <div class="row d-flex pl-3">
                                                 <div class="col-3">
                                                     <input type="checkbox" id="_{{ $beverage->id }}" class="form-check-input" value="{{ $name }}" @if(str_contains(old($name), $beverage->id)) checked @endif> 
-                                                    <span class="form-check-label" id="{{ $name }}">{{ $beverage->name }}</span>
+                                                    <span class="form-check-label" id="{{ $name }}">{{ $beverage->beveragename->name }}</span>
                                                 </div>
                                                 <div class="col-3">
-                                                    <span id="{{ $size }}">{{ $beverage->size }}</span>
+                                                    <span id="{{ $size }}">{{ $beverage->beveragesize->size }}</span>
                                                 </div>
                                                 <div class="col-2">
                                                     <span id="{{ $price }}">{{ $beverage->price }}</span>
@@ -123,12 +123,12 @@
                             <div class="col-md-4 d-flex">
                                 <div class="border rounded p-3 w-100">
                                     <div class="fw-bold fs-5 text-center pb-2">{{ __('Combo Meals') }}</div>
+                                    <div class="row pb-1 small">
+                                        <div class="col-5 fw-bold">{{ __('Name') }}</div>
+                                        <div class="col-3 fw-bold">{{ __('Price') }}</div>
+                                        <div class="col-4 fw-bold">{{ __('Quantity') }}</div>
+                                    </div>
                                     @isset($combos)
-                                        <div class="row pb-1 small">
-                                            <div class="col-5 fw-bold">{{ __('Name') }}</div>
-                                            <div class="col-3 fw-bold">{{ __('Price') }}</div>
-                                            <div class="col-4 fw-bold">{{ __('Quantity') }}</div>
-                                        </div>
                                         @foreach($combos as $combo)
                                             @php
                                                 $name = 'combo_'.$combo->id;
@@ -255,7 +255,7 @@
                 </div>
             </div>
             <div class="modal-footer py-2 d-flex justify-content-between">
-                <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn">
+                <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn2">
                     {{ __('Cancel') }}
                 </button>
                 <a href="javascript:void(0);" class="btn btn-outline-primary px-5 my-3" id="closeDialog"></a>
@@ -270,6 +270,7 @@
             modalHeader = $('#modalHeader'),
             responseContent = $('#responseContent'),
             exitBtn = $('#exitBtn'),
+            exitBtn2 = $('#exitBtn2'),
             modal = $('#checkOutModal'),
             code = $('#code'),
             plusBtn = $('.plusBtn'),
@@ -444,12 +445,12 @@
                     data: {_token : '{{ csrf_token() }}', code : $(code).val(), quantity : qty_object},
                     dataType: 'json',
                     success: function(result, status, xhr) {
-                        if (result != 0) {
+                        if (parseInt(result) > 0) {
                             let allcheck = $('#orderMenu input:checked');
                             title = 'Order # ' + result;
                             eleId = result;
                             
-                            fetch_data(current_page);
+                            //fetch_data(current_page);
                             /* clear the selection */
                             allcheck.each(function () {
                                 $('#' + this.id).prop('checked', false);
@@ -457,10 +458,10 @@
                                 $('#burger_qty' + this.id).html('1');
                                 $('#beverage_qty' + this.id).html('1');
                             });
-                            $(exitBtn).click();
+                            $(exitBtn2).click();
                             $(code).val('');
                         }
-                        else { alert(result) }                
+                        else { alert(JSON.stringify(result)) }                
                     },
                     error: function(xhr, status, error) {
                         hasError = true;
@@ -507,7 +508,7 @@
                     $(eleID).html(data);
                 },
                 error : function(error) {
-                    alert(error)
+                    alert(JSON.stringify(error))
                 }
             });
         }

@@ -21,8 +21,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($user_details as $user)
-                                @if(auth()->user()->id != $user->user_id)
+                            @isset($user_details)
+                                @foreach($user_details as $user)
                                     @php
                                         $active = false;
                                         $notactive = false;
@@ -38,13 +38,14 @@
                                         }
                                     @endphp
                                     <tr>
-                                        <td class="text-center">{{ $user->user_id }}</td>
-                                        <td class="text-center">{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
+                                        <td class="text-center">{{ $user->id }}</td>
+                                        <td class="text-center">{{ $user->userprofile->lastname }}, &nbsp;
+                                            {{ $user->userprofile->firstname }} {{ $user->userprofile->middlename }}</td>
                                         <!-- standalone system -->
-                                        <!-- <td class="text-center">{{ $user->user_type }}</td>
+                                        {{-- <td class="text-center">{{ $user->user_type }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('inventory.employee.edit.access', $user->user_id) }} " class="btn btn-outline-primary">Edit Access Level</a>
-                                        </td> -->
+                                        </td> --}}
                                         <!-- End -->
                                         <!-- consolidated system  -->
                                         <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
@@ -53,7 +54,7 @@
                                         <td class="text-center">
                                             <form method="POST" action="{{ route('inventory.employee.delete') }}">
                                                 @csrf
-                                                <input type="hidden" name="user_id" value="{{ $user->user_id }}">
+                                                <input type="hidden" name="user_id" value="{{ $user->id }}">
                                                 <input type="hidden" name="status" value="{{ $user->isactive }}">
                                                 <input type="submit" value="{{ $btn_label }}"
                                                     @class(['btn', 'btn-outline-danger' => $active, 
@@ -61,19 +62,17 @@
                                             </form>
                                         </td>
                                     </tr>
-                                @endif
-                            @endforeach
+                                @endforeach
+                            @endisset
                         </tbody>
                     </table>
+                    <div class="d-flex justify-content-end">
+                        {{ $user_details->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <x-footer/>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#datatable').DataTable();
-    });
-</script>
 @endsection

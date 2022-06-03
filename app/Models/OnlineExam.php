@@ -13,6 +13,11 @@ class OnlineExam extends Model
 
     protected $casts = ['timer' => 'integer', 'online_subject_id' => 'integer'];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function examquestion()
     {
     	$this->hasMany(OnlineExamQuestion::class);

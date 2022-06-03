@@ -24,15 +24,10 @@ class DashboardController extends Controller
      */
     protected function Index(Request $request)
     {
-        $shoe_inventory = InventoryItemShoe::join('inventory_item_brands', 'inventory_item_shoes.inventory_item_brand_id', '=', 'inventory_item_brands.id')
-            ->join('inventory_item_sizes', 'inventory_item_shoes.inventory_item_size_id', '=', 'inventory_item_sizes.id')
-            ->join('inventory_item_colors', 'inventory_item_shoes.inventory_item_color_id', '=', 'inventory_item_colors.id')
-            ->join('inventory_item_types', 'inventory_item_shoes.inventory_item_type_id', '=', 'inventory_item_types.id')
-            ->join('inventory_item_categories', 'inventory_item_shoes.inventory_item_category_id', '=', 'inventory_item_categories.id')
-            ->select('inventory_item_shoes.itemID', 'inventory_item_brands.brand', 'inventory_item_sizes.size', 
-                'inventory_item_colors.color', 'inventory_item_types.type', 'inventory_item_categories.category',
-                'inventory_item_shoes.price', 'inventory_item_shoes.in_stock')->get();
-
+        if (InventoryItemShoe::exists()) {
+            $shoe_inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
+        }
+        
         return view('inventory.dashboard')->with(compact('shoe_inventory'));
     }
 }

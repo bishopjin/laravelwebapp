@@ -9,12 +9,16 @@ class OnlineExamSelection extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
-    protected $casts = [
-    	'online_exam_question_id' => 'integer',
+    protected $fillable = [
+        'online_exam_question_id',
+        'selection',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+    
     public function examquestion()
     {
     	return $this->belongsTo(OnlineExamQuestion::class, 'online_exam_question_id', 'id');

@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-md-block">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                         {{ Auth::user()->username }}
                     </a>
@@ -17,16 +17,11 @@
                         <!-- consolidated system -->
                         <a href="{{ route('home') }}" class="dropdown-item">Home</a>
 
-                        <!-- standalone system -->
-                        <!-- <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                         document.getElementById('logout-form').submit();">
-                            {{ 'Logout' }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form> -->
+                    </div>
+                </li>
+                <li class="nav-item d-block d-md-none">
+                    <div aria-labelledby="navbarDropdown">
+                        <a href="{{ route('home') }}" class="dropdown-item">Home</a>
                     </div>
                 </li>
             </ul>

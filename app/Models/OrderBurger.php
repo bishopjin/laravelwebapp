@@ -14,4 +14,9 @@ class OrderBurger extends Model
     protected $casts = [
     	'price' => 'float',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

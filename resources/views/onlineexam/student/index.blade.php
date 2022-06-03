@@ -150,9 +150,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var modal = $('.modal');
-        $('#datatable').DataTable();
-        $('#datatable2').DataTable();
-
         $('#closeDialog').on('click', function(){
             $(modal).hide();
         });

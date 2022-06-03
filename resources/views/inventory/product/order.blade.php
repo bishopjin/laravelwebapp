@@ -23,7 +23,7 @@
                                     <input type="number" class="form-control @error('item_id') is-invalid @enderror" id="itemID">
                                 </div>
                                 <div class="col-md-2 d-flex align-items-end justify-content-center pt-3">
-                                    <a href="javascript:void(0);" class="btn btn-outline-success w-100" id="searchBtn">Search</a>
+                                    <button type="button" class="btn btn-outline-success w-100" id="searchBtn">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                     <div class="border rounded p-3">
                         <div class="h4 pb-3">Order Summary</div>
                         <div class="table-responsive">
-                            <table class="table" id="datatable">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Order Number</th>
@@ -98,29 +98,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(isset($order_summary))
+                                    @isset($order_summary)
                                         @foreach ($order_summary as $item)
                                             @php
                                                 /* add trailing zero for non-decimal price */
-                                                $price =  $item->price; 
-                                                $cost = $item->price * $item->qty;  
+                                                $price =  $item['shoe']['price']; 
+                                                $cost = $item['shoe']['price'] * $item['qty'];  
                                             @endphp
                                             <tr>
-                                                <td class="fw-bolder">{{ $item->order_number }}</td>
-                                                <td>{{ $item->itemID }}</td>
-                                                <td>{{ $item->brand }}</td>
-                                                <td>{{ $item->size }}</td>
-                                                <td>{{ $item->color }}</td>
-                                                <td>{{ $item->type }}</td>
-                                                <td>{{ $item->category }}</td>
+                                                <td class="fw-bolder">{{ $item['order_number'] }}</td>
+                                                <td>{{ $item['shoe']['itemID'] }}</td>
+                                                <td>{{ $item['shoe']['brand']['brand'] }}</td>
+                                                <td>{{ $item['shoe']['size']['size'] }}</td>
+                                                <td>{{ $item['shoe']['color']['color'] }}</td>
+                                                <td>{{ $item['shoe']['type']['type'] }}</td>
+                                                <td>{{ $item['shoe']['category']['category'] }}</td>
                                                 <td>{{ $price }}</td>
-                                                <td>{{ $item->qty }}</td>
+                                                <td>{{ $item['qty'] }}</td>
                                                 <td>{{ $cost }}</td>
                                             </tr>
                                         @endforeach
-                                    @endif
+                                    @endisset
                                 </tbody>
                             </table>
+                            <div class="d-flex justify-content-end">
+                                @isset($order_summary)
+                                    {{ $order_summary->links() }}
+                                @endisset
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,16 +134,34 @@
     </div>
     <x-footer/>
 </div>
+<!-- modal -->
+<div class="modal pt-md-5 pt-3 fade" role="dialog" aria-labelledby="oDModal" aria-hidden="true" id="oDModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <span id="modalHeader" class="h5"></span>
+                <button class="btn btn-outline-success" data-bs-dismiss="modal">
+                    {{ __('Close') }}
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="h4" id="responseContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(document).ready(function(){
-        var itemID = $('#itemID');
-        var qty = $('#qty');
-        var saveOrderBtn = $('#saveOrderBtn');
-        var searchBtn = $('#searchBtn');
-        var shoe_id = $('#item_id');
-        var notNull = true;
+        var itemID = $('#itemID'),
+            qty = $('#qty'),
+            saveOrderBtn = $('#saveOrderBtn'),
+            searchBtn = $('#searchBtn'),
+            shoe_id = $('#item_id'),
+            oDModal = $('#oDModal'),
+            modalHeader = $('#modalHeader'),
+            responseContent = $('#responseContent'),
+            notNull = true;
         
-        $('#datatable').DataTable();
         $(itemID).on('keyup', function(){
             $(itemID).removeClass('is-invalid');
         });
@@ -158,17 +181,20 @@
                     dataType: 'json',
                     success: function(result, status, xhr){
                         if (result.length > 0) {
-                            $('#BID').val(result[0].brand);
-                            $('#CID').val(result[0].color);
-                            $('#SID').val(result[0].size);
-                            $('#TID').val(result[0].type);
-                            $('#CatID').val(result[0].category);
+                            $('#BID').val(result[0].brand.brand);
+                            $('#CID').val(result[0].color.color);
+                            $('#SID').val(result[0].size.size);
+                            $('#TID').val(result[0].type.type);
+                            $('#CatID').val(result[0].category.category);
                             $('#price').val(result[0].price);
                             $('#stock').val(result[0].in_stock);
                             $(shoe_id).val(result[0].id);
                             $('#errorMsg').html('');
                             if (result[0].in_stock == 0) {
                                 $('#outOfstockErr').html('Out of Stock');
+                                $(modalHeader).html('Warning').css('color', '#FFFF00');
+                                $(responseContent).html('Out of Stock');
+                                $(oDModal).modal('show');
                             }
                             else {
                                 $('#outOfstockErr').html('');
@@ -181,6 +207,10 @@
                                 $(this).val('');
                             });
                             $('#errorMsg').html('Product ID does not exist.');
+                            $('#outOfstockErr').html('');
+                            $(modalHeader).html('Warning').css('color', '#FFFF00');
+                            $(responseContent).html('Product ID does not exist.');
+                            $(oDModal).modal('show');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -220,16 +250,21 @@
                             });
                             $(itemID).val('');
                             $('#errorMsg').html('Order done.');
-                            location.reload();
+                            $(modalHeader).html('Success').css('color', '#0F0');
+                            $(responseContent).html('Order done.');
                         }
                         else {
                             $('#errorMsg').html('Item stock is low.');
-                            alert('Item stock is low.')
+                            $(modalHeader).html('Warning').css('color', '#FFFF00');
+                            $(responseContent).html('Item stock is low.');
                         }
+                        $(oDModal).modal('show');
                     },
                     error: function(xhr, status, error){
-                        alert(JSON.stringify(xhr))
+                        $(modalHeader).html('Error').css('color', '#F00');
+                        $(responseContent).html(error);
                         $('#errorMsg').html(error);
+                        $(oDModal).modal('show');
                     }
                 });
             }

@@ -14,13 +14,11 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <!-- Styles -->
     <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/resources/css/app.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -128,6 +126,6 @@
             @yield('inventorycontent')
         </main>
     </div>
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('public/js/app.js') }}" defer></script>
 </body>
 </html>

@@ -17,4 +17,9 @@ class OrderOrder extends Model
         'item_price',
     	'order_coupon_id',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

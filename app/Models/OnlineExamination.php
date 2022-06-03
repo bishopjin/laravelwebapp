@@ -17,6 +17,11 @@ class OnlineExamination extends Model
     	'exam_score',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+    
     public function userprofile()
     {
     	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');

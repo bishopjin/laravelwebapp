@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="card-body table-responsive">
-                    <table class="table" id="datatable">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>UID</th>
@@ -25,33 +25,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($employee_log as $item)
-                                @php
-                                    $date_in = explode(' ', $item->time_in);
+                            @isset($employee_log)
+                                @foreach ($employee_log as $item)
+                                    @php
+                                        $date_in = explode(' ', $item->time_in);
 
-                                    if (is_null($item->time_out)) { $date_out = [null, null]; }
-                                    else { $date_out = explode(' ', $item->time_out); }
-                                @endphp
-                                <tr>
-                                    <td class="fw-bolder">{{ $item->user_id }}</td>
-                                    <td>{{ $item->lastname }}, {{ ($item->middlename) }} {{ ($item->firstname) }}</td>
-                                    <td>{{ $date_in[1] }}</td>
-                                    <td>{{ $date_in[0] }}</td>
-                                    <td>{{ $date_out[1] }}</td>
-                                    <td>{{ $date_out[0] }}</td>
-                                </tr>
-                            @endforeach
+                                        if (is_null($item->time_out)) { $date_out = [null, null]; }
+                                        else { $date_out = explode(' ', $item->time_out); }
+                                    @endphp
+                                    <tr>
+                                        <td class="fw-bolder">{{ $item->user_id }}</td>
+                                        <td>{{ $item->userprofile->lastname }},&nbsp;
+                                            {{ ($item->userprofile->middlename) }} {{ ($item->userprofile->firstname) }}</td>
+                                        <td>{{ $date_in[1] }}</td>
+                                        <td>{{ $date_in[0] }}</td>
+                                        <td>{{ $date_out[1] }}</td>
+                                        <td>{{ $date_out[0] }}</td>
+                                    </tr>
+                                @endforeach
+                            @endisset
                         </tbody>
                     </table>
+                    @isset($employee_log)
+                        <div class="d-flex justify-content-end">
+                            {{ $employee_log->links() }}
+                        </div>
+                    @endisset
                 </div>
             </div>
         </div>
     </div>
     <x-footer/>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#datatable').DataTable();
-    });
-</script>
 @endsection

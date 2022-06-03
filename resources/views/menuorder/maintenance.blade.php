@@ -76,10 +76,10 @@
                                             @endphp
                                             <div class="row pb-1">
                                                 <div class="col-3"> 
-                                                    <span id="{{ $name }}_input1">{{ $beverage->name }}</span>
+                                                    <span id="{{ $name }}_input1">{{ $beverage->beveragename->name }}</span>
                                                 </div>
                                                 <div class="col-3">
-                                                    <span id="{{ $name }}_input2">{{ $beverage->size }}</span>
+                                                    <span id="{{ $name }}_input2">{{ $beverage->beveragesize->size }}</span>
                                                 </div>
                                                 <div class="col-2">
                                                     <span id="{{ $name }}_input3">{{ $beverage->price }}</span>

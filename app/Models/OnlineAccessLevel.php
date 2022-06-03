@@ -9,6 +9,11 @@ class OnlineAccessLevel extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+    
     public function userprofile()
     {
     	return $this->hasMany(UsersProfile::class);

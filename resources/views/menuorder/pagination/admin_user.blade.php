@@ -19,7 +19,7 @@
                             <td>{{ $user->firstname }}</td>
                             <td>{{ $user->middlename }}</td>
                             <td>{{ $user->lastname }}</td>
-                            <td>{{ $user->gender }}</td>
+                            <td>{{ $user->gender->gender }}</td>
                             <td>{{ $user->isactive == 1 ? 'Active' : 'Inactive' }}</td>
                         </tr>
                     @endforeach

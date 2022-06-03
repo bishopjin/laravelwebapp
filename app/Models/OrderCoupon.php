@@ -14,4 +14,9 @@ class OrderCoupon extends Model
     protected $casts = [
     	'discount' => 'float',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

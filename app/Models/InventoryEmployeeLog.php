@@ -9,5 +9,18 @@ class InventoryEmployeeLog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'time_in',];
+    protected $fillable = [
+    	'user_id', 
+    	'time_in',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+    
+    public function userprofile()
+    {
+    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    }
 }

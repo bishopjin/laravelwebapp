@@ -10,4 +10,14 @@ class InventoryItemBrand extends Model
     use HasFactory;
 
     protected $fillable = ['brand',];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    public function shoe()
+    {
+    	return $this->hasMany(InventoryItemShoe::class);
+    }
 }

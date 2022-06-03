@@ -13,6 +13,7 @@ use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
 use App\Models\InventoryItemOrder;
 use App\Models\InventoryItemReceive;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductController extends Controller
 {
@@ -29,31 +30,30 @@ class ProductController extends Controller
     /* add new product get interface */
     protected function Index(Request $request)
     {   
-        $null_array = array('0' => 'None');
         if (InventoryItemBrand::exists()) {
             $brand = InventoryItemBrand::select('id', 'brand')->get();
         }
-        else { $brand = $null_array; }
+        else { $brand = collect(new InventoryItemBrand); }
 
         if (InventoryItemCategory::exists()) {
             $category = InventoryItemCategory::select('id', 'category')->get();
         }
-        else { $category = $null_array; }
+        else { $category = collect(new InventoryItemCategory); }
 
         if (InventoryItemType::exists()) {
             $type = InventoryItemType::select('id', 'type')->get();
         }
-        else { $type = $null_array; }
+        else { $type = collect(new InventoryItemType); }
 
         if (InventoryItemColor::exists()) {
             $color = InventoryItemColor::select('id', 'color')->get();
         }
-        else { $color = $null_array; }
+        else { $color = collect(new InventoryItemColor); }
 
         if (InventoryItemSize::exists()) {
             $size = InventoryItemSize::select('id', 'size')->get();
         }
-        else { $size = $null_array; }
+        else { $size = collect(new InventoryItemSize); }
 
         return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
     }
@@ -93,32 +93,51 @@ class ProductController extends Controller
 
     protected function View(Request $request, $id)
     {
-        $item_detail = InventoryItemShoe::join('inventory_item_brands', 'inventory_item_shoes.inventory_item_brand_id', '=', 'inventory_item_brands.id')
-            ->join('inventory_item_sizes', 'inventory_item_shoes.inventory_item_size_id', '=', 'inventory_item_sizes.id')
-            ->join('inventory_item_colors', 'inventory_item_shoes.inventory_item_color_id', '=', 'inventory_item_colors.id')
-            ->join('inventory_item_types', 'inventory_item_shoes.inventory_item_type_id', '=', 'inventory_item_types.id')
-            ->join('inventory_item_categories', 'inventory_item_shoes.inventory_item_category_id', '=', 'inventory_item_categories.id')
-            ->select('inventory_item_shoes.itemID', 'inventory_item_brands.brand', 'inventory_item_sizes.size', 
-                'inventory_item_colors.color', 'inventory_item_types.type', 'inventory_item_categories.category',
-                'inventory_item_shoes.price')->where('inventory_item_shoes.id', $id)->get();
+        $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->where('id', $id)->get();
 
     	return view('inventory.product.view')->with(compact('item_detail'));
     }
 
-    protected function OrderAdd()
+    protected function OrderAdd(Request $request)
     {
-        $order_summary = InventoryItemShoe::join('inventory_item_brands', 'inventory_item_shoes.inventory_item_brand_id', '=', 'inventory_item_brands.id')
-            ->join('inventory_item_orders', 'inventory_item_shoes.id', '=', 'inventory_item_orders.inventory_item_shoe_id')
-            ->join('inventory_item_sizes', 'inventory_item_shoes.inventory_item_size_id', '=', 'inventory_item_sizes.id')
-            ->join('inventory_item_colors', 'inventory_item_shoes.inventory_item_color_id', '=', 'inventory_item_colors.id')
-            ->join('inventory_item_types', 'inventory_item_shoes.inventory_item_type_id', '=', 'inventory_item_types.id')
-            ->join('inventory_item_categories', 'inventory_item_shoes.inventory_item_category_id', '=', 'inventory_item_categories.id')
-            ->select('inventory_item_shoes.itemID', 'inventory_item_brands.brand', 'inventory_item_sizes.size', 
-                'inventory_item_colors.color', 'inventory_item_types.type', 'inventory_item_categories.category',
-                'inventory_item_shoes.price', 'inventory_item_shoes.in_stock', 'inventory_item_orders.qty', 
-                'inventory_item_orders.order_number')->get();
+        if (InventoryItemShoe::exists()) {
+            $result = collect();
+            $arr = [];
 
-    	return view('inventory.product.order')->with(compact('order_summary'));
+            $order = InventoryItemOrder::with('shoe')->get();
+            
+            $order_summary = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->get();
+
+            foreach ($order->toArray() as $order) 
+            {
+                foreach ($order_summary->toArray() as $summary) 
+                {
+                    if ($order['inventory_item_shoe_id'] == $summary['id']) 
+                    {
+                        $arr = array(
+                            'order_number' => $order['order_number'], 
+                            'shoe' => $summary,
+                            'qty' => $order['qty']
+                        );
+
+                        $result->push($arr);
+                    }
+                }
+            }
+            $order_summary = new LengthAwarePaginator(
+                    $result->forPage($request->page ? : 1, 10),
+                    $result->count(),
+                    10,
+                    $request->page,
+                    ['path' => url()->current()]
+                );
+            
+            return view('inventory.product.order')->with(compact('order_summary'));
+        }
+        else
+        {
+            return view('inventory.product.order');
+        }
     }
 
     protected function OrderGet(Request $request)
@@ -131,16 +150,9 @@ class ProductController extends Controller
             return redirect()->route('order.create')->withErrors($validator)->withInput();
         }
         else {
-            $result = InventoryItemShoe::join('inventory_item_brands', 'inventory_item_shoes.inventory_item_brand_id', '=', 'inventory_item_brands.id')
-                ->join('inventory_item_sizes', 'inventory_item_shoes.inventory_item_size_id', '=', 'inventory_item_sizes.id')
-                ->join('inventory_item_colors', 'inventory_item_shoes.inventory_item_color_id', '=', 'inventory_item_colors.id')
-                ->join('inventory_item_types', 'inventory_item_shoes.inventory_item_type_id', '=', 'inventory_item_types.id')
-                ->join('inventory_item_categories', 'inventory_item_shoes.inventory_item_category_id', '=', 'inventory_item_categories.id')
-                ->select('inventory_item_shoes.itemID', 'inventory_item_brands.brand', 'inventory_item_sizes.size', 
-                    'inventory_item_colors.color', 'inventory_item_types.type', 'inventory_item_categories.category',
-                    'inventory_item_shoes.price', 'inventory_item_shoes.in_stock', 'inventory_item_shoes.id')
-                ->where('inventory_item_shoes.itemID', $request->input('item_id'))->get();
-        
+            $result = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])
+                    ->where('itemID', $request->input('item_id'))->get();
+
 	    	return response()->json($result);
         } 
     }
@@ -163,7 +175,7 @@ class ProductController extends Controller
                 $order_number = 1000000000; 
             }
 
-            $inStock = InventoryItemShoe::find(intval($request->input('shoe_id')))->first();
+            $inStock = InventoryItemShoe::where('id', intval($request->input('shoe_id')))->first();
             
             if (intval($inStock->in_stock) >= intval($request->input('qty'))) {
                 $order_created = InventoryItemOrder::create([

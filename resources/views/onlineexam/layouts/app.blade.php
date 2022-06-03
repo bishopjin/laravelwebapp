@@ -50,65 +50,52 @@
                     <a class="navbar-brand me-4" href="{{ route($route_name) }}">
                         {{ __('Online Examination - Laravel') }}
                     </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <!-- Left Side Of Navbar -->
-                        <ul class="navbar-nav me-auto d-block d-md-none">
-                            @if(session('user_access') == '1')
-                                <li class="nav-item dropdown">
-                                    <!-- <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ __('Maintenance') }}
-                                    </a> -->
-                                    <div class="dropdown-menu dropdown-menu-left mt-1 border-0 bg-primary" aria-labelledby="navbarDropdownSettings">
-                                        <a class="dropdown-item" href="{{ route('online.admin.index') }}">
-                                            {{ __('Dashboard') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('online.course.show') }}">
-                                            {{ __('Courses') }}
-                                        </a>
-                                    </div>
-                                </li>
-                            @endif
-
-                            @if(session('user_access') == '1' OR session('user_access') == '3')
-                                <!-- <li class="nav-item dropdown">
-                                    <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ __('Examination') }}
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-left mt-1 border-0 bg-primary" aria-labelledby="navbarDropdownSettings">
-                                        <a class="dropdown-item" href="#">
-                                            {{ __('New Examination') }}
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            {{ __('Exam Result') }}
-                                        </a>
-                                    </div>
-                                </li> -->
-                            @endif
-                            @if(session('user_access') == '1' OR session('user_access') == '2')
-                                <!-- <li class="nav-item dropdown">
-                                    <a id="navbarDropdownSettings" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ __('Maintenance') }}
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-left mt-1 border-0 bg-primary" aria-labelledby="navbarDropdownSettings">
-                                        <a class="dropdown-item" href="#">
-                                            {{ __('Student List') }}
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            {{ __('Examination List') }}
-                                        </a>
-                                    </div>
-                                </li> -->
-                            @endif
-                        </ul>
-
+                        <!-- mobile -->
+                        @if(session('user_access') == '1')
+                            <div class="d-block d-md-none mt-1 bg-primary">
+                                <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'online.admin.index') # @else {{ route('online.admin.index') }} @endif">
+                                    {{ __('Dashboard') }}
+                                </a>
+                                <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'online.course.show') # @else {{ route('online.course.show') }} @endif">
+                                    {{ __('Courses') }}
+                                </a>
+                            </div>
+                        @endif
+                        @if(session('user_access') == '3')
+                            <div class="d-block d-md-none mt-1 bg-primary">
+                                <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'online.student.index') # @else {{ route('online.student.index') }} @endif">
+                                    {{ __('Exam Result') }}
+                                </a>
+                            </div>
+                        @endif
+                        @if(session('user_access') == '2')
+                            <div class="d-block d-md-none mt-1 bg-primary">
+                                <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'online.faculty.index') # @else {{ route('online.faculty.index') }} @endif">
+                                    {{ __('Student List') }}
+                                </a>
+                                <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'online.exam.show') # @else {{ route('online.exam.show') }} @endif">
+                                    {{ __('Examination List') }}
+                                </a>
+                            </div>
+                        @endif
+                        <div class="d-block d-md-none mt-1 bg-primary">
+                            <a class="dropdown-item" href="{{ route('home') }}">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
+                            </a>
+                        </div>
                         <!-- Right Side Of Navbar -->
-                        <ul class="navbar-nav ms-auto">
+                        <ul class="navbar-nav ms-auto d-none d-md-block">
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i> &nbsp; {{ Auth::user()->username }}
@@ -135,15 +122,6 @@
                                     <a class="dropdown-item" href="{{ route('home') }}">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                                     </a>
-                                    <!--  for standalone system  -->
-                                    <!-- <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Logout') }}
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form> -->
                                 </div>
                             </li>
                         </ul>

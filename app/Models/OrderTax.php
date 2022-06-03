@@ -17,4 +17,9 @@ class OrderTax extends Model
     protected $casts = [
     	'percentage' => 'float',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

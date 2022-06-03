@@ -11,7 +11,7 @@ use App\Models\OrderBeverageName;
 use App\Models\OrderBeverage;
 use App\Models\OrderOrder;
 use App\Models\OrderTax;
-use App\Models\User;
+use App\Models\UsersProfile;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MenuController extends Controller
@@ -50,9 +50,7 @@ class MenuController extends Controller
 
         if (OrderBeverageName::exists()) 
         {
-            $beverages = OrderBeverage::join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
-                ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
-                ->select('order_beverage_names.name', 'order_beverage_sizes.size', 'order_beverages.price', 'order_beverages.id')->get();
+            $beverages = OrderBeverage::with(['beveragename', 'beveragesize'])->get();
         }
         else { $beverages = collect(new OrderBeverage); }
 
@@ -192,13 +190,11 @@ class MenuController extends Controller
 
                 if (intval($item_order->item_id) > 20000 && intval($item_order->item_id) < 30000) 
                 {
-                    $beverage = OrderBeverage::where('order_beverages.id', intval($item_order->item_id))
-                                    ->join('order_beverage_names', 'order_beverages.order_beverage_name_id', '=', 'order_beverage_names.id')
-                                    ->join('order_beverage_sizes', 'order_beverages.order_beverage_size_id', '=', 'order_beverage_sizes.id')
-                                    ->select('order_beverage_names.name', 'order_beverage_sizes.size')
-                                    ->first();
-                    $item = $beverage->name;
-                    $size = $beverage->size;
+                    $beverage = OrderBeverage::with(['beveragename', 'beveragesize'])
+                                ->where('order_beverages.id', intval($item_order->item_id))->first();
+
+                    $item = $beverage->beveragename->name;
+                    $size = $beverage->beveragesize->size;
                     $price = $item_order->item_price;
                 }
                 elseif (intval($item_order->item_id) > 30000 && intval($item_order->item_id) < 40000) 
@@ -481,12 +477,11 @@ class MenuController extends Controller
     /* services */
     private function GetAllUsers()
     {
-        $users = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
-                    ->join('genders', 'users_profiles.gender_id', '=', 'genders.id')
-                    ->select('users_profiles.firstname', 'users_profiles.middlename', 'users_profiles.lastname',
-                            'genders.gender', 'users.isactive')->paginate(10, ['*'], 'user');
+        $userprofile = UsersProfile::with('gender')
+                    ->join('users', 'users_profiles.user_id', '=', 'users.id')
+                    ->paginate(10, ['*'], 'user');
 
-        return $users;
+        return $userprofile;
     }
     private function GetAllOrder($request, $taxes)
     {
