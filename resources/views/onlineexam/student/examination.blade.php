@@ -96,7 +96,9 @@
                     </div>
                 </div>
                 <div class="card-footer bg-primary">
-                    <x-footer></x-footer>
+                    <div class="container">
+                        <x-footerexam :color="'text-light'"/>
+                    </div>
                 </div>
             </div>
             

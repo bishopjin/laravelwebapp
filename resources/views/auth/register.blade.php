@@ -145,7 +145,7 @@
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <x-footer></x-footer>
+                    <page-footer :current-date="'{{ date('Y') }}'" :urls="'https://www.genesedan.com/'"></page-footer>`
                 </div>
             </div>
         </div>

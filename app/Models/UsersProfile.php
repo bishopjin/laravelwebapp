@@ -20,6 +20,7 @@ class UsersProfile extends Model
         'DOB'
     ];
 
+    protected $hidden = ['created_at', 'updated_at'];
     /**
      * The attributes that should be cast.
      * 
@@ -78,5 +79,16 @@ class UsersProfile extends Model
     public function employeelog()
     {
         return $this->hasMany(InventoryEmployeeLog::class);
+    }
+
+    public function payrollcutoff()
+    {
+        return $this->hasMany(PayrollCutOff::class);
+    }
+
+    /* has many through */
+    public function salarygrade()
+    {
+        return $this->belongsToMany(PayrollSalaryGrade::class, 'payroll_employees', 'user_id', 'payroll_salary_grade_id');
     }
 }

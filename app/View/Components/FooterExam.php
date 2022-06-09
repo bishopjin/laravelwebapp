@@ -11,9 +11,11 @@ class FooterExam extends Component
      *
      * @return void
      */
-    public function __construct()
+    public $font_color;
+
+    public function __construct($color)
     {
-        //
+        $this->font_color = $color;
     }
 
     /**

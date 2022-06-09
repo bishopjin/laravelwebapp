@@ -11,6 +11,9 @@ use App\Http\Controllers\OnlineExamController\FacultyController;
 use App\Http\Controllers\OnlineExamController\StudentController;
 use App\Http\Controllers\OnlineExamController\ExamController;
 use App\Http\Controllers\OnlineMenuController\MenuController;
+use App\Http\Controllers\PayrollController\PayrollEmployeeController;
+use App\Http\Controllers\PayrollController\PayrollAdminController;
+use App\Http\Controllers\PayrollController\PayrollDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +74,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 	Route::prefix('online-exam')->group(function() {
 		Route::get('/', [ExamController::class, 'Index'])->name('online.dashboard.index');
 		Route::prefix('admin')->group(function () {
-			Route::get('/show', [AdminController::class, 'Index'])->name('online.admin.index');
+			Route::get('/dashboard', [AdminController::class, 'Index'])->name('online.admin.index');
 			Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
 			Route::post('/course/save', [AdminController::class, 'SaveCourse'])->name('online.course.save');
 			ROute::post('/course/edit', [AdminController::class, 'EditCourse'])->name('online.course.edit');
@@ -82,7 +85,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 		});
 
 		Route::prefix('faculty')->group(function () {
-			Route::get('/show', [FacultyController::class, 'Index'])->name('online.faculty.index');
+			Route::get('/dashboard', [FacultyController::class, 'Index'])->name('online.faculty.index');
 			Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.show');
 			Route::post('/subject/save', [FacultyController::class, 'SaveSubject'])->name('online.subject.save');
 			Route::get('/examination', [FacultyController::class, 'ExaminationShow'])->name('online.exam.show');
@@ -95,7 +98,7 @@ Route::middleware(['auth', 'checkaccesslevel'])->group(function () {
 		});
 
 		Route::prefix('student')->group(function () {
-			Route::get('/show', [StudentController::class, 'Index'])->name('online.student.index');
+			Route::get('/dashboard', [StudentController::class, 'Index'])->name('online.student.index');
 			Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam');
 			Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.save');
 			Route::post('profile/{id}', [UserProfileController::class, 'Save'])->name('online.student.profile.save');
@@ -124,5 +127,44 @@ Route::prefix('menu-ordering')->group(function() {
 });
 /* END */
 /* Payroll route */
+Route::middleware(['auth', 'checkaccesslevelpayroll'])->group(function() {
+	Route::prefix('payroll')->group(function() {
+		Route::get('/', [PayrollDashboardController::class, 'Index'])->name('payroll.dashboard.index');
+		
+		Route::prefix('admin')->group(function() {
+			Route::get('/dashboard', [PayrollAdminController::class, 'Index'])->name('payroll.admin.index');
 
+			Route::get('/user', [PayrollAdminController::class, 'UserIndex'])->name('payroll.admin.user.index');
+			Route::post('/user/save', [PayrollAdminController::class, 'UserCreate'])->name('payroll.admin.user.create');
+
+			Route::get('/changepassword', [PayrollDashboardController::class, 'ChangePassIndex'])->name('payroll.admin.password.index');
+			Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.admin.password.create');
+
+			Route::get('/salarygrade', [PayrollAdminController::class, 'SalaryGradeIndex'])->name('payroll.admin.salarygrade.index');
+			Route::post('/salarygrade/save', [PayrollAdminController::class, 'SalaryGradeCreate'])->name('payroll.admin.salarygrade.create');
+
+			Route::get('/holiday', [PayrollAdminController::class, 'HolidayIndex'])->name('payroll.admin.holiday.index');
+			Route::post('/holiday/save', [PayrollAdminController::class, 'HolidayCreate'])->name('payroll.admin.holiday.create');
+
+			Route::get('/addition', [PayrollAdminController::class, 'AdditionIndex'])->name('payroll.admin.addition.index');
+			Route::post('/addition/save', [PayrollAdminController::class, 'AdditionCreate'])->name('payroll.admin.addition.create');
+
+			Route::get('/deduction', [PayrollAdminController::class, 'DeductionIndex'])->name('payroll.admin.deduction.index');
+			Route::post('/deduction/save', [PayrollAdminController::class, 'DeductionCreate'])->name('payroll.admin.deduction.create');
+
+			Route::get('/deduction/edit/{id}', [PayrollAdminController::class, 'DeductionEdit'])->name('payroll.admin.deduction.edit');
+			Route::get('/addition/edit/{id}', [PayrollAdminController::class, 'AdditionEdit'])->name('payroll.admin.addition.edit');
+			Route::get('/holiday/edit/{id}', [PayrollAdminController::class, 'HolidayEdit'])->name('payroll.admin.holiday.edit');
+			Route::get('/salarygrade/edit/{id}', [PayrollAdminController::class, 'SalaryGradeEdit'])->name('payroll.admin.salarygrade.edit');
+			Route::get('/user/edit/{id}', [PayrollAdminController::class, 'UserEdit'])->name('payroll.admin.user.edit');
+		});
+
+		Route::prefix('employee')->group(function() {
+			Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
+
+			Route::get('/changepassword', [PayrollDashboardController::class, 'ChangePassIndex'])->name('payroll.employee.password.index');
+			Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.employee.password.create');
+		});
+	});
+});
 /* END */

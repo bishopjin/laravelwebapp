@@ -106,7 +106,11 @@
                         </div>
                     </div>
                 </div>
-                <footer></footer>
+                <div class="card-footer bg-primary">
+                    <div class="container">
+                        <x-footerexam :color="'text-light'"/>
+                    </div>
+                </div>
             </div>
             
         </div>

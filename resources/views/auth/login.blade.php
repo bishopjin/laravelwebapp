@@ -106,12 +106,13 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <x-footer></x-footer>
+                    <page-footer :current-date="'{{ date('Y') }}'" :urls="'https://www.genesedan.com/'"></page-footer>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- overlay/modal --> 
 <div class="modal">
     <div class="modal-dialog">
@@ -131,18 +132,6 @@
                                     <div class="fs-4 fw-bold pb-4">If you like it, you can buy me some drinks.</div>
                                     <div class="text-center" id="donate-button-container">
                                         <div id="donate-button"></div>
-                                        <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
-                                        <script>
-                                            PayPal.Donation.Button({
-                                                env:'production',
-                                                hosted_button_id:'RTNBQFUDN867N',
-                                                image: {
-                                                    src:'https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif',
-                                                    alt:'Donate with PayPal button',
-                                                    title:'PayPal - The safer, easier way to pay online!',
-                                                }
-                                            }).render('#donate-button');
-                                        </script>
                                     </div>
                                 </div>
                             </div>
@@ -166,28 +155,4 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        var capslock = $('#capslock');
-
-        $('#password, #username').on('keypress', function(e){
-            var s = String.fromCharCode( e.which );
-            if (( s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey )
-            ||  ( s.toLowerCase() === s && s.toUpperCase() !== s && e.shiftKey )) {
-                $(capslock).css('background-color', '#0f0');
-            }
-            else {
-                $(capslock).css('background-color', '#fff');   
-            }
-        });
-
-        $('#dwnlink').on('click', function() {
-            $('.modal').show();
-        });
-
-        $('#closebtn').on('click', function() {
-            $('.modal').hide();
-        });
-    });
-</script>
 @endsection

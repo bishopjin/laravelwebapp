@@ -1,3 +1,22 @@
+.payroll-nav-bg {
+	background-color: #0D98BA;
+}
+
+.payroll-mobile-link {
+	font-size: 15px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding-left: 20px;
+}
+
+#project_1:hover, #project_2:hover, #project_3:hover, #project_4:hover {
+    transition: 1s;
+    transform : scale(1.07, 1.07);
+}
+
 .sidebar {
 	position: fixed;
 	height: 100%;

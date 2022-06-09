@@ -29,6 +29,9 @@ class HomeController extends Controller
             elseif ($urlPath == 'menu-ordering') {
                 return redirect()->route('order.dashboard.index');
             }
+            elseif ($urlPath == 'payroll') {
+                return redirect()->route('payroll.dashboard.index');
+            }
         }
         else {
             return redirect()->route('login');

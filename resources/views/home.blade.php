@@ -37,7 +37,7 @@
         <hr>
         <div class="row justify-content-center py-2">
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100">
+                <div class="card shadow w-100" id="project_1">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-database" aria-hidden="true"></i>&nbsp;
                         {{ __('Inventory System') }}
@@ -70,7 +70,7 @@
             </div>
             <!--  -->
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100">
+                <div class="card shadow w-100" id="project_2">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-cutlery" aria-hidden="true"></i>&nbsp;
                         {{ __('Menu Ordering System') }}
@@ -102,7 +102,7 @@
             </div>
             <!--  -->
             <div class="col-md-4  pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100">
+                <div class="card shadow w-100" id="project_3">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
                         {{ __('Online Examination System') }}
@@ -132,17 +132,54 @@
                     </div>
                 </div>
             </div>
-            <!-- end -->
-            <!-- next row -->
-            
-            <!-- end -->
+        </div>
+        <!-- next row -->
+        <div class="row justify-content-center py-2">
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100" id="project_4">
+                    <h4 class="card-header d-flex align-items-baseline">
+                        <i class="fa fa-dollar"></i>&nbsp;
+                        {{ __('Payroll System') }}
+                    </h4>   
+                    
+                    <div class="card-body">
+                        <span class="fw-bold">{{ __('Payroll Feature:') }}</span><br>
+                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- ') }}<br>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
+                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
+                            <a href="{{ route('app.access', ['urlPath' => 'payroll', 'accessLevel' => '1']) }}" 
+                                class="btn btn-outline-primary rounded-pill w-100">
+                                {{ __('Admin') }}
+                            </a>
+                            <a href="{{ route('app.access', ['urlPath' => 'payroll', 'accessLevel' => '2']) }}" 
+                                class="btn btn-outline-primary rounded-pill w-100">
+                                {{ __('Employee') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+
+            </div>
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+
+            </div>
         </div>
         <hr>
         <!-- footer -->
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 05-22-2022') }}</span>
+                <span>{{ __('Last Updated : 06-03-2022') }}</span>
             </div>
         </div>   
         <div class="row py-2 py-md-3">
