@@ -4,44 +4,31 @@ namespace App\Http\Controllers\OnlineExamController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\UsersProfile;
 use App\Models\OnlineCourse;
 use Illuminate\Support\Facades\Validator;
  
 class UserProfileController extends Controller
 {
-    protected function Show(Request $request, $id)
+    protected function Show(Request $request)
     {
-        if($request->user()->id == $id)
+        if($request->user()->hasRole('Admin')) 
         {
-            if(User::exists()) 
-            {
-                if (session('user_access') == '1')
-                {
-                    $view_name = 'onlineexam.admin.profile';
-                }
-                elseif (session('user_access') == '2')
-                {
-                    $view_name = 'onlineexam.faculty.profile';
-                }
-                else 
-                { 
-                    $view_name = 'onlineexam.student.profile'; 
-                }
-
-                $courses = OnlineCourse::where('id', '>', 1)->select('id', 'course')->get();
-
-                $user_details = User::join('users_profiles', 'users.id', '=', 'users_profiles.user_id')
-                        ->where('users.id', $id)->select('users_profiles.firstname', 'users_profiles.middlename', 
-                                'users_profiles.lastname', 'users_profiles.email', 'users_profiles.DOB', 
-                                'users_profiles.gender_id', 'users_profiles.online_course_id')->get();
-                    
-                return view($view_name)->with(compact('user_details', 'courses'));
-            }
-            else { return redirect()->back(); }
+            $view_name = 'onlineexam.admin.profile';
         }
-        else { return redirect()->back(); }
+        elseif($request->user()->hasRole('Faculty'))
+        {
+            $view_name = 'onlineexam.faculty.profile';
+        }
+        elseif($request->user()->hasRole('Student'))
+        {
+            $view_name = 'onlineexam.student.profile'; 
+        }
+
+        $courses = OnlineCourse::get();
+        $user_details = UsersProfile::where('user_id', $request->user()->id)->get();
+        
+        return view($view_name)->with(compact('user_details', 'courses'));
     }
 
     protected function Save(Request $request, $id)
@@ -59,8 +46,7 @@ class UserProfileController extends Controller
         }
         else
         {
-            $updated = UsersProfile::where('user_id', $id)
-            ->update([
+            $updated = UsersProfile::where('user_id', $id)->update([
                 'firstname' => $request->input('firstname'),
                 'middlename' => $request->input('middlename') ?? null,
                 'lastname' => $request->input('lastname'),
@@ -72,16 +58,16 @@ class UserProfileController extends Controller
 
             if ($updated > 0)
             {   
-                if (session('user_access') == '1')
+                if($request->user()->hasRole('Admin')) 
                 {
                     $route_name = 'online.admin.index';
                 }
-                elseif (session('user_access') == '2')
+                elseif($request->user()->hasRole('Faculty'))
                 {
                     $route_name = 'online.faculty.index';
                 }
-                else 
-                { 
+                elseif($request->user()->hasRole('Student'))
+                {
                     $route_name = 'online.student.index'; 
                 }
 

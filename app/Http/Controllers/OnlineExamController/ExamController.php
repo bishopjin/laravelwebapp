@@ -9,15 +9,15 @@ class ExamController extends Controller
 {
     protected function Index(Request $request)
     {
-        if(session('user_access') == '1') 
+        if($request->user()->hasRole('Admin')) 
         {
             return redirect()->route('online.admin.index');
         }
-        elseif(session('user_access') == '2')
+        elseif($request->user()->hasRole('Faculty'))
         {
             return redirect()->route('online.faculty.index');
         }
-        elseif(session('user_access') == '3')
+        elseif($request->user()->hasRole('Student'))
         {
             return redirect()->route('online.student.index');
         }

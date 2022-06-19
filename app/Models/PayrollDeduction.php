@@ -17,4 +17,9 @@ class PayrollDeduction extends Model
     {
     	return $this->hasMany(PayrollSalaryDeduction::class);
     }
+
+    public function payslip()
+    {
+    	return $this->hasOneThrough(PayrollPayslip::class, PayrollSalaryDeduction::class);
+    }
 }

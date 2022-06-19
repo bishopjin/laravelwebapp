@@ -21,11 +21,6 @@ class MenuController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -81,7 +76,7 @@ class MenuController extends Controller
         }
         else { $taxes = collect(new OrderTax); }
 
-        if (session('user_access') == '1')
+        if ($request->user()->hasRole('Admin'))
         {
             $pagination = $this->GetAllOrder($request, $taxes);
 
@@ -89,9 +84,10 @@ class MenuController extends Controller
 
             return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
         }
-        else 
+        elseif ($request->user()->hasRole('Customer'))
         {
             $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
+            
             return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'taxes', 'coupons'));
         }
     }

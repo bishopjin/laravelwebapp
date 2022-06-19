@@ -22,10 +22,6 @@ class ProductController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    } 
 
     /* add new product get interface */
     protected function Index(Request $request)
@@ -74,7 +70,6 @@ class ProductController extends Controller
             return redirect()->route('inventory.product.create')->withErrors($validator)->withInput();
         }
         else {
-            //dd($request->all());
             if (InventoryItemShoe::exists()) {
                 $shoeID = InventoryItemShoe::select('itemID')->max('itemID') + 1;
             }
@@ -196,11 +191,6 @@ class ProductController extends Controller
 
 	    	return response()->json($update_stock);
         }
-    }
-
-    protected function DeliverReceive()
-    {
-    	return view('inventory.product.receive');
     }
 
     protected function DeliverSave(Request $request)

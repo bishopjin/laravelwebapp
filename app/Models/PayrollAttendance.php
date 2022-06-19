@@ -10,9 +10,10 @@ class PayrollAttendance extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
     	'payroll_cut_off_id',
         'payroll_holiday_id',
-    	'attendance_date',
+        'payroll_work_schedule_id',
     	'time_in',
     	'time_out_break',
     	'time_in_break',
@@ -23,8 +24,6 @@ class PayrollAttendance extends Model
     	'tardiness',
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
-
     public function payrollcutoff()
     {
     	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id', 'id');
@@ -33,5 +32,10 @@ class PayrollAttendance extends Model
     public function holiday()
     {
         return $this->belongsTo(PayrollHoliday::class, 'payroll_holiday_id', 'id');
+    }
+
+    public function workschedule()
+    {
+        return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id', 'id');
     }
 }

@@ -10,24 +10,21 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ ('Payroll System - Laravel') }} &nbsp; {{ app()->version() }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- Styles -->
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('/resources/css/app.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
     <!-- Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #C8C8C8;">
-    <div id="app">
+    <div id="">
         <nav class="navbar navbar-expand-md navbar-light sticky-top shadow-sm payroll-nav-bg">
             <div class="container">
-                <a class="navbar-brand" href="{{ route('payroll.dashboard.index') }}">
+                <span class="navbar-brand pe-4">
                     {{ ('Payroll System - Laravel') }}
-                </a>
+                </span>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -36,7 +33,7 @@
                     <!-- mobile Navbar -->
                     <div class="navbar-nav me-auto d-md-none d-lg-none d-sm-block">
                         <ul class="list-unstyled">
-                            @if (session('user_access') == '1') 
+                            @can ('payroll_admin_access') 
                                 <li class="">
                                     <a href="{{ route('payroll.admin.deduction.index') }}" class="payroll-mobile-link">{{ __('Deduction') }}</a>
                                 </li>
@@ -49,30 +46,40 @@
                                 <li class="">
                                     <a href="{{ route('payroll.admin.holiday.index') }}" class="payroll-mobile-link">{{ __('Holiday') }}</a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('payroll.admin.schedule.index') }}" class="payroll-mobile-link">{{ __('Work Schedule') }}</a>
+                                </li>
                                 <li class="">
                                     <a href="{{ route('payroll.admin.user.index') }}" class="payroll-mobile-link">{{ __('Employee') }}</a>
                                 </li>
-                            @else
-                                <li class="">
-                                    <a href="#" class="payroll-mobile-link">{{ __('') }}</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" class="payroll-mobile-link">{{ __('') }}</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" class="payroll-mobile-link">{{ __('') }}</a>
-                                </li>
-                            @endif
-                            <li class="d-md-none d-lg-none d-sm-block">
-                                @if (session('user_access') == '1')
+                                <li>
                                     <a class="payroll-mobile-link" href="{{ route('payroll.admin.password.index') }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @else
+                                </li>
+                            @endcan
+                            @can('payroll_employee_access')
+                                <li class="">
+                                    <a href="{{ route('payroll.employee.dtr.index') }}" class="payroll-mobile-link">{{ __('Daily Time Recorder') }}</a>
+                                </li>
+                                <li class="">
+                                    <a class="payroll-mobile-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#aModal">
+                                        {{ __('Payslip') }}
+                                    </a>
+                                    {{-- <a href="{{ route('payroll.employee.payslip.show') }}" class="payroll-mobile-link">{{ __('Payslip') }}</a> --}}
+                                </li>
+                                <li>
                                     <a class="payroll-mobile-link" href="{{ route('payroll.employee.password.index') }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @endif
+                                </li>
+                            @endcan
+                            <li class="">
+                                <a class="payroll-mobile-link" href="{{ route('payroll.dashboard.index') }}">
+                                    {{ __('Dashboard') }}
+                                </a>
+                            </li>
+                            <li>
                                 <a class="payroll-mobile-link" href="{{ route('home') }}">
                                     {{ __('Home') }}
                                 </a>
@@ -82,7 +89,11 @@
 
                     <!-- Left Side Of Navbar -->
                     <!-- employee -->
-                    @if (session('user_access') == '2') 
+                    @can ('payroll_employee_access') 
+                        <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
+                            href="@if(Route::current()->getName() == 'payroll.employee.index') # @else  {{ route('payroll.dashboard.index') }} @endif">
+                            {{ ('Dashboard') }}
+                        </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdownAdmin" class="nav-link dropdown-toggle" href="#" role="button" 
@@ -91,15 +102,37 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin">
-                                    <a class="dropdown-item" href="{{ route('home') }}">
-                                        {{ __('Home') }}
+                                    <a class="dropdown-item" href="{{ route('payroll.employee.dtr.index') }}">
+                                        {{ __('Daily Time Recorder') }}
                                     </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav d-none d-md-block d-lg-block">
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdownAdmin" class="nav-link dropdown-toggle" href="#" role="button" 
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                  {{ __('Payslip') }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin">
+                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#aModal">
+                                        {{ __('View') }}
+                                    </a>
+                                    {{-- <a class="dropdown-item" href="{{ route('payroll.employee.payslip.show') }}">
+                                        {{ __('View') }}
+                                    </a> --}}
                                 </div>
                             </li>
                         </ul>
                     <!-- end of employee -->
                     <!-- admin -->
-                    @else 
+                    @endcan
+                    @can('payroll_admin_access')
+                        <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
+                            href="@if(Route::current()->getName() == 'payroll.admin.index') # @else {{ route('payroll.dashboard.index') }} @endif">
+                            {{ ('Dashboard') }}
+                        </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
                             <li class="nav-item dropdown ">
                                 <a id="navbarDropdownAdmin1" class="nav-link dropdown-toggle" href="#" role="button" 
@@ -120,6 +153,9 @@
                                     <a class="dropdown-item" href="{{ route('payroll.admin.holiday.index') }}">
                                         {{ __('Holiday') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('payroll.admin.schedule.index') }}">
+                                        {{ __('Work Schedule') }}
+                                    </a>
                                 </div>
                             </li>
                         </ul>
@@ -132,12 +168,12 @@
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin2">
                                     <a class="dropdown-item" href="{{ route('payroll.admin.user.index') }}">
-                                        {{ __('Add') }}
+                                        {{ __('Register') }}
                                     </a>
                                 </div>
                             </li>
                         </ul>
-                    @endif
+                    @endcan
                     <!-- end admin -->
                     <!-- End Left side -->
                     <!-- Right Side Of Navbar -->
@@ -149,15 +185,16 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownEmployee">
-                                @if (session('user_access') == '1') 
+                                @can ('payroll_admin_access') 
                                     <a class="dropdown-item" href="{{ route('payroll.admin.password.index') }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @else
+                                @endcan
+                                @can('payroll_admin_access')
                                     <a class="dropdown-item" href="{{ route('payroll.employee.password.index') }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @endif
+                                @endcan
                                 <a class="dropdown-item" href="{{ route('home') }}">
                                     {{ __('Home') }}
                                 </a>
@@ -172,7 +209,20 @@
         <main class="py-4">
             @yield('payrollcontent')
         </main>
+        <!-- modal -->
+        <div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="aModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header h5">{{ __('404') }}</div>
+                    <div class="modal-body h4">
+                        {{ __('Sorry, application under development.') }}
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-outline-primary rounded-pill" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
 </body>
 </html>

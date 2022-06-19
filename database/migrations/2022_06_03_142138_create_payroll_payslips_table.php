@@ -15,6 +15,7 @@ class CreatePayrollPayslipsTable extends Migration
     {
         Schema::create('payroll_payslips', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
             $table->integer('payroll_cut_off_id');
             $table->float('total_manhour');
             $table->integer('payroll_salary_addition_id');

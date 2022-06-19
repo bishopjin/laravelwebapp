@@ -17,4 +17,9 @@ class PayrollAddition extends Model
     {
     	return $this->hasMany(PayrollSalaryAddition::class);
     }
+
+    public function payslip()
+    {
+    	return $this->hasOneThrough(PayrollPayslip::class, PayrollSalaryAddition::class);
+    }
 }

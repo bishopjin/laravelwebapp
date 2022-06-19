@@ -138,7 +138,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="card">
-                                <img class="card-img-top" src="{{ asset('public/images/GCASH_QRCODE.jpg') }}">
+                                <img class="card-img-top" 
+                                src="{{ asset('/images/GCASH_QRCODE.jpg') }}">
                                 <div class="card-body">
                                     <div class="card-title fs-4 fw-bold text-center">GCash</div>
                                 </div>

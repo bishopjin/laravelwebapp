@@ -10,16 +10,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ ('Inventory System - Laravel') }} &nbsp; {{ app()->version() }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- Styles -->
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('/resources/css/app.css') }}" rel="stylesheet">
-
-    <!-- Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -46,14 +41,14 @@
                                 <a href="{{ route('inventory.order.index') }}" class="sidebar-link">{{ __('Order Item') }}</a>
                             </li>
 
-                            @if (session('user_access') == '1') 
+                            @can('view_edit_user')
                                 <li class="">
                                     <a href="{{ route('inventory.product.index') }}" class="sidebar-link">{{ __('Add New Product') }}</a>
                                 </li>
                                 <li class="">
                                     <a href="{{ route('inventory.employee.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
                                 </li>
-                            @endif
+                            @endcan
                             <li class="d-md-none d-lg-none d-sm-block">
                                 <a class="sidebar-link" href="{{ route('home') }}">
                                     {{ __('Home') }}
@@ -100,7 +95,7 @@
                         {{ __('Order Item') }}
                     </a>
                 </li>
-                @if (session('user_access') == '1')
+                @can('view_edit_user')
                     <li class="">
                         <a href="{{ route('inventory.product.index') }}" 
                             class="sidebar-link @if(Route::current()->getName() === 'inventory.product.index' || Route::current()->getName() === 'inventory.product.view') selected-link @endif">
@@ -113,7 +108,7 @@
                             {{ __('Employee Logs') }}
                         </a>
                     </li>
-                @endif
+                @endcan
                 <li class="d-md-none d-lg-none d-sm-block">
                     <a class="sidebar-link" href="{{ route('home') }}">
                         {{ __('Home') }}
@@ -126,6 +121,7 @@
             @yield('inventorycontent')
         </main>
     </div>
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
+    <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@ class PayrollPayslip extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
     	'payroll_cut_off_id',
     	'total_manhour',
     	'payroll_salary_addition_id',
@@ -18,7 +19,7 @@ class PayrollPayslip extends Model
     	'total_deduction',
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['updated_at'];
 
     public function payrollcutoff()
     {

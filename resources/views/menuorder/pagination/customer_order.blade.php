@@ -9,7 +9,7 @@
                     @endphp
                     <div>
                         <a href="javascript:void(0);" class="text-decoration-none fw-bold orderSum" 
-                            id="{{ $order->order_number }}" data-toggle="modal" data-target="#oDModal">
+                            id="{{ $order->order_number }}" data-bs-toggle="modal" data-bs-target="#oDModal">
                             {{ $title }}
                         </a>
                     </div>

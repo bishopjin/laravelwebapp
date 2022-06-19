@@ -12,19 +12,14 @@ class PayrollDashboardController extends Controller
 {
     protected function Index(Request $request)
     {
-    	if(session('user_access') == '1') 
+    	if($request->user()->hasRole('Admin')) 
     	{
     		return redirect()->route('payroll.admin.index');
     	}
-    	elseif(session('user_access') == '2') 
+    	elseif($request->user()->hasRole('Employee')) 
     	{
     		return redirect()->route('payroll.employee.index');
     	}
-    }
-
-    protected function ChangePassIndex()
-    {
-        return view('payroll.changepassword');
     }
 
     protected function ChangePassSave(Request $request)
@@ -36,11 +31,11 @@ class PayrollDashboardController extends Controller
 
         if ($validator->fails()) 
         {
-            if(session('user_access') == '1') 
+            if($request->user()->hasRole('Admin')) 
             {
                 return redirect()->route('payroll.admin.password.index')->withErrors($validator)->withInput();
             }
-            else
+            elseif($request->user()->hasRole('Employee'))
             {
                 return redirect()->route('payroll.employee.password.index')->withErrors($validator)->withInput();
             }

@@ -43,7 +43,7 @@
                                 </div>
                             </div>
 
-                            @if(session('user_access') == '3')
+                            @if('exam_student_access')
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col-md-10">
                                         <label for="course">{{ __('Course') }}</label>
@@ -54,14 +54,14 @@
                                         </select>
                                     </div>
                                 </div>
-                            @endif
+                            @endcan
 
                             <div class="row mb-3 justify-content-center">
                                 <div class="col-md-10">
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
                                             <label for="dateofbirth" class="">{{ __('Date of Birth') }}</label>
-                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" name="dateofbirth" value="{{ $details->DOB }}" required/>
+                                            <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" name="dateofbirth" value="{{ date('Y-m-d', strtotime($details->DOB)) }}" required/>
 
                                             @error('dateofbirth')
                                                 <span class="invalid-feedback" role="alert">

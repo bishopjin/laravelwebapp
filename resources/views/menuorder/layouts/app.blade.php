@@ -11,24 +11,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ ('Online Menu Ordering - Laravel') }} &nbsp; {{ app()->version() }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
-
-    <!-- jquery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
-    <div id="app">
-        <main class="min-vh-100 d-flex align-items-center">
+    <div id="">
+        <main class="d-flex align-items-center">
             @yield('ordercontent')
         </main>
-    </div>
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
-    <!-- Popper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    </div> 
+    
 </body>
 </html>

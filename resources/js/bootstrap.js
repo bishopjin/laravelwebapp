@@ -1,6 +1,9 @@
 window._ = require('lodash');
 
+window.Popper = require('@popperjs/core');
+window.$ = window.jQuery = require('jquery'); 
 try {
+	require('fontawesome-4.7');
     require('bootstrap');
 } catch (e) {}
 

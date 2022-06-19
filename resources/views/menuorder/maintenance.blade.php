@@ -19,7 +19,7 @@
                                 <div class="border rounded p-3 w-100" id="burger_panel">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">{{ __('Burgers') }}</span>
-                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-toggle="modal" data-target="#addModal" id="add_burger">
+                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-bs-toggle="modal" data-bs-target="#addModal" id="add_burger">
                                             {{ __('Add Item') }}
                                         </button>
                                     </div>
@@ -43,7 +43,7 @@
                                                 </div>
                                                 <div class="col-3">
                                                     <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                        data-toggle="modal" data-target="#addModal" id="{{ $name }}">
+                                                        data-bs-toggle="modal" data-bs-target="#addModal" id="{{ $name }}">
                                                         {{ __('Edit') }}
                                                     </button>
                                                 </div>
@@ -58,7 +58,7 @@
                                 <div class="border rounded p-3 w-100" id="beverage_panel">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">{{ __('Beverages') }}</span>
-                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-toggle="modal" data-target="#addModal" id="add_beverage">
+                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-bs-toggle="modal" data-bs-target="#addModal" id="add_beverage">
                                             {{ __('Add Item') }}
                                         </button>
                                     </div>
@@ -86,7 +86,7 @@
                                                 </div>
                                                 <div class="col-4">
                                                     <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                        data-toggle="modal" data-target="#addModal" id="{{ $name }}">
+                                                        data-bs-toggle="modal" data-bs-target="#addModal" id="{{ $name }}">
                                                         {{ __('Edit') }}
                                                     </button>
                                                 </div>
@@ -101,7 +101,7 @@
                                 <div class="border rounded p-3 w-100" id="combo_panel">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">{{ __('Combo Meals') }}</span>
-                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-toggle="modal" data-target="#addModal" id="add_combo">
+                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-bs-toggle="modal" data-bs-target="#addModal" id="add_combo">
                                             {{ __('Add Item') }}
                                         </button>
                                     </div>
@@ -126,7 +126,7 @@
                                                 </div>
                                                 <div class="col-3">
                                                     <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                        data-toggle="modal" data-target="#addModal" id="{{ $name }}">
+                                                        data-bs-toggle="modal" data-bs-target="#addModal" id="{{ $name }}">
                                                         {{ __('Edit') }}
                                                     </button>
                                                 </div>
@@ -143,7 +143,7 @@
                                 <div class="border rounded p-3 w-100" id="tax_panel">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">{{ __('Tax') }}</span>
-                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-toggle="modal" data-target="#addModal" id="add_tax">
+                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-bs-toggle="modal" data-bs-target="#addModal" id="add_tax">
                                             {{ __('Add Item') }}
                                         </button>
                                     </div>
@@ -167,7 +167,7 @@
                                                 </div>
                                                 <div class="col-3">
                                                     <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                        data-toggle="modal" data-target="#addModal" id="{{ $name }}">
+                                                        data-bs-toggle="modal" data-bs-target="#addModal" id="{{ $name }}">
                                                         {{ __('Edit') }}
                                                     </button>
                                                 </div>
@@ -181,7 +181,7 @@
                                 <div class="border rounded p-3 w-100" id="coupon_panel">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">{{ __('Coupon') }}</span>
-                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-toggle="modal" data-target="#addModal" id="add_coupon">
+                                        <button type="button" class="btn btn-outline-primary add-item-btn" data-bs-toggle="modal" data-bs-target="#addModal" id="add_coupon">
                                             {{ __('Add Item') }}
                                         </button>
                                     </div>
@@ -205,7 +205,7 @@
                                                 </div>
                                                 <div class="col-3">
                                                     <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                        data-toggle="modal" data-target="#addModal" id="{{ $name }}">
+                                                        data-bs-toggle="modal" data-bs-target="#addModal" id="{{ $name }}">
                                                         {{ __('Edit') }}
                                                     </button>
                                                 </div>
@@ -254,7 +254,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-primary" id="saveItemBtn">{{ __('Save') }}</button>
-                <button class="btn btn-outline-danger" data-dismiss="modal">
+                <button class="btn btn-outline-danger" data-bs-dismiss="modal">
                     {{ __('Close') }}
                 </button>
             </div>
@@ -514,7 +514,7 @@
                                         }
                                         <div class="${param0Val == 'beverage' ? 'col-4' : 'col-3'}">
                                             <button type="button" class="btn btn-outline-success edit-item-btn" 
-                                                data-toggle="modal" data-target="#addModal" id="${eleID}">Edit
+                                                data-bs-toggle="modal" data-bs-target="#addModal" id="${eleID}">Edit
                                             </button>
                                         </div>
                                     </div>`);

@@ -7,22 +7,24 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Payroll Registration') }}</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.user.create') }}" class="px-5">
+						<form method="POST" action="{{ route('payroll.admin.user.create') }}" class="px-4">
 							@csrf
 
 							@php
 								$firstname = null;
 								$middlename = null;
 								$lastname = null;
-								$salary_grade_id = 0;
+								$salary_grade_id = 1;
+								$work_sched_id = 1;
 								$userid = 0;
 
 								if(isset($details))
 								{
-									$firstname = $details[0]->firstname;
-									$middlename = $details[0]->middlename;
-									$lastname = $details[0]->lastname;
-									$salary_grade_id = $details[0]->salarygrade[0]->id;
+									$firstname = $details[0]->userprofile->firstname ?? $details[0]->firstname;
+									$middlename = $details[0]->userprofile->middlename ?? $details[0]->middlename;
+									$lastname = $details[0]->userprofile->lastname ?? $details[0]->lastname;
+									$salary_grade_id = $details[0]->payroll_salary_grade_id;
+									$work_sched_id = $details[0]->payroll_work_schedule_id;
 									$userid = $details[0]->user_id;
 								}
 							@endphp
@@ -55,13 +57,29 @@
                                 @enderror
 							</div>
 
-							<div class="form-group pb-4">
+							<div class="form-group pb-2">
 								<label for="salarygrade">{{ __('Salary Grade') }}</label>
 								<select class="form-select" name="salarygrade" id="salarygrade">
 									@isset($salary_grade)
 										@foreach($salary_grade as $grade)
 											<option value="{{ $grade->id }}" {{ $salary_grade_id == $grade->id ? 'selected' : '' }}>
 												{{ $grade->salary_grade }}
+											</option>
+										@endforeach
+									@endisset
+								</select>
+							</div>
+							<div class="form-group pb-2">
+								<label for="workschedule">{{ __('Work Schedule') }}</label>
+								<select class="form-select" name="workschedule" id="workschedule">
+									@isset($workSchedule)
+										@foreach($workSchedule as $schedule)
+											@php
+												$sched = explode('-', $schedule->schedule); 
+											@endphp
+											<option value="{{ $schedule->id }}" {{ $work_sched_id == $schedule->id ? 'selected' : '' }}>
+												{{ $schedule->name }} &nbsp; 
+												{{ date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) }}
 											</option>
 										@endforeach
 									@endisset

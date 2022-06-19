@@ -4,8 +4,8 @@
     </IfModule>
 
     RewriteEngine On
-    RewriteBase /
-
+    RewriteRule ^(.*)?$ ./public/$1
+    
     # Forced Https
     #RewriteCond %{HTTP:X-Forwarded-Proto} !https [OR]
     #RewriteCond %{HTTPS} off

@@ -12,20 +12,13 @@
     <title>{{ ('Online Examination - Laravel') }} &nbsp; {{ app()->version() }}</title>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
     <!-- Styles -->
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <!-- Scripts -->
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9822106822353440"
-     crossorigin="anonymous"></script>
+    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #E64A19;">
-    <div>
+    <div id="app">
         @guest
             <main class="py-4 min-vh-100 d-flex align-items-center">
                 @yield('onlinecontent')
@@ -34,11 +27,11 @@
             <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm sticky-top">
                 <div class="container">
                     @php
-                        if(session('user_access') == '1')
+                        if(Auth::user()->hasRole('Admin'))
                         {
                             $route_name = 'online.admin.index';
                         }
-                        elseif(session('user_access') == '2')
+                        elseif(Auth::user()->hasRole('Faculty'))
                         {
                             $route_name = 'online.faculty.index';
                         }
@@ -57,7 +50,7 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- mobile -->
-                        @if(session('user_access') == '1')
+                        @if(Auth::user()->hasRole('Admin'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'online.admin.index') # @else {{ route('online.admin.index') }} @endif">
@@ -69,7 +62,7 @@
                                 </a>
                             </div>
                         @endif
-                        @if(session('user_access') == '3')
+                        @if(Auth::user()->hasRole('Student'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'online.student.index') # @else {{ route('online.student.index') }} @endif">
@@ -77,7 +70,7 @@
                                 </a>
                             </div>
                         @endif
-                        @if(session('user_access') == '2')
+                        @if(Auth::user()->hasRole('Faculty'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'online.faculty.index') # @else {{ route('online.faculty.index') }} @endif">
@@ -103,11 +96,11 @@
 
                                 <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" aria-labelledby="navbarDropdown">
                                     @php
-                                        if(session('user_access') == '1')
+                                        if(Auth::user()->hasRole('Admin'))
                                         {
                                             $profile_route = 'online.admin.profile.edit';
                                         }
-                                        elseif(session('user_access') == '2')
+                                        elseif(Auth::user()->hasRole('Faculty'))
                                         {
                                             $profile_route = 'online.faculty.profile.edit';
                                         }

@@ -27,4 +27,9 @@ class PayrollCutOff extends Model
     {
         return $this->hasMany(PayrollAttendance::class);
     }
+
+    public function payslip()
+    {
+        return $this->hasMany(PayrollPayslip::class);
+    }
 }

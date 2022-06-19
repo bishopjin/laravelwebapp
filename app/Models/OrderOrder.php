@@ -22,4 +22,10 @@ class OrderOrder extends Model
         'created_at',
         'updated_at',
     ];
+
+    /* polymorphic t=relationship s*/
+    public function orderable()
+    {
+        return $this->morphTo();
+    }
 }

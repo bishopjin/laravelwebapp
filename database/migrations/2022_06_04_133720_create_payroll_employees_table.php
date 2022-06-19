@@ -17,6 +17,7 @@ class CreatePayrollEmployeesTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('payroll_salary_grade_id');
+            $table->integer('payroll_work_schedule_id');
             $table->timestamps();
         });
     }

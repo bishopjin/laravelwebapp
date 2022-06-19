@@ -188,7 +188,7 @@
                                     <input type="text" name="code" class="form-control" id="code">
                                 </div>
                                 <button type="button" class="btn btn-outline-success" id="checkout" 
-                                    data-toggle="modal" data-target="#checkOutModal">
+                                    data-bs-toggle="modal" data-bs-target="#checkOutModal">
                                     {{ __('Check Out') }}
                                 </button>
                             </div>
@@ -216,7 +216,7 @@
                 </div>
             </div>
             <div class="modal-footer py-2 d-flex justify-content-between">
-                <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn">
+                <button class="btn btn-outline-danger" data-bs-dismiss="modal" id="exitBtn">
                     {{ __('Cancel') }}
                 </button>
             </div>
@@ -255,7 +255,7 @@
                 </div>
             </div>
             <div class="modal-footer py-2 d-flex justify-content-between">
-                <button class="btn btn-outline-danger" data-dismiss="modal" id="exitBtn2">
+                <button class="btn btn-outline-danger" data-bs-dismiss="modal" id="exitBtn2">
                     {{ __('Cancel') }}
                 </button>
                 <a href="javascript:void(0);" class="btn btn-outline-primary px-5 my-3" id="closeDialog"></a>

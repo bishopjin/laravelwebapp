@@ -179,7 +179,7 @@
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 06-03-2022') }}</span>
+                <span>{{ __('Last Updated : 06-19-2022') }}</span>
             </div>
         </div>   
         <div class="row py-2 py-md-3">
@@ -201,7 +201,7 @@
                     {{ __('Sorry, application under re-development.') }}
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-outline-primary rounded-pill" data-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-outline-primary rounded-pill" data-bs-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>

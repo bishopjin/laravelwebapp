@@ -86,9 +86,8 @@ class UsersProfile extends Model
         return $this->hasMany(PayrollCutOff::class);
     }
 
-    /* has many through */
-    public function salarygrade()
+    public function payrollemployee()
     {
-        return $this->belongsToMany(PayrollSalaryGrade::class, 'payroll_employees', 'user_id', 'payroll_salary_grade_id');
+        return $this->hasOne(PayrollEmployee::class, 'user_id', 'id');
     }
 }

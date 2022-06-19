@@ -24,4 +24,9 @@ class PayrollSalaryGrade extends Model
     {
     	return $this->hasMany(PayrollCutOff::class);
     }
+
+    public function employee()
+    {
+        return $this->hasOne(PayrollEmployee::class);
+    }
 }

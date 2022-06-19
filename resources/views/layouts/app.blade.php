@@ -10,16 +10,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ ('Laravel Web App v2.0') }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <!-- Fonts -->
+    
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <!-- Styles -->
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('/resources/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9822106822353440"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="app">
@@ -33,15 +31,9 @@
             </main>
         @endguest
     </div> 
-
     <!-- Scripts -->
-    <script src="{{ asset('public/js/app.js') }}" defer></script>
     <script src="{{ mix('/js/app.js') }}"></script>
-    <!-- Popper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
     <script type="text/javascript">
         $(document).ready(function() {

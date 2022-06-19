@@ -12,10 +12,6 @@ use App\Models\InventoryEmployeeLog;
 
 class EmployeeController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    } 
     /* Employee login logout */
     protected function Index(Request $request)
     {
