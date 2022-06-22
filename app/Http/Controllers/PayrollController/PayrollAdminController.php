@@ -40,7 +40,7 @@ class PayrollAdminController extends Controller
 		}
         else 
         {
-            $users = UsersProfile::where('user_id', $request->user()->id)->paginate(10, ['*'], 'user');
+            $users = UsersProfile::find($request->user()->id)->paginate(10, ['*'], 'user');
         }
 
         if ($cutOff->count() > 0)
@@ -92,11 +92,11 @@ class PayrollAdminController extends Controller
 	/* */
     protected function UserEdit(Request $request, $id)
     {
-        $details = PayrollEmployee::with(['userprofile'])->where('user_id', $id)->get();
+        $details = PayrollEmployee::with(['userprofile'])->find($id);
        
         if ($details->count() == 0) 
         {
-            $details = UsersProfile::where('user_id', $id)->get();
+            $details = UsersProfile::find($id);
         }
 
     	if ($details->count() > 0) 
@@ -114,12 +114,11 @@ class PayrollAdminController extends Controller
 
     protected function UserCreate(Request $request)
     {
-    	$exist = PayrollEmployee::where('user_id',$request->input('id'))->get();
+    	$exist = PayrollEmployee::find($request->input('id'));
     	/* */
     	if ($exist->count() > 0) 
     	{
-    		$update = PayrollEmployee::where('user_id',$request->input('id'))
-    				->update([
+    		$update = $exist->update([
                         'payroll_salary_grade_id' => $request->input('salarygrade'),
                         'payroll_work_schedule_id' => $request->input('workschedule'),
                     ]);
@@ -205,62 +204,41 @@ class PayrollAdminController extends Controller
 
     protected function SalaryGradeCreate(Request $request)
     {
-    	if (intval($request->input('id')) > 0) 
-    	{
-    		$message = 'Failed to update record.';
-    		$exist = PayrollSalaryGrade::where('id', $request->input('id'))->get();
+        $validator = Validator::make($request->all(), [
+            'salary_grade' => ['required', 'string', 'max:255'],
+        ]);
 
-    		if ($exist->count() > 0) 
-    		{
-    			$update = PayrollSalaryGrade::where('id', $request->input('id'))->update([
-    					'night_diff_applied' => $request->input('isnightdiff') ?? 0,
-    					'overtime_applied' => $request->input('isovertime') ?? 0,
-    					'cola_applied' => $request->input('iscola') ?? 0,
-    					'ecola_applied' => $request->input('isecola') ?? 0,
-    					'meal_allowance_applied' => $request->input('ismeal') ?? 0
-    			]);
+        if ($validator->fails()) 
+        {
+            return redirect()->route('payroll.admin.salarygrade.index')->withErrors($validator)->withInput();
+        }
+        else
+        {
+            $message = 'Failed to save record.';
 
-    			if ($update) 
-    			{
-    				$message = 'Record updated';
-    			}
-    		}
-    	}
-    	else
-    	{
-    		$validator = Validator::make($request->all(), [
-	            'salary_grade' => ['required', 'string', 'max:255', 'unique:payroll_salary_grades'],
-	        ]);
+                $upcreted = PayrollSalaryGrade::updateOrCreate ([
+                        'salary_grade' => $request->input('salary_grade')
+                    ],
+                    [
+                        'night_diff_applied' => $request->input('isnightdiff') ?? 0,
+                        'overtime_applied' => $request->input('isovertime') ?? 0,
+                        'cola_applied' => $request->input('iscola') ?? 0,
+                        'ecola_applied' => $request->input('isecola') ?? 0,
+                        'meal_allowance_applied' => $request->input('ismeal') ?? 0
+                ]);
 
-	        if ($validator->fails()) 
-	        {
-	            return redirect()->route('payroll.admin.salarygrade.index')->withErrors($validator)->withInput();
-	        }
-	        else
-	        {
-	        	$message = 'Failed to save record.';
+            if ($upcreted->id > 0) 
+            {
+                $message = 'Record saved';
+            }
+        }
 
-	        	$created = PayrollSalaryGrade::create([
-	        		'salary_grade' => $request->input('salary_grade'),
-					'night_diff_applied' => $request->input('isnightdiff') ?? 0,
-					'overtime_applied' => $request->input('isovertime') ?? 0,
-					'cola_applied' => $request->input('iscola') ?? 0,
-					'ecola_applied' => $request->input('isecola') ?? 0,
-					'meal_allowance_applied' => $request->input('ismeal') ?? 0
-	        	]);
-
-	        	if ($created->id > 0) 
-	        	{
-	        		$message = 'Saved new record';
-	        	}
-	        }
-    	}
     	return redirect()->back()->with(['message' => $message]);
     }
 
     protected function SalaryGradeEdit(Request $request, $id)
     {
-    	$salarygrade = PayrollSalaryGrade::where('id', $id)->get();
+    	$salarygrade = PayrollSalaryGrade::find($id);
 
     	if ($salarygrade->count() > 0) 
     	{
@@ -274,60 +252,39 @@ class PayrollAdminController extends Controller
 
     protected function HolidayCreate(Request $request)
     {
-    	if (intval($request->input('id')) > 0) 
-    	{
-    		$message = 'Failed to update record.';
-    		$exist = PayrollHoliday::where('id', $request->input('id'))->get();
+    	$validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
-    		if ($exist->count() > 0) 
-    		{
-    			$update = PayrollHoliday::where('id', $request->input('id'))->update([
-    					'date' => $request->input('month').'-'.$request->input('day'),
-    					'is_legal' => $request->input('islegal') ?? 0,
-    					'is_local' => $request->input('islocal') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-    			]);
+        if ($validator->fails()) 
+        {
+            return redirect()->route('payroll.admin.holiday.index')->withErrors($validator)->withInput();
+        }
+        else
+        {
+            $message = 'Failed to save record.';
 
-    			if ($update) 
-    			{
-    				$message = 'Record updated';
-    			}
-    		}
-    	}
-    	else
-    	{
-    		$validator = Validator::make($request->all(), [
-	            'name' => ['required', 'string', 'max:255', 'unique:payroll_holidays'],
-	        ]);
+            $upcreted = PayrollHoliday::updateOrCreate([
+                    'name' => $request->input('name')
+                ],
+                [
+                    'date' => $request->input('month').'-'.$request->input('day'),
+                    'is_legal' => $request->input('islegal') ?? 0,
+                    'is_local' => $request->input('islocal') ?? 0,
+                    'rate' => intval($request->input('rate')) / 100 ?? 0
+            ]);
 
-	        if ($validator->fails()) 
-	        {
-	            return redirect()->route('payroll.admin.holiday.index')->withErrors($validator)->withInput();
-	        }
-	        else
-	        {
-	        	$message = 'Failed to save record.';
-
-	        	$created = PayrollHoliday::create([
-	        			'name' => $request->input('name'),
-    					'date' => $request->input('month').'-'.$request->input('day'),
-    					'is_legal' => $request->input('islegal') ?? 0,
-    					'is_local' => $request->input('islocal') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-	        	]);
-
-	        	if ($created->id > 0) 
-	        	{
-	        		$message = 'Saved new record';
-	        	}
-	        }
-    	}
+            if ($upcreted->id > 0) 
+            {
+                $message = 'Record saved';
+            }
+        }
     	return redirect()->back()->with(['message' => $message]);
     }
 
     protected function HolidayEdit(Request $request, $id)
     {
-    	$holiday = PayrollHoliday::where('id', $id)->get();
+    	$holiday = PayrollHoliday::find($id);
 
     	if ($holiday->count() > 0) 
     	{
@@ -341,56 +298,37 @@ class PayrollAdminController extends Controller
 
     protected function AdditionCreate(Request $request)
     {
-    	if (intval($request->input('id')) > 0) 
-    	{
-    		$message = 'Failed to update record.';
-    		$exist = PayrollAddition::where('id', $request->input('id'))->get();
+    	$validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
-    		if ($exist->count() > 0) 
-    		{
-    			$update = PayrollAddition::where('id', $request->input('id'))->update([
-    					'amount' => $request->input('amount') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-    			]);
+        if ($validator->fails()) 
+        {
+            return redirect()->route('payroll.admin.addition.index')->withErrors($validator)->withInput();
+        }
+        else
+        {
+            $message = 'Failed to save record.';
 
-    			if ($update) 
-    			{
-    				$message = 'Record updated';
-    			}
-    		}
-    	}
-    	else
-    	{
-    		$validator = Validator::make($request->all(), [
-	            'name' => ['required', 'string', 'max:255', 'unique:payroll_additions'],
-	        ]);
+            $upcreted = PayrollAddition::updateOrCreate([
+                    'name' => $request->input('name')
+                ],
+                [
+                    'amount' => $request->input('amount') ?? 0,
+                    'rate' => intval($request->input('rate')) / 100 ?? 0,
+            ]);
 
-	        if ($validator->fails()) 
-	        {
-	            return redirect()->route('payroll.admin.addition.index')->withErrors($validator)->withInput();
-	        }
-	        else
-	        {
-	        	$message = 'Failed to save record.';
-
-	        	$created = PayrollAddition::create([
-	        			'name' => $request->input('name'),
-    					'amount' => $request->input('amount') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-	        	]);
-
-	        	if ($created->id > 0) 
-	        	{
-	        		$message = 'Saved new record';
-	        	}
-	        }
-    	}
+            if ($upcreted->id > 0) 
+            {
+                $message = 'Record saved';
+            }
+        }
     	return redirect()->back()->with(['message' => $message]);
     }
 
     protected function AdditionEdit(Request $request, $id)
     {
-    	$addition = PayrollAddition::where('id', $id)->get();
+    	$addition = PayrollAddition::find($id);
 
     	if ($addition->count() > 0) 
     	{
@@ -404,56 +342,37 @@ class PayrollAdminController extends Controller
 
     protected function DeductionCreate(Request $request)
     {
-    	if (intval($request->input('id')) > 0) 
-    	{
-    		$message = 'Failed to update record.';
-    		$exist = PayrollDeduction::where('id', $request->input('id'))->get();
+    	$validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
-    		if ($exist->count() > 0) 
-    		{
-    			$update = PayrollDeduction::where('id', $request->input('id'))->update([
-    					'amount' => $request->input('amount') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-    			]);
+        if ($validator->fails()) 
+        {
+            return redirect()->route('payroll.admin.deduction.index')->withErrors($validator)->withInput();
+        }
+        else
+        {
+            $message = 'Failed to save record.';
 
-    			if ($update) 
-    			{
-    				$message = 'Record updated';
-    			}
-    		}
-    	}
-    	else
-    	{
-    		$validator = Validator::make($request->all(), [
-	            'name' => ['required', 'string', 'max:255', 'unique:payroll_deductions'],
-	        ]);
+            $upcreted = PayrollDeduction::updateOrCreate([
+                    'name' => $request->input('name')
+                ],
+                [
+                    'amount' => $request->input('amount') ?? 0,
+                    'rate' => intval($request->input('rate')) / 100 ?? 0
+            ]);
 
-	        if ($validator->fails()) 
-	        {
-	            return redirect()->route('payroll.admin.deduction.index')->withErrors($validator)->withInput();
-	        }
-	        else
-	        {
-	        	$message = 'Failed to save record.';
-
-	        	$created = PayrollDeduction::create([
-	        			'name' => $request->input('name'),
-    					'amount' => $request->input('amount') ?? 0,
-    					'rate' => intval($request->input('rate')) / 100 ?? 0,
-	        	]);
-
-	        	if ($created->id > 0) 
-	        	{
-	        		$message = 'Saved new record';
-	        	}
-	        }
-    	}
+            if ($upcreted->id > 0) 
+            {
+                $message = 'Record saved';
+            }
+        }
     	return redirect()->back()->with(['message' => $message]);
     }
 
     protected function DeductionEdit(Request $request, $id)
     {
-    	$deduction = PayrollDeduction::where('id', $id)->get();
+    	$deduction = PayrollDeduction::find($id);
 
     	if ($deduction->count() > 0) 
     	{
@@ -467,55 +386,38 @@ class PayrollAdminController extends Controller
 
     protected function ScheduleCreate(Request $request)
     {
-        if (intval($request->input('id')) > 0) 
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($validator->fails()) 
         {
-            $message = 'Failed to update record.';
-            $exist = PayrollWorkSchedule::where('id', $request->input('id'))->get();
-
-            if ($exist->count() > 0) 
-            {
-                $update = PayrollWorkSchedule::where('id', $request->input('id'))->update([
-                        'schedule' => $request->input('schedule'),
-                ]);
-
-                if ($update) 
-                {
-                    $message = 'Record updated';
-                }
-            }
+            return redirect()->route('payroll.admin.schedule.index')->withErrors($validator)->withInput();
         }
         else
         {
-            $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'max:255', 'unique:payroll_work_schedules'],
+            $message = 'Failed to save record.';
+            $schedule = $request->input('startTme').' - '.$request->input('endTme');
+            $upcreted = PayrollWorkSchedule::updateOrCreate([
+                    'name' => $request->input('name')
+                ],
+                [
+                    'code' => $request->input('code'),
+                    'schedule' => $schedule,
             ]);
 
-            if ($validator->fails()) 
+            if ($upcreted->id > 0) 
             {
-                return redirect()->route('payroll.admin.schedule.index')->withErrors($validator)->withInput();
-            }
-            else
-            {
-                $message = 'Failed to save record.';
-                $schedule = $request->input('startTme').' - '.$request->input('endTme');
-                $created = PayrollWorkSchedule::create([
-                        'name' => $request->input('name'),
-                        'code' => $request->input('code'),
-                        'schedule' => $schedule,
-                ]);
-
-                if ($created->id > 0) 
-                {
-                    $message = 'Saved new record';
-                }
+                $message = 'Record saved';
             }
         }
+
         return redirect()->back()->with(['message' => $message]);
     }
 
     protected function ScheduleEdit(Request $request, $id)
     {
-        $workschedule = PayrollWorkSchedule::where('id', $id)->get();
+        $workschedule = PayrollWorkSchedule::find($id);
 
         if ($workschedule->count() > 0) 
         {
@@ -542,9 +444,9 @@ class PayrollAdminController extends Controller
             $sco = $request->input('sfco').' to '.$request->input('efco');
             $eco = $request->input('ssco').' to '.$request->input('esco');
 
-            $updco1 = PayrollCutOff::where('id', 1)->update(['cut_off' => $sco]);
+            $updco1 = PayrollCutOff::find(1)->update(['cut_off' => $sco]);
             if ($updco1) {
-                $updco2 = PayrollCutOff::where('id', 2)->update(['cut_off' => $eco]);
+                $updco2 = PayrollCutOff::find(2)->update(['cut_off' => $eco]);
             }
             if ($updco2) {
                 $message = 'Cut-off date is updated.';

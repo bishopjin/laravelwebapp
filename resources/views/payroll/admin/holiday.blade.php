@@ -21,14 +21,14 @@
 
 								if(isset($holiday))
 								{
-									$arr = explode('-', $holiday[0]->date);
-									$name = $holiday[0]->name;
+									$arr = explode('-', $holiday->date);
+									$name = $holiday->name;
 									$day = $arr[1];
 									$month = $arr[0];
-									$legal = $holiday[0]->is_legal;
-									$local = $holiday[0]->is_local;
-									$rate = $holiday[0]->rate;
-									$holid = $holiday[0]->id;
+									$legal = $holiday->is_legal;
+									$local = $holiday->is_local;
+									$rate = $holiday->rate;
+									$holid = $holiday->id;
 								}
 							@endphp
 

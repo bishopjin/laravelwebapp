@@ -18,10 +18,10 @@
 
 								if(isset($addition))
 								{
-									$name = $addition[0]->name;
-									$rate = $addition[0]->rate;
-									$amount = $addition[0]->amount;
-									$addid = $addition[0]->id;
+									$name = $addition->name;
+									$rate = $addition->rate;
+									$amount = $addition->amount;
+									$addid = $addition->id;
 								}
 							@endphp
 

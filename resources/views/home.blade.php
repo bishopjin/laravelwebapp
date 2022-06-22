@@ -144,12 +144,11 @@
                     
                     <div class="card-body">
                         <span class="fw-bold">{{ __('Payroll Feature:') }}</span><br>
-                        &nbsp; {{ __('- ') }}<br>
-                        &nbsp; {{ __('- ') }}<br>
-                        &nbsp; {{ __('- ') }}<br>
-                        &nbsp; {{ __('- ') }}<br>
-                        &nbsp; {{ __('- ') }}<br>
-                        &nbsp; {{ __('- ') }}<br>
+                        &nbsp; {{ __('- Register User') }}<br>
+                        &nbsp; {{ __('- Maintenance for Salary Rate, etc.') }}<br>
+                        &nbsp; {{ __('- View/Print Payslip (Under development)') }}<br>
+                        &nbsp; {{ __('- Daily Time Recorder (Temporary Only)') }}<br>
+                        &nbsp; {{ __('- Auto compute manhour, late, night diff, etc..') }}<br>
                     </div>
 
                     <div class="card-footer">
@@ -179,7 +178,7 @@
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 06-19-2022') }}</span>
+                <span>{{ __('Last Updated : 06-22-2022') }}</span>
             </div>
         </div>   
         <div class="row py-2 py-md-3">

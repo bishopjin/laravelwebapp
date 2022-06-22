@@ -18,10 +18,10 @@
 
 								if(isset($deduction))
 								{
-									$name = $deduction[0]->name;
-									$rate = $deduction[0]->rate;
-									$amount = $deduction[0]->amount;
-									$addid = $deduction[0]->id;
+									$name = $deduction->name;
+									$rate = $deduction->rate;
+									$amount = $deduction->amount;
+									$addid = $deduction->id;
 								}
 							@endphp
 

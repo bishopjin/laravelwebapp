@@ -69,7 +69,7 @@ class AdminController extends Controller
         }
         else
         {
-        	$course_edit = OnlineCourse::where('id', $request->input('course_id'))
+        	$course_edit = OnlineCourse::find($request->input('course_id'))
     			->update(['course' => $request->input('course')]);
 
     		return redirect()->back();
@@ -95,7 +95,7 @@ class AdminController extends Controller
         }
         else
         {
-            $course_edit = OnlineSubject::where('id', $request->input('subject_id'))
+            $course_edit = OnlineSubject::find($request->input('subject_id'))
                 ->update(['subject' => $request->input('subject')]);
 
             return redirect()->back();

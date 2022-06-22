@@ -20,22 +20,25 @@ class FacultyController extends Controller
     {
         $studentProfile = UsersProfile::with(['onlinecourse', 'gender'])->get();
 
-        if (OnlineExam::exists() && !OnlineExamination::exists()) 
+        if (OnlineExam::exists()) 
         {
             $exam_list = OnlineExam::with('onlinesubject')
                         ->where('user_id', $request->user()->id)->paginate(10, ['*'], 'exams');
+            if (OnlineExamination::exists()) 
+            {
+                $student_list = OnlineExamination::with('userprofile')
+                        ->find($request->user()->id)->paginate(10, ['*'], 'list');  
+            }         
+            else
+            {
+                $student_list = collect(new OnlineExamination);
+            }
 
-            return view('onlineexam.faculty.index')->with(compact('exam_list', 'studentProfile'));
+            return view('onlineexam.faculty.index')->with(compact('exam_list', 'studentProfile', 'student_list'));
         }
-        elseif (!OnlineExam::exists() && OnlineExamination::exists()) 
+        else
         {
-            $student_list = OnlineExamination::with('userprofile')->find($request->user()->id)->paginate(10, ['*'], 'list');  
-
-            return view('onlineexam.faculty.index')->with(compact('student_list', 'studentProfile'));
-        }
-        else 
-        {
-             return view('onlineexam.faculty.index')->with(compact('studentProfile'));
+           return view('onlineexam.faculty.index')->with(compact('studentProfile'));
         }
     }
 
@@ -69,7 +72,7 @@ class FacultyController extends Controller
 
         if (OnlineSubject::exists()) 
         {
-            $subjects = OnlineSubject::where('id', $request->input('subject'))->get();
+            $subjects = OnlineSubject::find($request->input('subject'))->get();
         }
         
         if ($subjects)
@@ -173,7 +176,7 @@ class FacultyController extends Controller
     {
     	$new_key = $request->input('key_to_correct');
 
-    	$update_key = OnlineExamQuestion::where('id', intval($request->input('id')))
+    	$update_key = OnlineExamQuestion::find($request->input('id'))
     		->update(['key_to_correct' => Crypt::encryptString($request->input('key_to_correct'))]);
 
     	return response()->json($new_key);
@@ -202,7 +205,7 @@ class FacultyController extends Controller
         else {
         	$subject_add = OnlineSubject::create([
         			'subject' => $request->input('subject'),
-        			'users_profile_id' => $request->user()->id,
+        			'user_id' => $request->user()->id,
         		]);
         	return redirect()->back();
         }

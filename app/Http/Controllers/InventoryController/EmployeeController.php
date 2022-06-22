@@ -29,7 +29,7 @@ class EmployeeController extends Controller
 
     protected function EditAccess(Request $request, $id)
     {
-        $user_details = User::with('userprofile')->where('users.id', $id)->get();
+        $user_details = User::with('userprofile')->find($id);
                 
         if (InventoryAccessLevel::exists()) {
                 $access_level = InventoryAccessLevel::select('id', 'user_type')->get();
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
         }
         else
         {
-            $update_access_level = User::where('id', $request->input('user_id'))
+            $update_access_level = User::find($request->input('user_id'))
                     ->update(['access_level' => $request->input('access_level')]);
 
             if ($update_access_level > 0)

@@ -19,8 +19,7 @@ class StudentController extends Controller
     {
         $user = User::find($request->user()->id)->userprofile;
 
-    	$course = OnlineCourse::find($user->online_course_id)->first();
-    	session(['course' => $course]);
+    	$course = OnlineCourse::find($user->online_course_id);
         
     	$exam_result = OnlineExamination::with(['onlineexam'])->where('user_id', $request->user()->id)->get();
 

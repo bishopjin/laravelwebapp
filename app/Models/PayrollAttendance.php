@@ -9,6 +9,8 @@ class PayrollAttendance extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'user_id';
+    
     protected $fillable = [
         'user_id',
     	'payroll_cut_off_id',

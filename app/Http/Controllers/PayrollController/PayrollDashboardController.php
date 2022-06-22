@@ -42,7 +42,7 @@ class PayrollDashboardController extends Controller
         }
         else
         {
-            $find_record = User::where('id', $request->user()->id)->first();
+            $find_record = User::find($request->user()->id);
             
             if (Hash::check($request->input('password'), $find_record->password)) 
             {
@@ -50,7 +50,7 @@ class PayrollDashboardController extends Controller
             }
             elseif (Hash::check($request->input('oldpass'), $find_record->password)) 
             {
-                $update_pass = User::where('id', $request->user()->id)->update(['password' => Hash::make($request->input('password'))]);
+                $update_pass = User::find($request->user()->id)->update(['password' => Hash::make($request->input('password'))]);
             }
             else
             {

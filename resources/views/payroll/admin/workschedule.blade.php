@@ -19,12 +19,12 @@
 
 								if(isset($workschedule))
 								{
-									$name = $workschedule[0]->name;
-									$code = $workschedule[0]->code;
-									$schedule = explode('-', $workschedule[0]->schedule);
+									$name = $workschedule->name;
+									$code = $workschedule->code;
+									$schedule = explode('-', $workschedule->schedule);
 									$startDT = trim($schedule[0]);
 									$endDT = trim($schedule[1]);
-									$sched_id = $workschedule[0]->id;
+									$sched_id = $workschedule->id;
 								}
 							@endphp
 

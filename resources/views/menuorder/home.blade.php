@@ -450,7 +450,7 @@
                             title = 'Order # ' + result;
                             eleId = result;
                             
-                            //fetch_data(current_page);
+                            fetch_data(1, '/show/page?page=');
                             /* clear the selection */
                             allcheck.each(function () {
                                 $('#' + this.id).prop('checked', false);

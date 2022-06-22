@@ -244,7 +244,7 @@
                     data: {_token : '{{ csrf_token() }}', shoe_id : itemIdVal, qty : qtyVal},
                     dataType: 'json',
                     success: function(result, status, xhr){
-                        if(result === 1){
+                        if(result){
                             $('#orderForm *').filter(':input').each(function(){
                                 $(this).val('');
                             });
@@ -263,7 +263,7 @@
                     error: function(xhr, status, error){
                         $(modalHeader).html('Error').css('color', '#F00');
                         $(responseContent).html(error);
-                        $('#errorMsg').html(error);
+                        $('#errorMsg').html(JSON.stringify(xhr));
                         $(oDModal).modal('show');
                     }
                 });

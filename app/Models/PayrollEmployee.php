@@ -9,6 +9,8 @@ class PayrollEmployee extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'user_id';
+
     protected $fillable = ['user_id', 'payroll_salary_grade_id', 'payroll_work_schedule_id', 'isActive'];
 
     protected $hidden = ['created_at', 'updated_at'];

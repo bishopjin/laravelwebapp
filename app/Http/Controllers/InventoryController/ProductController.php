@@ -88,8 +88,7 @@ class ProductController extends Controller
 
     protected function View(Request $request, $id)
     {
-        $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->where('id', $id)->get();
-
+        $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
     	return view('inventory.product.view')->with(compact('item_detail'));
     }
 
@@ -170,9 +169,9 @@ class ProductController extends Controller
                 $order_number = 1000000000; 
             }
 
-            $inStock = InventoryItemShoe::where('id', intval($request->input('shoe_id')))->first();
+            $itemshoe = InventoryItemShoe::find($request->input('shoe_id'));
             
-            if (intval($inStock->in_stock) >= intval($request->input('qty'))) {
+            if (intval($itemshoe->in_stock) >= intval($request->input('qty'))) {
                 $order_created = InventoryItemOrder::create([
                     'order_number' => $order_number,
                     'inventory_item_shoe_id' => $request->input('shoe_id'),
@@ -181,8 +180,8 @@ class ProductController extends Controller
                 ]);
 
                 if($order_created->id > 0){
-                    $update_stock = InventoryItemShoe::where('id', $request->input('shoe_id'))
-                        ->update(['in_stock' => (intval($inStock->in_stock) - intval($request->input('qty')))]); 
+                    $newstock = intval($itemshoe->in_stock) - intval($request->input('qty'));
+                    $update_stock = $itemshoe->update(['in_stock' => $newstock]); 
                 }
             }
             else {
@@ -219,10 +218,7 @@ class ProductController extends Controller
         		$current_stock = InventoryItemShoe::select('in_stock')
         			->where('itemID', $request->input('shoe_id'))->get();
 
-        		foreach($current_stock as $in_stock)
-        		{
-        			$stock = $in_stock->in_stock;
-        		}
+        		$stock = $current_stock[0]->in_stock;
 
         		$new_stock = intval($request->input('qty')) + intval($stock);
 

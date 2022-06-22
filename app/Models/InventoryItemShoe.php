@@ -16,6 +16,7 @@ class InventoryItemShoe extends Model
     	'inventory_item_color_id', 
     	'inventory_item_type_id', 
     	'inventory_item_category_id', 
+        'in_stock',
     	'price'
     ];
 

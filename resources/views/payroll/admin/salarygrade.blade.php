@@ -21,13 +21,13 @@
 
 								if(isset($salarygrade))
 								{
-									$slrygrd = $salarygrade[0]->salary_grade;
-									$nghtdffppld = $salarygrade[0]->night_diff_applied;
-									$vrtmppld = $salarygrade[0]->overtime_applied;
-									$clppld = $salarygrade[0]->cola_applied;
-									$eclppld = $salarygrade[0]->ecola_applied;
-									$mlllwncppld = $salarygrade[0]->meal_allowance_applied;
-									$slgrdid = $salarygrade[0]->id;
+									$slrygrd = $salarygrade->salary_grade;
+									$nghtdffppld = $salarygrade->night_diff_applied;
+									$vrtmppld = $salarygrade->overtime_applied;
+									$clppld = $salarygrade->cola_applied;
+									$eclppld = $salarygrade->ecola_applied;
+									$mlllwncppld = $salarygrade->meal_allowance_applied;
+									$slgrdid = $salarygrade->id;
 								}
 							@endphp
 

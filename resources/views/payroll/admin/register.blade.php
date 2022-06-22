@@ -20,12 +20,12 @@
 
 								if(isset($details))
 								{
-									$firstname = $details[0]->userprofile->firstname ?? $details[0]->firstname;
-									$middlename = $details[0]->userprofile->middlename ?? $details[0]->middlename;
-									$lastname = $details[0]->userprofile->lastname ?? $details[0]->lastname;
-									$salary_grade_id = $details[0]->payroll_salary_grade_id;
-									$work_sched_id = $details[0]->payroll_work_schedule_id;
-									$userid = $details[0]->user_id;
+									$firstname = $details->userprofile->firstname ?? $details->firstname;
+									$middlename = $details->userprofile->middlename ?? $details->middlename;
+									$lastname = $details->userprofile->lastname ?? $details->lastname;
+									$salary_grade_id = $details->payroll_salary_grade_id;
+									$work_sched_id = $details->payroll_work_schedule_id;
+									$userid = $details->user_id;
 								}
 							@endphp
 

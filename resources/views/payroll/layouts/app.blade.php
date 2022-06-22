@@ -190,7 +190,7 @@
                                         {{ __('Change Password') }}
                                     </a>
                                 @endcan
-                                @can('payroll_admin_access')
+                                @can('payroll_employee_access')
                                     <a class="dropdown-item" href="{{ route('payroll.employee.password.index') }}">
                                         {{ __('Change Password') }}
                                     </a>

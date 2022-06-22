@@ -22,7 +22,7 @@ class PayrollEmployeeController extends Controller
     			->where([
     				['user_id', $request->user()->id],
     				['created_at', 'LIKE', date('Y-m-d').'%'],
-    			])->paginate(15, ['*'], 'attendance');
+    			])->orderBy('created_at', 'desc')->paginate(15, ['*'], 'attendance');
     	$request->flash();
     	return view('payroll.employee.index')->with(compact('attendance'));
     }
@@ -34,6 +34,7 @@ class PayrollEmployeeController extends Controller
 
     	$attendance = PayrollAttendance::where('user_id', $request->user()->id)
     			->whereBetween('created_at', [$startDT, $endDT])
+    			->orderBy('created_at', 'desc')
     			->paginate(15, ['*'], 'attendance');
     	
     	if (!$attendance) 
@@ -92,8 +93,8 @@ class PayrollEmployeeController extends Controller
 
     	if ($attendance) 
     	{
-    		$workSched = PayrollWorkSchedule::where('id', $attendance->payroll_work_schedule_id)->get();
-    		$wsArr = explode('-', $workSched[0]->schedule);
+    		$workSched = PayrollWorkSchedule::find($attendance->payroll_work_schedule_id);
+    		$wsArr = explode('-', $workSched->schedule);
 
     		if ($request->input('lunchout')) 
     		{
@@ -123,14 +124,16 @@ class PayrollEmployeeController extends Controller
     			
     			$tNdif = $nghDff1 + $nghDff2;
 
-    			$hstart = (Carbon::parse($attendance->time_out_break)->diffInMinutes(Carbon::parse($attendance->time_in)));
-    			$hend = (Carbon::parse($request->input('timeout'))->diffInMinutes(Carbon::parse($attendance->time_in_break)));
+    			$hstart = (Carbon::parse($attendance->time_out_break)->diffInMinutes(Carbon::parse($attendance->time_in), false));
+    			$hend = (Carbon::parse($request->input('timeout'))->diffInMinutes(Carbon::parse($attendance->time_in_break), false));
     			
     			$overtime = ($hstart + $hend) - $schedMH;
-    			
+    			/* total manhour - 60 min break */
+    			$manhr = ($hstart + $hend) - 60;
+
     			$attendance->update([
     				'time_out' => $request->input('timeout'),
-    				'manhour' => ($hstart + $hend),
+    				'manhour' =>  $manhr > 0 ? $manhr : 0,
     				'overtime' => $overtime > 0 ? $overtime : 0,
     				'night_diff' => $tNdif,
     			]);
@@ -141,21 +144,22 @@ class PayrollEmployeeController extends Controller
     		$cutoff = PayrollCutOff::get();
     		$holiday = PayrollHoliday::where('date', date('n').'-'.date('j'))->get();
     		$employee = PayrollEmployee::where('user_id', $request->user()->id)->get();
-    		$workSched = PayrollWorkSchedule::where('id', $employee[0]->payroll_work_schedule_id)->get();
-    		$wsArr = explode('-', $workSched[0]->schedule);
+    		$workSched = PayrollWorkSchedule::find($employee[0]->payroll_work_schedule_id);
+    		$wsArr = explode('-', $workSched->schedule);
     		$day = intval(date('d'));
     		$id = 0;
 
     		foreach ($cutoff as $date) 
     		{
     			$dtrange = explode('to', $date->cut_off);
+    			/* get the id of current cutoff period */
     			if ($day >= intval($dtrange[0]) AND intval($day <= $dtrange[1]))
     			{
     				$id = $date->id;
     				break;
     			}
     		}
-    		$tardiness = (Carbon::parse($request->input('timein')))->diffInMinutes(Carbon::parse(trim($wsArr[0])));
+    		$tardiness = Carbon::parse(trim($wsArr[0]))->diffInMinutes(Carbon::parse($request->input('timein')), false);
     		$created = PayrollAttendance::create([
     			'user_id' => $request->user()->id,
     			'payroll_cut_off_id' => $id,

@@ -67,7 +67,7 @@
 												<td class="small">{{ number_format($data->manhour / 60, 2) }}</td>
 												<td class="small">{{ number_format($data->overtime / 60, 2) }}</td>
 												<td class="small">{{ number_format($data->night_diff / 60, 2) }}</td>
-												<td class="small">{{ number_format($data->tardiness / 60, 2) }}</td>
+												<td class="small">{{ $data->tardiness > 0 ? number_format($data->tardiness / 60, 2) : 0 }}</td>
 												<td class="small">
 													<a href="#" class="fw-bold">
 														{{ __('Request Change') }}

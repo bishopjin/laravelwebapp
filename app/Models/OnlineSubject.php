@@ -11,7 +11,7 @@ class OnlineSubject extends Model
 
     protected $fillable = [
         'subject',
-        'users_profile_id',
+        'user_id',
     ];
 
     protected $hidden = [
@@ -27,6 +27,6 @@ class OnlineSubject extends Model
     public function userprofile()
     {
     	/* refered to the user id, instead of userproflie id : reason = from old system */
-    	return $this->belongsTo(UsersProfile::class, 'users_profile_id', 'user_id');
+    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
     }
 }
