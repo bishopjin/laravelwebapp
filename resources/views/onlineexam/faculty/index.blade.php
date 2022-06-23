@@ -102,8 +102,8 @@
                                             @foreach($exam_list as $exam)
                                                 <tr>
                                                     <td>{{ $exam->exam_code }}</td>
-                                                    <td class="text-center">{{ $exam->subject }}</td>
-                                                    <td class="text-center">{{ $exam->timer }}</td>
+                                                    <td>{{ $exam->onlinesubject->subject }}</td>
+                                                    <td>{{ $exam->timer }}</td>
                                                 </tr>
                                             @endforeach
                                         @endisset

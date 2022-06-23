@@ -28,13 +28,12 @@ class FacultyController extends Controller
             {
                 $student_list = OnlineExamination::with('userprofile')
                         ->find($request->user()->id)->paginate(10, ['*'], 'list');  
+                return view('onlineexam.faculty.index')->with(compact('exam_list', 'studentProfile', 'student_list'));
             }         
             else
             {
-                $student_list = collect(new OnlineExamination);
+                return view('onlineexam.faculty.index')->with(compact('exam_list', 'studentProfile'));
             }
-
-            return view('onlineexam.faculty.index')->with(compact('exam_list', 'studentProfile', 'student_list'));
         }
         else
         {
@@ -72,7 +71,7 @@ class FacultyController extends Controller
 
         if (OnlineSubject::exists()) 
         {
-            $subjects = OnlineSubject::find($request->input('subject'))->get();
+            $subjects = OnlineSubject::find($request->input('subject'));
         }
         
         if ($subjects)
@@ -85,7 +84,7 @@ class FacultyController extends Controller
                 $randomChar .= $characters[rand(0, $charactersLength - 1)];
             }
 
-            $gen_exam_code = $subjects[0]->subject.'-'.$randomChar;
+            $gen_exam_code = $subjects->subject.'-'.$randomChar;
 
             $exam_code = OnlineExam::create([
                 'exam_code' => $gen_exam_code,

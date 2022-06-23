@@ -38,24 +38,22 @@
                                 <tbody>
                                     @isset($userProfile)
                                         @foreach($userProfile as $user)
-                                            @if(session('user_access') == '1')
-                                                <tr>
-                                                    <td>{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
-                                                    <td>{{ $user->gender->gender }}</td>
-                                                    <td>{{ $user->onlinecourse->course }}</td>
-                                                    <td>{{ __('For standalone system only') }}</td>
-                                                    <td>
-                                                        <form method="POST" action="{{ route('online.user.delete') }}">
-                                                            @csrf
-                                                            <input type="hidden" name="user_id" value="{{ $user->user->id }}">
-                                                            <input type="hidden" name="access_level" value="{{ $user->user->access_level }}">
-                                                            <input type="hidden" name="isactive" value="{{ $user->user->isactive }}">
-                                                            <input type="submit" value="@if($user->user->isactive) Disable Account @else Enable Account @endif" 
-                                                                class="btn @if($user->user->isactive) btn-outline-danger @else btn-outline-success @endif">
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endif
+                                            <tr>
+                                                <td>{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
+                                                <td>{{ $user->gender->gender }}</td>
+                                                <td>{{ $user->onlinecourse->course }}</td>
+                                                <td>{{ __('For standalone system only') }}</td>
+                                                <td>
+                                                    <form method="POST" action="{{ route('online.user.delete') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="user_id" value="{{ $user->user->id }}">
+                                                        <input type="hidden" name="access_level" value="{{ $user->user->access_level }}">
+                                                        <input type="hidden" name="isactive" value="{{ $user->user->isactive }}">
+                                                        <input type="submit" value="@if($user->user->isactive) Disable Account @else Enable Account @endif" 
+                                                            class="btn @if($user->user->isactive) btn-outline-danger @else btn-outline-success @endif">
+                                                    </form>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     @endisset
                                 </tbody>

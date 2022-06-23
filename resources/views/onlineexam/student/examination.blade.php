@@ -38,7 +38,7 @@
                                                 {{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}
                                             </div>
                                             <div>
-                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ Session::get('course')->course }}</span>
+                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course->course }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">

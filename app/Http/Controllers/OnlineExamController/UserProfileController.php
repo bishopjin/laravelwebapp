@@ -12,15 +12,15 @@ class UserProfileController extends Controller
 {
     protected function Show(Request $request)
     {
-        if($request->user()->hasRole('Admin')) 
+        if($request->user()->can('exam_admin_access')) 
         {
             $view_name = 'onlineexam.admin.profile';
         }
-        elseif($request->user()->hasRole('Faculty'))
+        elseif($request->user()->can('exam_faculty_access'))
         {
             $view_name = 'onlineexam.faculty.profile';
         }
-        elseif($request->user()->hasRole('Student'))
+        else
         {
             $view_name = 'onlineexam.student.profile'; 
         }
@@ -58,15 +58,15 @@ class UserProfileController extends Controller
 
             if ($updated > 0)
             {   
-                if($request->user()->hasRole('Admin')) 
+                if($request->user()->can('exam_admin_access')) 
                 {
                     $route_name = 'online.admin.index';
                 }
-                elseif($request->user()->hasRole('Faculty'))
+                elseif($request->user()->can('exam_faculty_access'))
                 {
                     $route_name = 'online.faculty.index';
                 }
-                elseif($request->user()->hasRole('Student'))
+                else
                 {
                     $route_name = 'online.student.index'; 
                 }

@@ -32,6 +32,10 @@ class StudentController extends Controller
     {
     	$find_exam = [];
 
+        $user = User::find($request->user()->id)->userprofile;
+
+        $course = OnlineCourse::find($user->online_course_id);
+
     	$exams = OnlineExam::with('onlinesubject')
     			->where('online_exams.exam_code', $request->input('exam_code'))->get();
         
@@ -65,7 +69,7 @@ class StudentController extends Controller
                         ->where('online_exam_id', $exams[0]->id)->select('id', 'question')
                         ->get()->shuffle();
                 
-                return view('onlineexam.student.examination')->with(compact('questions', 'exams'));
+                return view('onlineexam.student.examination')->with(compact('questions', 'exams', 'course'));
             }
         }
     }
@@ -90,7 +94,7 @@ class StudentController extends Controller
     		'user_id' => $request->user()->id,
             'faculty_id' => $request->input('facultyID'),
     		'total_question' => $all_question->count(),
-    		'exam_score' => $score,
+    		'exam_score' => $score
     	]);
     	return redirect()->route('online.student.index');
     }

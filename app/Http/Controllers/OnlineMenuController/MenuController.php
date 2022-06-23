@@ -76,7 +76,7 @@ class MenuController extends Controller
         }
         else { $taxes = collect(new OrderTax); }
 
-        if ($request->user()->hasRole('Admin'))
+        if ($request->user()->can('view_menu_order_list') AND $request->user()->can('view_menu_user_list'))
         {
             $pagination = $this->GetAllOrder($request, $taxes);
 
@@ -84,7 +84,7 @@ class MenuController extends Controller
 
             return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
         }
-        elseif ($request->user()->hasRole('Customer'))
+        else
         {
             $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
             
