@@ -26,6 +26,7 @@
 									<th>{{ __('Cut-Off') }}</th>
 									<th>{{ __('Date Range') }}</th>
 									<th>{{ __('Pay Date') }}</th>
+									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
 									@if($cutoffperiod)
@@ -34,6 +35,20 @@
 												<td>{{ $period['cut_off'] }}</td>
 												<td>{{ __('from') }} {{ $period['daterange'] }}</td>
 												<td>{{ $period['paydate'] }}</td>
+												<td>
+													@php
+														$arrdate = explode(' ', $period['paydate']);
+													@endphp
+													@if(intval(date('d')) >= intval($arrdate[1]) AND intval(date('d')) <= intval($arrdate[1]) + 5)
+														<form method="POST" action="{{ route('payroll.admin.salary.create') }}">
+															@csrf
+															<div class="form-group">
+																<input type="hidden" name="cutoffId" value="{{ $period['id'] }}">
+																<input type="submit" class="btn btn-sm btn-outline-primary" value="Compute">
+															</div>
+														</form>
+													@endif
+												</td>
 											</tr>
 										@endforeach
 									@endif

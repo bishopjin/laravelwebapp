@@ -10,7 +10,7 @@ class PayrollSalaryDeduction extends Model
     use HasFactory;
 
     protected $fillable = [
-    	'payroll_cut_off_id',
+    	'payroll_attendance_id',
     	'payroll_deduction_id',
     	'no_minutes',
     	'amount',

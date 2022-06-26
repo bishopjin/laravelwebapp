@@ -27,6 +27,8 @@ class CreatePayrollAttendancesTable extends Migration
             $table->float('overtime')->default(0);
             $table->float('night_diff')->default(0);
             $table->float('tardiness')->default(0);
+            $table->integer('changeRequest')->default(0);
+            $table->integer('payroll_payslip_id')->default(0);
             $table->timestamps();
         });
     }

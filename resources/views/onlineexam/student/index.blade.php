@@ -36,7 +36,7 @@
                                                     @php
                                                         $user = auth::user()->userprofile;
                                                     @endphp
-                                                    {{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}
+                                                    {{ $user->full_name }}
                                                 </div>
                                                 <div>
                                                     <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course->course }}</span>

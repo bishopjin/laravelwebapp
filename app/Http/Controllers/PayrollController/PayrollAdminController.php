@@ -13,8 +13,12 @@ use App\Models\PayrollDeduction;
 use App\Models\PayrollAddition;
 use App\Models\PayrollCutOff;
 use App\Models\PayrollWorkSchedule;
+use App\Models\PayrollAttendance;
+use App\Models\PayrollAttendanceRequest;
+use App\Models\PayrollPayslip;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PayrollAdminController extends Controller
 {
@@ -22,9 +26,9 @@ class PayrollAdminController extends Controller
 	{
         $cutoffperiod = [];
 
-        $workSchedule = PayrollWorkSchedule::get();
+        $workSchedule = PayrollWorkSchedule::all();
 
-        $cutOff = PayrollCutOff::get();
+        $cutOff = PayrollCutOff::all();
 
 		$holidays = PayrollHoliday::paginate(10, ['*'], 'holiday');
 
@@ -45,6 +49,8 @@ class PayrollAdminController extends Controller
 
         if ($cutOff->count() > 0)
         {
+            $co1 = 0;
+            $perid = 1;
             $curYear = date('Y');
             $curMonth = date('m');
             $monthName = date('F', mktime(0, 0, 0, $curMonth));
@@ -52,11 +58,13 @@ class PayrollAdminController extends Controller
             foreach ($cutOff as $period) 
             {
                 $cutoffArr = explode('to', $period->cut_off);
-                $paydate = $monthName.' '.(intval(trim($cutoffArr[1])) + 5);
+                $paydate = $monthName.' '.(intval(trim($cutoffArr[1])) + 6);
+                $nextMo = date('F', mktime(0, 0, 0, $curMonth + 1));
 
                 if ($period->id == 1)
                 {
                     $dateR = $monthName.' '.$cutoffArr[0].'to '.$monthName.' '.trim($cutoffArr[1]);
+                    $co1 = intval(trim($cutoffArr[0]));
                 }
                 else
                 {
@@ -64,17 +72,17 @@ class PayrollAdminController extends Controller
                     if ((intval(trim($cutoffArr[0]) + 14) > $daysOfTheCurMo)) 
                     {
                         $cutofStart = trim(explode('to', $period->cut_off)[0]);
-                        $nextMo = date('F', mktime(0, 0, 0, $curMonth + 1));
                         $dateR = $monthName.' '.$cutofStart.' to '.$nextMo.' '.trim($cutoffArr[1]);
-                        $paydate = $nextMo.' '.(intval(trim($cutoffArr[1])) + 5);
                     }
                     else
                     {
                         $dateR = $monthName.' '.$cutoffArr[0].'to '.$monthName.' '.trim($cutoffArr[1]);
                     }
+                    $perid = $period->id;
+                    $paydate = $nextMo.' '.((intval(trim($cutoffArr[1])) >= 30 ? $co1 : intval(trim($cutoffArr[1]))) + 6);
                 }
-                
-                array_push($cutoffperiod, array('cut_off' => $period->cut_off, 'daterange' => $dateR, 'paydate' => $paydate));
+
+                array_push($cutoffperiod, array('id' => $perid, 'cut_off' => $period->cut_off, 'daterange' => $dateR, 'paydate' => $paydate));
             }
         }
 			
@@ -83,9 +91,9 @@ class PayrollAdminController extends Controller
 
 	protected function UserIndex()
 	{
-		$salary_grade = PayrollSalaryGrade::get();
+		$salary_grade = PayrollSalaryGrade::all();
 
-        $workSchedule = PayrollWorkSchedule::get();
+        $workSchedule = PayrollWorkSchedule::all();
 
 		return view('payroll.admin.register')->with(compact('salary_grade', 'workSchedule'));
 	}
@@ -101,8 +109,8 @@ class PayrollAdminController extends Controller
 
     	if ($details->count() > 0) 
     	{
-    		$salary_grade = PayrollSalaryGrade::get();
-            $workSchedule = PayrollWorkSchedule::get();
+    		$salary_grade = PayrollSalaryGrade::all();
+            $workSchedule = PayrollWorkSchedule::all();
 
     		return view('payroll.admin.register')->with(compact('details', 'salary_grade', 'workSchedule'));
     	}
@@ -114,90 +122,73 @@ class PayrollAdminController extends Controller
 
     protected function UserCreate(Request $request)
     {
-    	$exist = PayrollEmployee::find($request->input('id'));
-    	/* */
-    	if ($exist->count() > 0) 
-    	{
-    		$update = $exist->update([
-                        'payroll_salary_grade_id' => $request->input('salarygrade'),
-                        'payroll_work_schedule_id' => $request->input('workschedule'),
-                    ]);
+		if (intval($request->input('id')) == 0) 
+		{
+			$validator = Validator::make($request->all(), [
+	            'username' => ['required', 'string', 'max:255', 'unique:users'],
+	            'firstname' => ['required', 'string', 'max:255'],
+	            'lastname' => ['required', 'string', 'max:255'],
+	            'gender' => ['required', 'string', 'max:1'],
+	            'email' => ['required', 'email'],
+	            'DOB' => ['date'],
+	        ]);
 
-    		if ($update) 
-    		{
-    			$message = 'Record updated';
-    		}
-    		else
-    		{
-    			$message = 'Update failed';
-    		}
+	        if ($validator->fails()) 
+	        {
+	            return redirect()->route('payroll.admin.user.index')->withErrors($validator)->withInput();
+	        }
+	        else
+	        {
+	        	$user_create = User::create([
+    				'username' => $request->input('username'),
+    				'password' => Hash::make($request->input('username')),
+    				'access_level' => 1,
+    				'isactive' => 1,
+    			]);
+
+	        	if ($user_create->id > 0) 
+	        	{
+	        		$profile_create = UsersProfile::create([
+	        			'user_id' => $user_create->id,
+	        			'firstname' => $request->input('username'),
+	        			'middlename' => $request->input('middlename') ?? '',
+	        			'lastname' => $request->input('lastname'),
+	        			'email' => $request->input('email'),
+	        			'gender_id' => intval($request->input('gender')),
+	        			'online_course_id' => 1,
+	        			'DOB' => $request->input('DOB'),
+	        		]);
+	        	}
+	        	if ($profile_create) 
+	        	{
+	        		$created = PayrollEmployee::create([
+			    		'user_id' => $user_create->id,
+			    		'payroll_salary_grade_id' => $request->input('salarygrade'),
+                        'payroll_work_schedule_id' => $request->input('workschedule'),
+                        'salary_rate' => $request->input('salary_rate'),
+			    	]);
+	        	}
+	        }
+		}
+		else
+		{
+    		$created = PayrollEmployee::updateOrCreate([
+                'user_id' => $request->input('id'),
+            ],
+            [
+	    		'payroll_salary_grade_id' => $request->input('salarygrade'),
+                'payroll_work_schedule_id' => $request->input('workschedule'),
+                'salary_rate' => $request->input('salary_rate'),
+	    	]);
+    	}
+
+    	if ($created->id > 0) 
+    	{
+    		$message = 'User registered';
     	}
     	else
     	{
-    		if (intval($request->input('id')) == 0) 
-    		{
-    			$validator = Validator::make($request->all(), [
-		            'username' => ['required', 'string', 'max:255', 'unique:users'],
-		            'firstname' => ['required', 'string', 'max:255'],
-		            'lastname' => ['required', 'string', 'max:255'],
-		            'gender' => ['required', 'string', 'max:1'],
-		            'email' => ['required', 'email'],
-		            'DOB' => ['date'],
-		        ]);
-
-		        if ($validator->fails()) 
-		        {
-		            return redirect()->route('payroll.admin.user.index')->withErrors($validator)->withInput();
-		        }
-		        else
-		        {
-		        	$user_create = User::create([
-	    				'username' => $request->input('username'),
-	    				'password' => Hash::make($request->input('username')),
-	    				'access_level' => 1,
-	    				'isactive' => 1,
-	    			]);
-
-		        	if ($user_create->id > 0) 
-		        	{
-		        		$profile_create = UsersProfile::create([
-		        			'user_id' => $user_create->id,
-		        			'firstname' => $request->input('username'),
-		        			'middlename' => $request->input('middlename') ?? '',
-		        			'lastname' => $request->input('lastname'),
-		        			'email' => $request->input('email'),
-		        			'gender_id' => intval($request->input('gender')),
-		        			'online_course_id' => 1,
-		        			'DOB' => $request->input('DOB'),
-		        		]);
-		        	}
-		        	if ($profile_create) 
-		        	{
-		        		$created = PayrollEmployee::create([
-				    		'user_id' => $user_create->id,
-				    		'payroll_salary_grade_id' => $request->input('salarygrade'),
-                            'payroll_work_schedule_id' => $request->input('workschedule'),
-				    	]);
-		        	}
-		        }
-    		}
-    		else
-    		{
-	    		$created = PayrollEmployee::create([
-		    		'user_id' => $request->input('id'),
-		    		'payroll_salary_grade_id' => $request->input('salarygrade'),
-                    'payroll_work_schedule_id' => $request->input('workschedule'),
-		    	]);
-	    	}
-
-	    	if ($created->id > 0) 
-	    	{
-	    		$message = 'User registered';
-	    	}
-	    	else
-	    	{
-	    		$message = 'Registration failed';
-	    	}
+    		$message = 'Registration failed';
     	}
     	return redirect()->back()->with('message', $message);
     }
@@ -431,7 +422,7 @@ class PayrollAdminController extends Controller
 
     protected function CutoffEdit(Request $request)
     {
-        $cutOff = PayrollCutOff::get();
+        $cutOff = PayrollCutOff::all();
         return view('payroll.admin.cutoff')->with(compact('cutOff'));
     }
 
@@ -453,5 +444,165 @@ class PayrollAdminController extends Controller
             }
         }
         return redirect()->back()->with(['message' => $message]);
+    }
+
+    protected function AttendanceRequestIndex(Request $request)
+    {
+        $attendance = PayrollAttendanceRequest::with(['employee', 'attendance'])
+            ->where([
+                ['approver_id', $request->user()->id],
+                ['status', 0],
+            ])->paginate(10);
+        return view('payroll.admin.attendancerequest')->with(compact('attendance'));
+    }
+
+    protected function RequestAction(Request $request)
+    {
+        $updtRqst = PayrollAttendanceRequest::find($request->input('id'));
+        $updtRqst->update(['status' => $request->input('status')]);
+
+        if ($updtRqst->id > 0) 
+        {
+            $attndc = PayrollAttendance::find($updtRqst->payroll_attendance_id);
+            
+            if ($request->input('status') == '1') 
+            {
+                $workSched = PayrollWorkSchedule::find($attndc->payroll_work_schedule_id);
+                $wsArr = explode('-', $workSched->schedule);
+                
+                /* get the manhour less 1 hour break from schedule */
+                $schedMH = $this->getSchedMnhr($attndc->payroll_work_schedule_id);
+                /* total manhour */
+                $manhr = $this->getTotalMnhr($updtRqst->time_in, $attndc->time_out_break, $attndc->time_in_break, $updtRqst->time_out, $schedMH);
+                /* overtime */
+                $overtime = $manhr - $schedMH;
+                $attndc->update([
+                    'time_in' => $updtRqst->time_in,
+                    'time_out_break' => $updtRqst->time_out_break,
+                    'time_in_break' => $updtRqst->time_in_break,
+                    'time_out' => $updtRqst->time_out,
+                    'manhour' =>  $manhr > 0 ? ($manhr > $schedMH ? $schedMH : $manhr) : 0,
+                    'overtime' => $overtime > 0 ? $overtime : 0,
+                    'night_diff' => $this->getNightDiff($updtRqst->time_out),
+                    'tardiness' => $this->getTardiness(trim($wsArr[0]), $updtRqst->time_in),
+                    'changeRequest' => 2,
+                ]);
+            }
+            else
+            {
+                $attndc->update(['changeRequest' => 3]);
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    protected function ComputeSalary(Request $request)
+    {
+        PayrollEmployee::with('salarygrade')->chunk(10, function ($employees) use ($request) {
+            foreach ($employees as $employee) {
+                $attendances = PayrollAttendance::with('holiday')->where([
+                    ['user_id', '=', $employee->user_id],
+                    ['payroll_cut_off_id', '=', $request->input('cutoffId')],
+                    ['payroll_payslip_id', '=', 0],
+                ])->chunk(15, function ($attendances) use ($request, $employee) {
+                    $tmnh = 0; $tot = 0; $tndf = 0; $ttrd = 0; $bscpay = 0;
+                    $hrRte = 0; $totlPy = 0;
+                    $noDys = $request->input('cutoffId') == 1 ? 15 : (Carbon::now()->month(date('m'))->daysInMonth) % 2 + 15;
+                    
+                    foreach ($attendances as $attendance) {
+                        $tmnh += $attendance->manhour;
+                        $tot += $attendance->overtime;
+                        $tndf += $attendance->night_diff; 
+                        $ttrd += $attendance->tardiness;
+                    }
+                    
+                    if ($employee->payroll_salary_grade_id == 1) 
+                    {
+                        $hrRte = $employee->salary_rate / 8;
+                        $bscpay = ($tmnh / 60) * $hrRte;
+                    }
+                    else
+                    {
+                        $hrRte = ($employee->salary_rate / 30) / 8;
+                        $bscpay = $employee->salary_rate / 2;
+                    }
+
+                    $totlPy += ($employee->salarygrade->night_diff_applied ? 0 : 0); 
+                    
+                    /*if ($employee->salarygrade->overtime_applied) 
+                    {
+                        
+                    }
+                    if ($employee->salarygrade->cola_applied) 
+                    {
+                        
+                    }*/
+                    
+                    $tot_pay = ($tot / 60) * $hrRte;
+                    $tndf_pay = ($tndf / 60) * $hrRte; 
+                    $less_ttrd = ($ttrd / 60)  * $hrRte;
+
+                    /*$crtPyslp = PayrollPayslip::create([
+                    'user_id' => $employee->user_id,
+                    'payroll_cut_off_id' => $request->input('id'),
+                    'total_manhour' => $tmnh,
+                    'payroll_salary_addition_id' => 0,
+                    'total_addition' => 0,
+                    'payroll_salary_deduction_id' => 0,
+                    'total_deduction' => 0,
+                    ]);*/
+                });
+            }
+        });
+        
+        return redirect()->back(); 
+    }
+
+    /* Services */
+    private function getTardiness($schedule_in, $actual_in)
+    {
+        return Carbon::parse($schedule_in)->diffInMinutes(Carbon::parse($actual_in), false);
+    }
+
+    private function getSchedMnhr($workSchedID)
+    {
+        $workSched = PayrollWorkSchedule::find($workSchedID);
+        $wsArr = explode('-', $workSched->schedule);
+
+        return (Carbon::parse(trim($wsArr[1]))->diffInMinutes(Carbon::parse(trim($wsArr[0]))) - 60);;
+    }
+
+    private function getNightDiff($time_out)
+    {
+        $nghDff1 = 0;
+        $nghDff2 = 0;
+        /* check if night diff 10 to 12 mn */
+        if (strtotime($time_out) >= strtotime('22:00:00') AND strtotime($time_out) <= strtotime('23:59:00')) 
+        {
+            $nghDff1 = (Carbon::parse($time_out)->diffInMinutes(Carbon::parse('22:00:00')));
+        }
+
+        if (strtotime($time_out) >= strtotime('24:00:00') AND strtotime($time_out) <= strtotime('06:00:00')) 
+        {
+            $nghDff2 = (Carbon::parse($time_out)->diffInMinutes(Carbon::parse('24:00:00')));;
+        }
+        
+        return ($nghDff1 + $nghDff2);
+    }
+
+    private function getTotalMnhr($time_in, $lunch_out, $lunch_in, $time_out, $schedMH)
+    {
+        $hstart = (Carbon::parse($lunch_out)->diffInMinutes(Carbon::parse($time_in), true));
+        $hend = (Carbon::parse($time_out)->diffInMinutes(Carbon::parse($lunch_in), true));
+
+        $manhr = ($hstart + $hend);
+
+        if (($hstart + $hend) > ($schedMH / 2)) 
+        {
+            $manhr -= 60;
+        }
+
+        return $manhr;
     }
 }

@@ -32,7 +32,7 @@
                                         else { $price = $item->price; }
                                     @endphp
                                     <tr>
-                                        <td class="fw-bolder">{{ $item->itemID }}</td>
+                                        <td class="fw-bolder">{{ $item->id }}</td>
                                         <td>{{ $item->brand->brand }}</td>
                                         <td>{{ $item->size->size }}</td>
                                         <td>{{ $item->color->color }}</td>

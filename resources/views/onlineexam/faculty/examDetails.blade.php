@@ -38,16 +38,7 @@
                                 <div class="card-header">{{ __('Details') }}</div>
                                 <div class="card-body">
                                     <div class="fw-bold fs-5">{{ __('Student Name: ') }}
-                                        @php
-                                            $last; $first; $middle;
-                                            foreach($exam_result as $result) {
-                                                $last = $result->userprofile->lastname;
-                                                $first = $result->userprofile->firstname;
-                                                $middle = $result->userprofile->middlename;
-                                                break;
-                                            }
-                                        @endphp
-                                        {{ $last }}, {{ $first }} {{ $middle }}
+                                        {{ $exam_result[0]->userprofile->full_name }}
                                     </div>
                                     <hr>
                                     @foreach($exam_result as $result)

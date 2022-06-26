@@ -10,7 +10,7 @@
                 <div class="card-body px-md-5">
                     <div class="form-group pb-3">
                         <label>Item ID</label>
-                        <input type="text" class="form-control" value="{{ $item_detail->itemID ?? '' }}" readonly="">
+                        <input type="text" class="form-control" value="{{ $item_detail->id ?? '' }}" readonly="">
                     </div>
                     <div class="form-group pb-3">
                         <label>Brand</label>

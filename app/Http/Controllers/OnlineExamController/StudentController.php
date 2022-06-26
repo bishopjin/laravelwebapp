@@ -5,7 +5,6 @@ namespace App\Http\Controllers\OnlineExamController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\OnlineExamination;
 use App\Models\OnlineExam;
@@ -83,7 +82,7 @@ class StudentController extends Controller
 
     	foreach($all_question as $question)
     	{
-    		if($request->input($question->id) === Crypt::decryptString($question->key_to_correct))
+    		if($request->input($question->id) === $question->key_to_correct)
     		{
     			$score++;
     		}

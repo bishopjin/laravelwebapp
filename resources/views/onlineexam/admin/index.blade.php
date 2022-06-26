@@ -39,7 +39,7 @@
                                     @isset($userProfile)
                                         @foreach($userProfile as $user)
                                             <tr>
-                                                <td>{{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}</td>
+                                                <td>{{ $user->full_name }}</td>
                                                 <td>{{ $user->gender->gender }}</td>
                                                 <td>{{ $user->onlinecourse->course }}</td>
                                                 <td>{{ __('For standalone system only') }}</td>
@@ -85,9 +85,7 @@
                                             @endphp
                                             <tr>
                                                 <td id="{{ $subjectID }}">{{ $subject->subject }}</td>
-                                                <td>{{ $subject->userprofile->lastname }},&nbsp;
-                                                    {{ $subject->userprofile->firstname }} 
-                                                    {{ $subject->userprofile->middlename }}</td>
+                                                <td>{{ $subject->userprofile->full_name }}</td>
                                                 <td>
                                                     <a href="javascript:void(0)" class="btn btn-outline-success editSubject" id="{{ $subject->id }}">Edit</a>
                                                 </td>

@@ -25,7 +25,7 @@ class UserProfileController extends Controller
             $view_name = 'onlineexam.student.profile'; 
         }
 
-        $courses = OnlineCourse::get();
+        $courses = OnlineCourse::all();
         $user_details = UsersProfile::where('user_id', $request->user()->id)->get();
         
         return view($view_name)->with(compact('user_details', 'courses'));

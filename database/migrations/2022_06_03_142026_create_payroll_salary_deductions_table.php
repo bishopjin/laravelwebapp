@@ -15,7 +15,7 @@ class CreatePayrollSalaryDeductionsTable extends Migration
     {
         Schema::create('payroll_salary_deductions', function (Blueprint $table) {
             $table->id();
-            $table->integer('payroll_cut_off_id');
+            $table->integer('payroll_attendance_id');
             $table->integer('payroll_deduction_id');
             $table->float('no_minutes');
             $table->float('amount');

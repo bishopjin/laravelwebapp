@@ -33,6 +33,12 @@ class UsersProfile extends Model
         'gender_id' => 'integer',
     ];
 
+    /* accessor */
+    protected function getFullNameAttribute()
+    {
+        return "{$this->lastname}, {$this->firstname} {$this->middlename}";
+    }
+    
     public function user() 
     {
         return $this->belongsTo(User::class);
@@ -91,5 +97,15 @@ class UsersProfile extends Model
     public function payrollemployee()
     {
         return $this->hasOne(PayrollEmployee::class, 'user_id', 'id');
+    }
+
+    public function approverattendancerequest()
+    {
+        return $this->hasMany(PayrollAttendanceRequest::class, 'user_id', 'approver_id');
+    }
+
+    public function requestorattendancerequest()
+    {
+        return $this->hasMany(PayrollAttendanceRequest::class, 'user_id', 'employee_id');
     }
 }

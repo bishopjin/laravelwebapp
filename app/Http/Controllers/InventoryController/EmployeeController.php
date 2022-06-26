@@ -16,14 +16,12 @@ class EmployeeController extends Controller
     protected function Index(Request $request)
     {
         $employee_log = InventoryEmployeeLog::with('userprofile')->paginate(10);
-
         return view('inventory.employee.index')->with(compact('employee_log'));
     }
 
     protected function Edit(Request $request)
     {
         $user_details = User::with('userprofile')->where('id', '>', 1)->paginate(10);
-        
         return view('inventory.employee.edit')->with(compact('user_details'));
     }
 
@@ -31,11 +29,7 @@ class EmployeeController extends Controller
     {
         $user_details = User::with('userprofile')->find($id);
                 
-        if (InventoryAccessLevel::exists()) {
-                $access_level = InventoryAccessLevel::select('id', 'user_type')->get();
-        }
-        else { $access_level = collect(new InventoryAccessLevel); }
-
+        $access_level = InventoryAccessLevel::select('id', 'user_type')->get();
         return view('inventory.employee.editaccess')->with(compact('user_details', 'access_level'));
     }
 

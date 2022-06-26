@@ -98,23 +98,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @isset($order_summary)
-                                        @foreach ($order_summary as $item)
+                                    @isset($orders)
+                                        @foreach ($orders as $order)
                                             @php
                                                 /* add trailing zero for non-decimal price */
-                                                $price =  $item['shoe']['price']; 
-                                                $cost = $item['shoe']['price'] * $item['qty'];  
+                                                $price =  $order->shoe->price; 
+                                                $cost = $order->shoe->price * $order->qty;  
                                             @endphp
                                             <tr>
-                                                <td class="fw-bolder">{{ $item['order_number'] }}</td>
-                                                <td>{{ $item['shoe']['itemID'] }}</td>
-                                                <td>{{ $item['shoe']['brand']['brand'] }}</td>
-                                                <td>{{ $item['shoe']['size']['size'] }}</td>
-                                                <td>{{ $item['shoe']['color']['color'] }}</td>
-                                                <td>{{ $item['shoe']['type']['type'] }}</td>
-                                                <td>{{ $item['shoe']['category']['category'] }}</td>
+                                                <td class="fw-bolder">{{ $order->order_number }}</td>
+                                                <td>{{ $order->shoe->id }}</td>
+                                                <td>{{ $order->shoe->brand->brand }}</td>
+                                                <td>{{ $order->shoe->size->size }}</td>
+                                                <td>{{ $order->shoe->color->color }}</td>
+                                                <td>{{ $order->shoe->type->type }}</td>
+                                                <td>{{ $order->shoe->category->category }}</td>
                                                 <td>{{ $price }}</td>
-                                                <td>{{ $item['qty'] }}</td>
+                                                <td>{{ $order->qty }}</td>
                                                 <td>{{ $cost }}</td>
                                             </tr>
                                         @endforeach
@@ -122,8 +122,8 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
-                                @isset($order_summary)
-                                    {{ $order_summary->links() }}
+                                @isset($orders)
+                                    {{ $orders->links() }}
                                 @endisset
                             </div>
                         </div>
@@ -180,17 +180,17 @@
                     data: {item_id : itemIDVal, _token : '{{ csrf_token() }}'},
                     dataType: 'json',
                     success: function(result, status, xhr){
-                        if (result.length > 0) {
-                            $('#BID').val(result[0].brand.brand);
-                            $('#CID').val(result[0].color.color);
-                            $('#SID').val(result[0].size.size);
-                            $('#TID').val(result[0].type.type);
-                            $('#CatID').val(result[0].category.category);
-                            $('#price').val(result[0].price);
-                            $('#stock').val(result[0].in_stock);
-                            $(shoe_id).val(result[0].id);
+                        if (!$.isEmptyObject(result)) {
+                            $('#BID').val(result.brand.brand);
+                            $('#CID').val(result.color.color);
+                            $('#SID').val(result.size.size);
+                            $('#TID').val(result.type.type);
+                            $('#CatID').val(result.category.category);
+                            $('#price').val(result.price);
+                            $('#stock').val(result.in_stock);
+                            $(shoe_id).val(result.id);
                             $('#errorMsg').html('');
-                            if (result[0].in_stock == 0) {
+                            if (result.in_stock == 0) {
                                 $('#outOfstockErr').html('Out of Stock');
                                 $(modalHeader).html('Warning').css('color', '#FFFF00');
                                 $(responseContent).html('Out of Stock');

@@ -21,9 +21,7 @@ class DashboardController extends Controller
      */
     protected function Index(Request $request)
     {
-        if (InventoryItemShoe::exists()) {
-            $shoe_inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
-        }
+        $shoe_inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
         
         return view('inventory.dashboard')->with(compact('shoe_inventory'));
     }

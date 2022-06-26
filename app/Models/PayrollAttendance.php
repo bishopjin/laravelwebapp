@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PayrollAttendance extends Model
 {
     use HasFactory;
-
-    protected $primaryKey = 'user_id';
     
     protected $fillable = [
         'user_id',
@@ -24,6 +22,8 @@ class PayrollAttendance extends Model
     	'overtime',
     	'night_diff',
     	'tardiness',
+        'changeRequest',
+        'payroll_payslip_id',
     ];
 
     public function payrollcutoff()
@@ -39,5 +39,15 @@ class PayrollAttendance extends Model
     public function workschedule()
     {
         return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id', 'id');
+    }
+
+    public function attendancerequest()
+    {
+        return $this->hasOne(PayrollAttendanceRequest::class);
+    }
+
+    public function payslip()
+    {
+        return $this->belongsTo(PayrollPayslip::class, 'payroll_payslip_id', 'id');
     }
 }

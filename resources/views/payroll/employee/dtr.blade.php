@@ -10,7 +10,7 @@
 						<span class="text-danger fw-bold">{{ __('*( Temporary only, replaced with biometric, etc. )') }}</span>
 					</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.employee.dtr.save') }}" class="py-2 px-4">
+						<form method="POST" action="{{ route('payroll.employee.dtr.create') }}" class="py-2 px-4">
 							@csrf
 
 							@php

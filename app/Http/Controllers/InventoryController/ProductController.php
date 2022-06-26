@@ -26,31 +26,12 @@ class ProductController extends Controller
     /* add new product get interface */
     protected function Index(Request $request)
     {   
-        if (InventoryItemBrand::exists()) {
-            $brand = InventoryItemBrand::select('id', 'brand')->get();
-        }
-        else { $brand = collect(new InventoryItemBrand); }
-
-        if (InventoryItemCategory::exists()) {
-            $category = InventoryItemCategory::select('id', 'category')->get();
-        }
-        else { $category = collect(new InventoryItemCategory); }
-
-        if (InventoryItemType::exists()) {
-            $type = InventoryItemType::select('id', 'type')->get();
-        }
-        else { $type = collect(new InventoryItemType); }
-
-        if (InventoryItemColor::exists()) {
-            $color = InventoryItemColor::select('id', 'color')->get();
-        }
-        else { $color = collect(new InventoryItemColor); }
-
-        if (InventoryItemSize::exists()) {
-            $size = InventoryItemSize::select('id', 'size')->get();
-        }
-        else { $size = collect(new InventoryItemSize); }
-
+        $brand = InventoryItemBrand::all();
+        $category = InventoryItemCategory::all();
+        $type = InventoryItemType::all();
+        $color = InventoryItemColor::all();
+        $size = InventoryItemSize::all();
+    
         return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
     }
 
@@ -65,17 +46,22 @@ class ProductController extends Controller
             'inventory_item_category_id' => 'required|numeric',
             'price'=> 'required|numeric',
         ]);
-
+        
         if ($validator->fails()) {
             return redirect()->route('inventory.product.create')->withErrors($validator)->withInput();
         }
         else {
-            if (InventoryItemShoe::exists()) {
-                $shoeID = InventoryItemShoe::select('itemID')->max('itemID') + 1;
-            }
-            else { $shoeID = 1000000; }
             /* create new record */
-            $create_record = InventoryItemShoe::create(array_merge(array('itemID' => $shoeID), $request->input()));
+            $create_record = InventoryItemShoe::updateOrCreate(
+                [
+                    'inventory_item_brand_id' => $request->input('inventory_item_brand_id'),
+                    'inventory_item_size_id' => $request->input('inventory_item_size_id'),
+                    'inventory_item_color_id' => $request->input('inventory_item_color_id'),
+                    'inventory_item_type_id' => $request->input('inventory_item_type_id'),
+                    'inventory_item_category_id' => $request->input('inventory_item_category_id'),
+                ],
+                ['price' => $request->input('price')]
+            );
 
             if ($create_record->id > 0) { 
             	return redirect()->route('inventory.product.view', ['id' => $create_record->id]); 
@@ -94,39 +80,10 @@ class ProductController extends Controller
 
     protected function OrderAdd(Request $request)
     {
-        if (InventoryItemShoe::exists()) {
-            $result = collect();
-            $arr = [];
-
-            $order = InventoryItemOrder::with('shoe')->get();
-            
-            $order_summary = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->get();
-
-            foreach ($order->toArray() as $order) 
-            {
-                foreach ($order_summary->toArray() as $summary) 
-                {
-                    if ($order['inventory_item_shoe_id'] == $summary['id']) 
-                    {
-                        $arr = array(
-                            'order_number' => $order['order_number'], 
-                            'shoe' => $summary,
-                            'qty' => $order['qty']
-                        );
-
-                        $result->push($arr);
-                    }
-                }
-            }
-            $order_summary = new LengthAwarePaginator(
-                    $result->forPage($request->page ? : 1, 10),
-                    $result->count(),
-                    10,
-                    $request->page,
-                    ['path' => url()->current()]
-                );
-            
-            return view('inventory.product.order')->with(compact('order_summary'));
+        if (InventoryItemOrder::exists()) {
+            $orders = InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+                ->paginate(10);
+            return view('inventory.product.order')->with(compact('orders'));
         }
         else
         {
@@ -145,7 +102,7 @@ class ProductController extends Controller
         }
         else {
             $result = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])
-                    ->where('itemID', $request->input('item_id'))->get();
+                    ->find($request->input('item_id'));
 
 	    	return response()->json($result);
         } 
@@ -216,13 +173,13 @@ class ProductController extends Controller
         		$stock = 0;
 
         		$current_stock = InventoryItemShoe::select('in_stock')
-        			->where('itemID', $request->input('shoe_id'))->get();
+        			->find($request->input('shoe_id'));
 
-        		$stock = $current_stock[0]->in_stock;
+        		$stock = $current_stock->in_stock;
 
         		$new_stock = intval($request->input('qty')) + intval($stock);
 
-	        	$updated_stock = InventoryItemShoe::where('itemID', $request->input('shoe_id'))
+	        	$updated_stock = InventoryItemShoe::find($request->input('shoe_id'))
 		            ->update(['in_stock' => $new_stock]);
 
 	        	return response()->json($updated_stock);

@@ -14,8 +14,7 @@ class CreateInventoryItemShoesTable extends Migration
     public function up()
     {
         Schema::create('inventory_item_shoes', function (Blueprint $table) {
-            $table->id();
-            $table->integer('itemID');
+            $table->id()->from(1000000);
             $table->integer('inventory_item_brand_id');
             $table->integer('inventory_item_size_id');
             $table->integer('inventory_item_color_id');

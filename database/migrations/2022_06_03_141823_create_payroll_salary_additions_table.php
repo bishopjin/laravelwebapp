@@ -15,7 +15,7 @@ class CreatePayrollSalaryAdditionsTable extends Migration
     {
         Schema::create('payroll_salary_additions', function (Blueprint $table) {
             $table->id();
-            $table->integer('payroll_cut_off_id');
+            $table->integer('payroll_attendance_id');
             $table->integer('payroll_addition_id');
             $table->float('no_minutes');
             $table->float('amount');

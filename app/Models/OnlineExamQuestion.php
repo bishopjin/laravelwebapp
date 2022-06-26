@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class OnlineExamQuestion extends Model
 {
@@ -19,6 +20,17 @@ class OnlineExamQuestion extends Model
         'created_at',
         'updated_at',
     ];
+
+    /* Laravel 8 accessors */
+    protected function getKeyToCorrectAttribute($value)
+    {
+        return Crypt::decryptString($value);
+    }
+    /* Laravel 8 mutators */
+    protected function setKeyToCorrectAttribute($value)
+    {
+        $this->attributes['key_to_correct'] = Crypt::encryptString($value);
+    }
 
     public function exam()
     {

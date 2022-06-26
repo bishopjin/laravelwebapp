@@ -50,7 +50,10 @@
                                     <a href="{{ route('payroll.admin.schedule.index') }}" class="payroll-mobile-link">{{ __('Work Schedule') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.user.index') }}" class="payroll-mobile-link">{{ __('Employee') }}</a>
+                                    <a href="{{ route('payroll.admin.user.index') }}" class="payroll-mobile-link">{{ __('Register') }}</a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ route('payroll.admin.requestchange.index') }}" class="payroll-mobile-link">{{ __('Attendance Change Request') }}</a>
                                 </li>
                                 <li>
                                     <a class="payroll-mobile-link" href="{{ route('payroll.admin.password.index') }}">
@@ -63,7 +66,7 @@
                                     <a href="{{ route('payroll.employee.dtr.index') }}" class="payroll-mobile-link">{{ __('Daily Time Recorder') }}</a>
                                 </li>
                                 <li class="">
-                                    <a class="payroll-mobile-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#aModal">
+                                    <a class="payroll-mobile-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#laModal">
                                         {{ __('Payslip') }}
                                     </a>
                                     {{-- <a href="{{ route('payroll.employee.payslip.show') }}" class="payroll-mobile-link">{{ __('Payslip') }}</a> --}}
@@ -116,7 +119,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin">
-                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#aModal">
+                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#laModal">
                                         {{ __('View') }}
                                     </a>
                                     {{-- <a class="dropdown-item" href="{{ route('payroll.employee.payslip.show') }}">
@@ -170,6 +173,9 @@
                                     <a class="dropdown-item" href="{{ route('payroll.admin.user.index') }}">
                                         {{ __('Register') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('payroll.admin.requestchange.index') }}">
+                                        {{ __('Attendance Change Request') }}
+                                    </a>
                                 </div>
                             </li>
                         </ul>
@@ -210,7 +216,7 @@
             @yield('payrollcontent')
         </main>
         <!-- modal -->
-        <div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="aModal" tabindex="-1">
+        <div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="laModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header h5">{{ __('404') }}</div>

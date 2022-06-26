@@ -17,8 +17,7 @@
                             </div>
                             <div class="form-group pb-3">
                                 <label>Name</label>
-                                <input type="text" value="{{ $details->userprofile->surname}}, {{ $details->userprofile->givenname}} {{ $details->userprofile->middlename}}" 
-                                    class="form-control" readonly="">
+                                <input type="text" value="{{ $details->userprofile->full_name}}" class="form-control" readonly="">
                             </div>
                             <div class="form-group pb-3">
                                 <label>Access Level</label>

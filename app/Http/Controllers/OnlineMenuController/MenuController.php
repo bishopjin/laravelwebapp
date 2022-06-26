@@ -215,195 +215,73 @@ class MenuController extends Controller
     }
 
     /* Admin Maintenance Controller */
-    public function AddItem(Request $request) 
+    public function AddEditItem(Request $request) 
     {
-        $item_id = intval($request->input('id'));
-        $item_type = $request->input('param0');
+        //$item_id = intval($request->input('id'));
         $item_name = $request->input('param1');
         $item_size_price = (float) $request->input('param2');
         $item_price = (float) $request->input('param3');
 
-        $result = $this->sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name, 'AddRecord');
-
-        return response()->json($result);
-    }
-
-    public function EditItem(Request $request)
-    {
-        $item_id = intval($request->input('id'));
-        $item_type = $request->input('param0');
-        $item_name = $request->input('param1');
-        $item_size_price = (float) $request->input('param2');
-        $item_price = (float) $request->input('param3');
-
-        $result = $this->sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name,'EditRecord');
-
-        return response()->json($result);
-    }
-
-    /* service */
-    private function sqlQuery($item_id, $item_type, $item_price, $item_size_price, $item_name, $queryType)
-    {
-        $recordExist = 'Record already exist.';
-
-        switch ($item_type) 
+        switch ($request->input('param0')) 
         {
             case 'burger':
-                if ($queryType == 'EditRecord') 
-                {
-                    $result = OrderBurger::find($item_id)->update(['price' => $item_size_price]);
-                }
-                else {
-                    /* check if name exist */
-                    $check = OrderBurger::where('name', $item_name)->get();
+                $create_record = OrderBurger::updateOrCreate(
+                    ['name' => $item_name],
+                    ['price' => $item_size_price]
+                );
 
-                    if ($check->count() > 0) 
-                    {
-                        $result = $recordExist;
-                    }
-                    else
-                    {
-                        /* save */
-                        $create_record = OrderBurger::create([
-                            'name' => $item_name,
-                            'price' => $item_size_price,
-                        ]);
-
-                        $result = $create_record->id;
-                    }
-                }
+                $result = OrderBurger::find($create_record->id);
                 break;
 
             case 'beverage':
-                if ($queryType == 'EditRecord') 
-                {
-                    $result = OrderBeverage::find($item_id)->update(['price' => $item_price]);
-                }
-                else
-                {
-                    $notInRecord = true;
                     $recordAdded = false;
 
                     $check = OrderBeverageName::where('name', $item_name)->select('id')->get();
 
-                    if ($check->count() > 0) 
+                    if ($check->count() == 0)
                     {
-                        $findDrinks = OrderBeverage::where([
-                            ['order_beverage_name_id', '=', $check[0]->id],
-                            ['order_beverage_size_id', '=', $item_size_price],
-                        ])->get();
-
-                        if ($findDrinks->count() > 0) 
-                        {
-                            $notInRecord = false;
-                        }
-                    }
-                    else 
-                    {
-                        $create_record_name = OrderBeverageName::create([
-                            'name' => $item_name,
-                        ]);
-
-                        if ($create_record_name->id > 0) 
-                        {
-                            $recordAdded = true;
-                        }
+                        $create_record_name = OrderBeverageName::create(['name' => $item_name]);
+                        $recordAdded = $create_record_name->id > 0 ? true : false;
                     }
                     
-                    if ($notInRecord)
-                    {                            
-                        $create_record = OrderBeverage::create([
+                    $create_record = OrderBeverage::updateOrCreate(
+                        [
                             'order_beverage_name_id' => $recordAdded ? $create_record_name->id : $check[0]->id,
-                            'order_beverage_size_id' => intval($item_size_price),
-                            'price' => $item_price,
-                        ]);
-    
-                        $result = $create_record->id;
-                    }
-                    else
-                    {
-                        $result = $recordExist;
-                    }
-                }
+                            'order_beverage_size_id' => intval($item_size_price)
+                        ],
+                        ['price' => $item_price]
+                    );
+
+                    $result = OrderBeverage::with(['beveragename', 'beveragesize'])->find($create_record->id);
                 break;
 
             case 'combo':
-                if ($queryType == 'EditRecord') 
-                {
-                    $result = OrderComboMeal::find($item_id)->update(['price' => $item_size_price]);
-                }
-                else
-                {
-                    $check = OrderComboMeal::where('name', $item_name)->get();
+                $create_record = OrderComboMeal::updateOrCreate(
+                    ['name' => $item_name],
+                    ['price' => $item_size_price]
+                );
 
-                    if ($check->count() > 0) 
-                    {
-                        $result = $recordExist;
-                    }
-                    else
-                    {
-                        $create_record = OrderComboMeal::create([
-                            'name' => $item_name,
-                            'price' => $item_size_price,
-                        ]);
-
-                        $result = $create_record->id;
-                    }
-                }
+                $result = OrderComboMeal::find($create_record->id);
                 break;
 
             case 'tax':
-                if ($queryType == 'EditRecord') 
-                {
-                    $result = OrderTax::find($item_id)->update(['percentage' => ($item_size_price / 100)]);
-                }
-                else
-                {
-                    $check = OrderTax::where('tax', $item_name)->get();
+                $create_record = OrderTax::updateOrCreate(
+                    ['tax' => $item_name],
+                    ['percentage' => ($item_size_price / 100)]
+                );
 
-                    if ($check->count() > 0) 
-                    {
-                        $result = $recordExist;
-                    }
-                    else
-                    {
-                        $create_record = OrderTax::create([
-                            'tax' => $item_name,
-                            'percentage' => ($item_size_price / 100),
-                        ]);
-
-                        $result = $create_record->id;
-                    }
-                }
+                $result = OrderTax::find($create_record->id);
                 break;
 
             default:
-                if ($queryType == 'EditRecord') 
-                {
-                    $result = orderCoupon::find($item_id)->update(['discount' => ($item_size_price / 100)]);
-                }
-                else 
-                {
-                    $check = OrderCoupon::where('code', $item_name)->get();
+                $create_record = OrderCoupon::updateOrCreate(
+                    ['code' => $item_name],
+                    ['discount' => ($item_size_price / 100)]
+                );
 
-                    if ($check->count() > 0) 
-                    {
-                        $result = $recordExist;
-                    }
-                    else
-                    {
-                        $create_record = OrderCoupon::create([
-                            'code' => $item_name,
-                            'discount' => ($item_size_price / 100),
-                        ]);
-
-                        $result = $create_record->id;
-                    }
-                }
-                break;
+                $result = OrderCoupon::find($create_record->id);
         }
-
-        return $result;
+        return response()->json($result);
     }
 
     /**/

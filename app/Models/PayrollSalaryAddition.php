@@ -10,7 +10,7 @@ class PayrollSalaryAddition extends Model
     use HasFactory;
 
     protected $fillable = [
-    	'payroll_cut_off_id',
+    	'payroll_attendance_id',
     	'payroll_addition_id',
     	'no_minutes',
     	'amount',

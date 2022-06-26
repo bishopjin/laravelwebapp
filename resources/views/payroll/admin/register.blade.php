@@ -24,6 +24,7 @@
 									$middlename = $details->userprofile->middlename ?? $details->middlename;
 									$lastname = $details->userprofile->lastname ?? $details->lastname;
 									$salary_grade_id = $details->payroll_salary_grade_id;
+									$salary_rate = $details->salary_rate;
 									$work_sched_id = $details->payroll_work_schedule_id;
 									$userid = $details->user_id;
 								}
@@ -68,6 +69,16 @@
 										@endforeach
 									@endisset
 								</select>
+							</div>
+							<div class="form-group pb-2">
+								<label for="salary_rate">{{ __('Salary Rate') }}</label>
+								<input type="number" name="salary_rate" id="salary_rate" value="{{ $salary_rate ?? old('salary_rate') }}"
+									class="form-control @error('salary_rate') is-invalid @enderror">
+								@error('salary_rate')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
 							</div>
 							<div class="form-group pb-2">
 								<label for="workschedule">{{ __('Work Schedule') }}</label>

@@ -22,4 +22,10 @@ class PayrollDeduction extends Model
     {
     	return $this->hasOneThrough(PayrollPayslip::class, PayrollSalaryDeduction::class);
     }
+
+
+    public function payroll_employee_salary_grade()
+    {
+        return $this->morphOne(PayrollEmployeeSalaryGrade::class, 'payroll_employee_salary_gradeable');
+    }
 }

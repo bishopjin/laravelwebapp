@@ -32,7 +32,7 @@ Route::domain('testweb.genesedan.com')->group(function () {
 
 Auth::routes();
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::get('/', function() { return view('home'); })->name('home');
 	Route::get('/{urlPath}/{accessLevel}', [HomeController::class, 'AppAccess'])->name('app.access');
 
@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
 			})->name('inventory.deliver.index');
 			Route::post('/deliver', [ProductController::class, 'DeliverSave'])->name('inventory.deliver.create');
 
-			Route::group(['middleware' => ['can:add_new_item']], function () {
+			Route::middleware('permission:add_new_item')->group(function () {
 				Route::get('/add', [ProductController::class, 'Index'])->name('inventory.product.index');
 				Route::post('/add', [ProductController::class, 'Save'])->name('inventory.product.create');
 				Route::get('/view/{id}', [ProductController::class, 'View'])->name('inventory.product.view');
@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 		});	
 		
 		Route::prefix('employee')->group(function() {
-			Route::group(['middleware' => ['can:view_edit_user']], function () {
+			Route::middleware('permission:view_edit_user')->group(function () {
 				Route::get('/show', [EmployeeController::class, 'Index'])->name('inventory.employee.index');
 				Route::get('/edit', [EmployeeController::class, 'Edit'])->name('inventory.employee.edit');
 
@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
 	Route::prefix('online-exam')->group(function() {
 		Route::get('/', [ExamController::class, 'Index'])->name('online.dashboard.index');
 
-		Route::group(['middleware' => ['can:exam_admin_access']], function () {
+		Route::middleware('permission:exam_admin_access')->group(function () {
 			Route::prefix('admin')->group(function () {
 				Route::get('/dashboard', [AdminController::class, 'Index'])->name('online.admin.index');
 				Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
@@ -86,7 +86,7 @@ Route::middleware('auth')->group(function () {
 			});
 		});
 
-		Route::group(['middleware' => ['can:exam_faculty_access']], function () {
+		Route::middleware('permission:exam_faculty_access')->group(function () {
 			Route::prefix('faculty')->group(function () {
 				Route::get('/dashboard', [FacultyController::class, 'Index'])->name('online.faculty.index');
 				Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.show');
@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
 			});
 		});
 
-		Route::group(['middleware' => ['can:exam_student_access']], function () {
+		Route::middleware('permission:exam_student_access')->group(function () {
 			Route::prefix('student')->group(function () {
 				Route::get('/dashboard', [StudentController::class, 'Index'])->name('online.student.index');
 				Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam');
@@ -115,27 +115,34 @@ Route::middleware('auth')->group(function () {
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
 		/* Admin and Customer route */
-		Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index');
-		/* Customer route */
-		Route::post('/order', [MenuController::class, 'store'])->name('order.save');
-		Route::get('/checkCoupon/{code}', [MenuController::class, 'checkCoupon'])->name('order.check.coupon');
-		Route::get('/order/details/{order_number}', [MenuController::class, 'view'])->name('order.details.view');
 
+		Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index')
+			->middleware(
+				'permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list|view_menu_order_list|view_menu_user_list'
+			);
+		/* Customer route */
+		Route::middleware('permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list')->group(function () {
+			Route::post('/order', [MenuController::class, 'store'])->name('order.save');
+			Route::get('/checkCoupon/{code}', [MenuController::class, 'checkCoupon'])->name('order.check.coupon');
+			Route::get('/order/details/{order_number}', [MenuController::class, 'view'])->name('order.details.view');
+			/* paginate using ajax */
+			Route::get('/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order');
+			Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon');
+		});
 		/* Admin Maintenance route */
-		Route::post('/item/add', [MenuController::class, 'AddItem'])->name('order.admin.add');
-		Route::post('/item/edit', [MenuController::class, 'EditItem'])->name('order.admin.edit');
-		/* paginate using ajax */
-		Route::get('/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order');
-		Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order');
-		Route::get('/show/admin/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user');
-		Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon');
+		Route::middleware('permission:view_menu_order_list|view_menu_user_list')->group(function(){
+			Route::post('/item/addedit', [MenuController::class, 'AddEditItem'])->name('order.admin.item.updatecreate');
+			/* paginate using ajax */
+			Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order');
+			Route::get('/show/admin/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user');
+		});
 	});
 	/* END */
 	/* Payroll route */
 	Route::prefix('payroll')->group(function() {
 		Route::get('/', [PayrollDashboardController::class, 'Index'])->name('payroll.dashboard.index');
 		
-		Route::group(['middleware' => ['can:payroll_admin_access']], function () {
+		Route::middleware('permission:payroll_admin_access')->group(function () {
 			Route::prefix('admin')->group(function() {
 				Route::get('/dashboard', [PayrollAdminController::class, 'Index'])->name('payroll.admin.index');
 
@@ -181,6 +188,11 @@ Route::middleware('auth')->group(function () {
 				Route::get('/cutoff/edit', [PayrollAdminController::class, 'CutoffEdit'])->name('payroll.admin.cutoff.edit');
 				Route::post('/cutoff/update', [PayrollAdminController::class, 'CutoffUpdate'])->name('payroll.admin.cutoff.update');
 
+				Route::get('/attendancerequest', [PayrollAdminController::class, 'AttendanceRequestIndex'])->name('payroll.admin.requestchange.index');
+				Route::post('/attendancerequest/action', [PayrollAdminController::class, 'RequestAction'])->name('payroll.admin.requestchange.create');
+
+				Route::post('/salary/compute', [PayrollAdminController::class, 'ComputeSalary'])->name('payroll.admin.salary.create');
+
 				Route::get('/workschedule/edit/{id}', [PayrollAdminController::class, 'ScheduleEdit'])->name('payroll.admin.schedule.edit');
 				Route::get('/deduction/edit/{id}', [PayrollAdminController::class, 'DeductionEdit'])->name('payroll.admin.deduction.edit');
 				Route::get('/addition/edit/{id}', [PayrollAdminController::class, 'AdditionEdit'])->name('payroll.admin.addition.edit');
@@ -190,7 +202,7 @@ Route::middleware('auth')->group(function () {
 			});
 		});
 
-		Route::group(['middleware' => ['can:payroll_employee_access']], function () {
+		Route::middleware('permission:payroll_employee_access')->group(function () {
 			Route::prefix('employee')->group(function() {
 				Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
 
@@ -203,10 +215,13 @@ Route::middleware('auth')->group(function () {
 				Route::post('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
 				
 				Route::get('/dtr', [PayrollEmployeeController::class, 'Dtr'])->name('payroll.employee.dtr.index');
-				Route::post('/dtr/save', [PayrollEmployeeController::class, 'DtrSave'])->name('payroll.employee.dtr.save');
+				Route::post('/dtr/save', [PayrollEmployeeController::class, 'DtrSave'])->name('payroll.employee.dtr.create');
+				Route::post('/dtr/createrequest', [PayrollEmployeeController::class, 'DTRRequestCreate'])->name('payroll.employee.dtr.request.create');
 
 				Route::get('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.index');
 				Route::post('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.show');
+				
+				Route::get('/dtr/changerequest/{id}', [PayrollEmployeeController::class, 'DTRChangeRequest'])->name('payroll.employee.dtr.show');
 			});
 		});
 	});

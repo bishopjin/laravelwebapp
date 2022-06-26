@@ -35,8 +35,7 @@
                                     @endphp
                                     <tr>
                                         <td class="fw-bolder">{{ $item->user_id }}</td>
-                                        <td>{{ $item->userprofile->lastname }},&nbsp;
-                                            {{ ($item->userprofile->middlename) }} {{ ($item->userprofile->firstname) }}</td>
+                                        <td>{{ $item->userprofile->full_name }}</td>
                                         <td>{{ $date_in[1] }}</td>
                                         <td>{{ $date_in[0] }}</td>
                                         <td>{{ $date_out[1] }}</td>

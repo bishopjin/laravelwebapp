@@ -42,36 +42,16 @@
                                     </thead>
                                     <tbody>
                                         @isset($student_list)
-                                            @php  
-                                                $current_id = 0; $course = null; $gender = null;
-                                            @endphp
-
                                             @foreach($student_list as $student)
-                                                @if(!$course && !$gender)
-                                                    @php
-                                                        foreach($studentProfile as $profile) {
-                                                            $course = $profile->onlinecourse->course;
-                                                            $gender = $profile->gender->gender;
-                                                            break;
-                                                        }
-                                                    @endphp
-                                                @endif
-
-                                                @if($current_id === 0 OR $current_id !== $student->user_id)
-                                                    @php
-                                                        $current_id = $student->user_id;
-                                                    @endphp
-                                                    <tr>
-                                                        <td>
-                                                            <a href="{{ route('online.faculty.show.student.score', $student->user_id) }}" class="text-decoration-none fw-bold">
-                                                                {{ $student->userprofile->lastname }}, &nbsp;
-                                                                {{ $student->userprofile->firstname }} {{ $student->userprofile->middlename }}
-                                                            </a>
-                                                        </td>
-                                                        <td>{{ $gender }}</td>
-                                                        <td>{{ $course }}</td>
-                                                    </tr>
-                                                @endif
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{ route('online.faculty.show.student.score', $student->user_id) }}" class="text-decoration-none fw-bold">
+                                                            {{ $student->userprofile->full_name }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ $student->userprofile->onlinecourse->course }}</td>
+                                                    <td>{{ $student->userprofile->gender->gender }}</td>
+                                                </tr>
                                             @endforeach
                                         @endisset
                                     </tbody>

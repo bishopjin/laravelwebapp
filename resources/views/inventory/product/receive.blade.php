@@ -83,12 +83,12 @@
                     data: {item_id : itemIDVal, _token : '{{ csrf_token() }}'},
                     dataType: 'json',
                     success: function(result, status, xhr){
-                        if (result.length > 0) {
-                            $('#BID').val(result[0].brand.brand);
-                            $('#CID').val(result[0].color.color);
-                            $('#SID').val(result[0].size.size);
-                            $('#TID').val(result[0].type.type);
-                            $('#CatID').val(result[0].category.category);
+                        if (!$.isEmptyObject(result)) {
+                            $('#BID').val(result.brand.brand);
+                            $('#CID').val(result.color.color);
+                            $('#SID').val(result.size.size);
+                            $('#TID').val(result.type.type);
+                            $('#CatID').val(result.category.category);
                             $('#errorMsg').html('');
                         }
                         else {
@@ -134,7 +134,7 @@
                         $('#deliverForm *').filter(':input').each(function(){
                             $(this).val('');
                         });
-                        if(result === 1){
+                        if(result){
                             $('#successMsg').html('Item received.');
                         }
                     },

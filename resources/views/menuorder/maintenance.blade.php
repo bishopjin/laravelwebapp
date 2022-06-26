@@ -396,24 +396,13 @@
 
         /* save edit/add */
         $(saveItemBtn).on('click', function () {
-            var AddItemRoute = '{{ route("order.admin.add") }}',
-                EditItemRoute = '{{ route("order.admin.edit") }}',
-                currentRoute = '', data, dataReady = false, label = '',
+            var currentRoute = '', data, dataReady = false, label = '',
                 item_ID = $('#param0_id').val(),
                 param0Val = $('#param0').val(),
                 param1Val = $('#param1').val(),
                 param2Val = $('#param2').val(),
                 param3Val = $('#param3').val() == undefined ? '0' : $('#param3').val();
             
-            if (postType == 'Edit') {
-                currentRoute = EditItemRoute;
-                label = 'Record updated';
-            }
-            else {
-                currentRoute = AddItemRoute;
-                label = 'Record added'
-            }
-
             data = {
                 _token : '{{ csrf_token() }}', 
                 id : item_ID,
@@ -474,51 +463,52 @@
 
             if (dataReady) {
                 $.ajax({
-                    url: currentRoute,
+                    url: '{{ route("order.admin.item.updatecreate") }}',
                     type: 'POST',
                     data: data,
                     dataType: 'json',
                     success: function(result, status, xhr) {
-                        if (result > 0) {
+                        if (!$.isEmptyObject(result)) {
                             $(modalHead).html('Success').css('color', '#0f0');
-                            $(modalContent).html(label);
+                            $(modalContent).html('Record saved/updated');
                             /* update the dashboard */
-                            if (postType == 'Edit') {
+                            if ($('body').text().indexOf(String(result.name ?? result.tax ?? result.code ?? result.beveragename.name)) > -1){
                                 if (param0Val == 'beverage') {
-                                    $('#' + param0Val + '_' + item_ID + '_input3').html(param3Val);
+                                    $('#' + param0Val + '_' + result.id + '_input3').html(result.price);
                                 }
                                 else {
-                                    $('#' + param0Val + '_' + item_ID + '_input2').html(param2Val);
+                                    $('#' + param0Val + '_' + result.id + '_input2').html(result.price ?? ((result.discount ?? result.percentage) * 100));
                                 }
                             }
-                            else {
-                                var eleID = param0Val + '_' + result;
-
-                                var drinksContent = `<div class="col-3">
-                                            <span id="${eleID}_input2">${param2Val == '1' ? 'Medium' : 'Large'}</span>
+                            else{
+                                var eleID = param0Val + '_' + result.id;
+                                var drinksContent = '';
+                                if (param0Val == 'beverage') {
+                                    drinksContent = `<div class="col-3">
+                                            <span id="${eleID}_input2">${result.beveragesize.size ?? ''}</span>
                                         </div>
                                         <div class="col-2">
-                                            <span id="${eleID}_input3">${param3Val}</span>
+                                            <span id="${eleID}_input3">${result.price}</span>
                                         </div>`;
-
-                                var nonDrinksContent = `<div class="col-4">
-                                            <span id="${eleID}_input2">${param2Val}</span>
+                                }
+                                else {
+                                    drinksContent = `<div class="col-4">
+                                            <span id="${eleID}_input2">${result.price ?? ((result.discount ?? result.percentage) * 100)}</span>
                                         </div>`;
+                                }
 
                                 $('#' + param0Val + '_panel').append(`<div class="row pb-1">
                                         <div class="${param0Val == 'beverage' ? 'col-3' : 'col-5'}"> 
-                                            <span id="${eleID}_input1">${param1Val}</span>
+                                            <span id="${eleID}_input1">${result.name ?? result.tax ?? result.code ?? result.beveragename.name}</span>
                                         </div>
-                                        ${
-                                            param0Val == 'beverage' ? drinksContent : nonDrinksContent
-                                        }
+                                        ${ drinksContent }
                                         <div class="${param0Val == 'beverage' ? 'col-4' : 'col-3'}">
                                             <button type="button" class="btn btn-outline-success edit-item-btn" 
                                                 data-bs-toggle="modal" data-bs-target="#addModal" id="${eleID}">Edit
                                             </button>
                                         </div>
                                     </div>`);
-                            }
+                             }   
                             $(saveItemBtn).hide();
                         }
                         else { 

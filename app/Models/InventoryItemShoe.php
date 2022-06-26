@@ -10,7 +10,6 @@ class InventoryItemShoe extends Model
     use HasFactory;
 
     protected $fillable = [
-        'itemID',
     	'inventory_item_brand_id', 
     	'inventory_item_size_id', 
     	'inventory_item_color_id', 

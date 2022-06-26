@@ -39,8 +39,7 @@
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $user->id }}</td>
-                                        <td class="text-center">{{ $user->userprofile->lastname }}, &nbsp;
-                                            {{ $user->userprofile->firstname }} {{ $user->userprofile->middlename }}</td>
+                                        <td>{{ $user->userprofile->full_name }}</td>
                                         <!-- standalone system -->
                                         {{-- <td class="text-center">{{ $user->user_type }}</td>
                                         <td class="text-center">
