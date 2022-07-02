@@ -12,12 +12,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.subject.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.subject.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.exam.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.exam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -45,12 +45,12 @@
                                             @foreach($student_list as $student)
                                                 <tr>
                                                     <td>
-                                                        <a href="{{ route('online.faculty.show.student.score', $student->user_id) }}" class="text-decoration-none fw-bold">
-                                                            {{ $student->userprofile->full_name }}
+                                                        <a href="{{ route('online.faculty.student.score.show', $student->user_id) }}" class="text-decoration-none fw-bold">
+                                                            {{ $student->student->full_name }}
                                                         </a>
                                                     </td>
-                                                    <td>{{ $student->userprofile->onlinecourse->course }}</td>
-                                                    <td>{{ $student->userprofile->gender->gender }}</td>
+                                                    <td>{{ $student->student->onlinecourse->course }}</td>
+                                                    <td>{{ $student->student->gender->gender }}</td>
                                                 </tr>
                                             @endforeach
                                         @endisset

@@ -78,7 +78,7 @@
 									<select class="form-select" id="approver" name="approver">
 										@isset($users)
 											@foreach($users as $user)
-												<option value="{{ $user->userprofile->user_id }}">{{ $user->userprofile->full_name }}</option>
+												<option value="{{ $user->user_id }}">{{ $user->user->full_name }}</option>
 											@endforeach
 										@endisset
 									</select>

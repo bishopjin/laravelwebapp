@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
-                            <form method="POST" action="{{ route('online.course.save') }}">
+                            <form method="POST" action="{{ route('online.course.store') }}">
                                 @csrf
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col">
@@ -108,8 +108,9 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('online.course.edit') }}" class="p-md-4">
+                    <form method="POST" action="{{ route('online.course.update') }}" class="p-md-4">
                         @csrf
+                        @method('PUT')
                         <div class="form-group mb-3">
                             <input type="text" name="course" id="coursename" class="form-control" autocomplete="off">
                             <input type="hidden" name="course_id" id="editID">

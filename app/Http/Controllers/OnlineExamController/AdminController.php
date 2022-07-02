@@ -7,20 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\OnlineCourse;
 use App\Models\User;
-use App\Models\UsersProfile;
 use App\Models\OnlineSubject; 
 
 class AdminController extends Controller 
 {
-    protected function Index()
-    {	
-        /* get all data from all relationship */
-        $subjects = OnlineSubject::with('userprofile')->paginate(10, ['*'], 'subject');
+    protected function Index(Request $request)
+    {
+        $subjects = OnlineSubject::with('user')->paginate(10, ['*'], 'subject');
         
-        $userProfile = UsersProfile::with(['gender', 'user', 'onlinecourse', 'onlineaccesslevel'])
-            ->where('user_id', '>', 1)->paginate(10, ['*'], 'users');
+        $users = User::withTrashed()->with(['gender', 'onlinecourse'])->notadmin()->notself($request->user()->id)->paginate(10, ['*'], 'users');
         
-        return view('onlineexam.admin.index')->with(compact('userProfile', 'subjects'));
+        return view('onlineexam.admin.index')->with(compact('users', 'subjects'));
     }
 
     protected function ShowCourse()
@@ -39,7 +36,7 @@ class AdminController extends Controller
     protected function SaveCourse(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'course' => 'required|string|unique:online_courses|max:255',
+                'course' => ['required', 'string', 'unique:online_courses', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -47,21 +44,16 @@ class AdminController extends Controller
         }
         else
         {
-        	$add_course = OnlineCourse::create([
-        		'course' => $request->input('course'),
-        	]);
+        	$add_course = OnlineCourse::create(['course' => $request->input('course')]);
 
-        	if($add_course->id > 0)
-        	{
-        		return redirect()->back();
-        	}
+        	return redirect()->back();
         }
     }
 
-    protected function EditCourse(Request $request)
+    protected function UpdateCourse(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'course' => 'required|string|unique:online_courses|max:255',
+                'course' => ['required', 'string', 'unique:online_courses', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -78,16 +70,17 @@ class AdminController extends Controller
 
     protected function DeleteUser(Request $request)
     {
-    	$delete_user = User::find($request->input('user_id'))
-                ->update(['isactive' => intval($request->input('isactive')) === 1 ? 0 : 1]);
-
+    	$user = User::withTrashed()->find($request->input('id'));
+        
+        $user->trashed() ? $user->restore() : $user->delete();
+        
     	return redirect()->back();
     }
 
-    protected function EditSubject(Request $request)
+    protected function UpdateSubject(Request $request)
     {
         $validator = Validator::make($request->all(), [
-                'subject' => 'required|string|unique:online_subjects|max:255',
+                'subject' => ['required', 'string', 'unique:online_subjects', 'max:255'],
         ]);
 
         if ($validator->fails()) {

@@ -25,16 +25,16 @@ class PayrollPayslip extends Model
 
     public function payrollcutoff()
     {
-    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id', 'id');
+    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id');
     }
 
     public function salaryaddition()
     {
-    	return $this->belongsTo(PayrollSalaryAddition::class, 'payroll_salary_addition_id', 'id');
+    	return $this->belongsTo(PayrollSalaryAddition::class, 'payroll_salary_addition_id');
     }
 
     public function salarydeduction()
     {
-    	return $this->belongsTo(PayrollSalaryDeduction::class, 'payroll_salary_deduction_id', 'id');
+    	return $this->belongsTo(PayrollSalaryDeduction::class, 'payroll_salary_deduction_id');
     }
 }

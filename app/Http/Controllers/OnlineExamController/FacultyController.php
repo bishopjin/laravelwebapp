@@ -5,7 +5,6 @@ namespace App\Http\Controllers\OnlineExamController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\UsersProfile;
 use App\Models\OnlineExamination;
 use App\Models\User;
 use App\Models\OnlineExam; 
@@ -20,19 +19,19 @@ class FacultyController extends Controller
         $exam_list = OnlineExam::with('onlinesubject')
                         ->where('user_id', $request->user()->id)->paginate(10, ['*'], 'exams');
 
-        $student_list = OnlineExamination::with(['userprofile.onlinecourse', 'userprofile.gender'])
+        $student_list = OnlineExamination::with(['student.onlinecourse', 'student.gender'])
                         ->where('faculty_id', $request->user()->id)->groupBy('user_id')->paginate(10, ['*'], 'list'); 
-
+        
         return view('onlineexam.faculty.index')->with(compact('exam_list', 'student_list'));
     }
 
     protected function ShowScore(Request $request, $id)
     {
-        $exam_result = OnlineExamination::with(['userprofile', 'onlineexam'])->where('user_id', $id)->get();
+        $exam_result = OnlineExamination::with(['student', 'onlineexam'])->where('user_id', $id)->get();
         return view('onlineexam.faculty.examDetails')->with(compact('exam_result'));
     }
 
-    protected function ExaminationShow()
+    protected function ExaminationShow(Request $request)
     {
     	$subjects = OnlineSubject::all();
         return view('onlineexam.faculty.exam')->with(compact('subjects'));
@@ -120,7 +119,7 @@ class FacultyController extends Controller
         $subjects = OnlineSubject::select('id', 'subject')->get();
 
     	$validator = Validator::make($request->all(), [
-                'exam_code' => 'required|string|max:255',
+                'exam_code' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -129,7 +128,7 @@ class FacultyController extends Controller
         else {
         	$exam_code = $request->input('exam_code');
 
-        	$exams = OnlineExam::where('exam_code', $exam_code)->get();
+        	$exams = OnlineExam::where([['exam_code', '=',  $exam_code], ['user_id', '=', $request->user()->id]])->get();
             
         	if ($exams->count() > 0) {
         		$examQuestions = OnlineExamQuestion::where('online_exam_id', $exams[0]->id)->get();
@@ -161,7 +160,7 @@ class FacultyController extends Controller
     protected function SaveSubject(Request $request)
     {
     	$validator = Validator::make($request->all(), [
-                'subject' => 'required|string|unique:online_subjects|max:255',
+                'subject' => ['required', 'string', 'unique:online_subjects', 'max:255'],
         ]);
 
         if ($validator->fails()) {

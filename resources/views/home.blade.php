@@ -56,11 +56,11 @@
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('app.access', ['urlPath' => 'inventory', 'accessLevel' => '1']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'inventory', 'accessLevel' => '1']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Admin') }}
                             </a>
-                            <a href="{{ route('app.access', ['urlPath' => 'inventory', 'accessLevel' => '2']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'inventory', 'accessLevel' => '2']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Non-Admin') }}
                             </a>
@@ -88,11 +88,11 @@
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '1']) }}"
+                            <a href="{{ route('access.index', ['urlPath' => 'menu-ordering', 'accessLevel' => '1']) }}"
                                 class="btn btn-outline-primary w-100 rounded-pill">
                                 {{ __('Admin') }}
                             </a>
-                            <a href="{{ route('app.access', ['urlPath' => 'menu-ordering', 'accessLevel' => '2']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'menu-ordering', 'accessLevel' => '2']) }}" 
                                 class="btn btn-outline-primary w-100 rounded-pill">
                                 {{ __('Customer') }}
                             </a>
@@ -119,13 +119,13 @@
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
                             </a>
-                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '2']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '2']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
                             </a>
-                            <a href="{{ route('app.access', ['urlPath' => 'online-exam', 'accessLevel' => '3']) }}" class="btn btn-outline-primary rounded-pill w-100">
+                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '3']) }}" class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Student') }}
                             </a>
                         </div>
@@ -154,11 +154,11 @@
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('app.access', ['urlPath' => 'payroll', 'accessLevel' => '1']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'payroll', 'accessLevel' => '1']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Admin') }}
                             </a>
-                            <a href="{{ route('app.access', ['urlPath' => 'payroll', 'accessLevel' => '2']) }}" 
+                            <a href="{{ route('access.index', ['urlPath' => 'payroll', 'accessLevel' => '2']) }}" 
                                 class="btn btn-outline-primary rounded-pill w-100">
                                 {{ __('Employee') }}
                             </a>

@@ -20,11 +20,11 @@ class PayrollSalaryAddition extends Model
 
     public function payrollcutoff()
     {
-    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id', 'id');
+    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id');
     }
 
     public function payrolladdition()
     {
-    	return $this->belongsTo(PayrollAddition::class, 'payroll_addition_id', 'id');
+    	return $this->belongsTo(PayrollAddition::class, 'payroll_addition_id');
     }
 }

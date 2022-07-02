@@ -463,7 +463,7 @@
 
             if (dataReady) {
                 $.ajax({
-                    url: '{{ route("order.admin.item.updatecreate") }}',
+                    url: '{{ route("order.admin.item.store") }}',
                     type: 'POST',
                     data: data,
                     dataType: 'json',

@@ -13,7 +13,6 @@ use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
 use App\Models\InventoryItemOrder;
 use App\Models\InventoryItemReceive;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductController extends Controller
 {
@@ -23,8 +22,7 @@ class ProductController extends Controller
      * @return void
      */
 
-    /* add new product get interface */
-    protected function Index(Request $request)
+    protected function ProductIndex(Request $request)
     {   
         $brand = InventoryItemBrand::all();
         $category = InventoryItemCategory::all();
@@ -36,7 +34,7 @@ class ProductController extends Controller
     }
 
     /* */
-    protected function Save(Request $request)
+    protected function ProductStore(Request $request)
     {
     	$validator = Validator::make($request->all(), [
             'inventory_item_brand_id' => 'required|numeric',
@@ -48,7 +46,7 @@ class ProductController extends Controller
         ]);
         
         if ($validator->fails()) {
-            return redirect()->route('inventory.product.create')->withErrors($validator)->withInput();
+            return redirect()->route('inventory.product.store')->withErrors($validator)->withInput();
         }
         else {
             /* create new record */
@@ -64,21 +62,21 @@ class ProductController extends Controller
             );
 
             if ($create_record->id > 0) { 
-            	return redirect()->route('inventory.product.view', ['id' => $create_record->id]); 
+            	return redirect()->route('inventory.product.show', ['id' => $create_record->id]); 
             }
             else { 
-            	return redirect()->route('inventory.product.create')->withInput(); 
+            	return redirect()->route('inventory.product.store')->withInput(); 
             }
         }
     }
 
-    protected function View(Request $request, $id)
+    protected function ProductShow(Request $request, $id)
     {
         $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
     	return view('inventory.product.view')->with(compact('item_detail'));
     }
 
-    protected function OrderAdd(Request $request)
+    protected function OrderIndex(Request $request)
     {
         if (InventoryItemOrder::exists()) {
             $orders = InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
@@ -91,24 +89,13 @@ class ProductController extends Controller
         }
     }
 
-    protected function OrderGet(Request $request)
+    protected function OrderGet(Request $request, $id)
     {
-    	$validator = Validator::make($request->all(), [
-	            'item_id' => 'required|numeric',
-	    ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('order.create')->withErrors($validator)->withInput();
-        }
-        else {
-            $result = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])
-                    ->find($request->input('item_id'));
-
-	    	return response()->json($result);
-        } 
+    	$result = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return response()->json($result);
     }
 
-    protected function OrderSave(Request $request)
+    protected function OrderStore(Request $request)
     {
     	$validator = Validator::make($request->all(), [
 	            'shoe_id' => 'required|numeric',
@@ -116,7 +103,7 @@ class ProductController extends Controller
 	    ]);
 
         if ($validator->fails()) {
-            return redirect()->route('order.create')->withErrors($validator)->withInput();
+            return redirect()->route('inventory.order.store')->withErrors($validator)->withInput();
         }
         else {
         	if (InventoryItemOrder::exists()){
@@ -149,7 +136,7 @@ class ProductController extends Controller
         }
     }
 
-    protected function DeliverSave(Request $request)
+    protected function DeliverStore(Request $request)
     {
     	$validator = Validator::make($request->all(), [
 	            'shoe_id' => 'required|numeric',
@@ -158,7 +145,7 @@ class ProductController extends Controller
 
         if ($validator->fails()) 
         {
-            return redirect()->route('inventory.deliver.create')->withErrors($validator)->withInput();
+            return redirect()->route('inventory.deliver.store')->withErrors($validator)->withInput();
         }
         else
         {

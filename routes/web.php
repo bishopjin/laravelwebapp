@@ -14,7 +14,6 @@ use App\Http\Controllers\OnlineMenuController\MenuController;
 use App\Http\Controllers\PayrollController\PayrollEmployeeController;
 use App\Http\Controllers\PayrollController\PayrollAdminController;
 use App\Http\Controllers\PayrollController\PayrollDashboardController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,37 +32,37 @@ Route::domain('testweb.genesedan.com')->group(function () {
 Auth::routes();
 
 Route::middleware(['auth', 'auth:sanctum'])->group(function () {
-	Route::get('/', function() { return view('home'); })->name('home');
-	Route::get('/{urlPath}/{accessLevel}', [HomeController::class, 'AppAccess'])->name('app.access');
+	Route::view('/', 'home')->name('index');
+	Route::get('/{urlPath}/{accessLevel}', [HomeController::class, 'AppAccess'])->name('access.index');
 
 	/* Inventory Route */
 	Route::prefix('inventory')->group(function() {
 		Route::get('/', [DashboardController::class, 'Index'])->name('inventory.dashboard.index');
 		Route::prefix('product')->group(function () {
-			Route::get('/order', [ProductController::class, 'OrderAdd'])->name('inventory.order.index');
-			Route::post('/order', [ProductController::class, 'OrderSave'])->name('inventory.order.create');
-			Route::post('/show', [ProductController::class, 'OrderGet'])->name('inventory.order.show');
-			Route::get('/deliver', function () {
-				return view('inventory.product.receive');
-			})->name('inventory.deliver.index');
-			Route::post('/deliver', [ProductController::class, 'DeliverSave'])->name('inventory.deliver.create');
+			Route::get('/order', [ProductController::class, 'OrderIndex'])->name('inventory.order.index');
+			Route::post('/order', [ProductController::class, 'OrderStore'])->name('inventory.order.store');
+			Route::get('/order/{id}', [ProductController::class, 'OrderGet'])->name('inventory.order.show');
+
+			Route::view('/deliver', 'inventory.product.receive')->name('inventory.deliver.index');
+
+			Route::post('/deliver', [ProductController::class, 'DeliverStore'])->name('inventory.deliver.store');
 
 			Route::middleware('permission:add_new_item')->group(function () {
-				Route::get('/add', [ProductController::class, 'Index'])->name('inventory.product.index');
-				Route::post('/add', [ProductController::class, 'Save'])->name('inventory.product.create');
-				Route::get('/view/{id}', [ProductController::class, 'View'])->name('inventory.product.view');
+				Route::get('/add', [ProductController::class, 'ProductIndex'])->name('inventory.product.index');
+				Route::post('/add', [ProductController::class, 'ProductStore'])->name('inventory.product.store');
+				Route::get('/view/{id}', [ProductController::class, 'ProductShow'])->name('inventory.product.show');
 			});
 		});	
 		
 		Route::prefix('employee')->group(function() {
 			Route::middleware('permission:view_edit_user')->group(function () {
-				Route::get('/show', [EmployeeController::class, 'Index'])->name('inventory.employee.index');
-				Route::get('/edit', [EmployeeController::class, 'Edit'])->name('inventory.employee.edit');
+				Route::get('/logs', [EmployeeController::class, 'Index'])->name('inventory.employee.logs.index');
+				Route::get('/edit', [EmployeeController::class, 'Show'])->name('inventory.employee.edit.index');
 
-				Route::post('/delete', [EmployeeController::class, 'DeactivateUser'])->name('inventory.employee.delete');
+				Route::delete('/delete', [EmployeeController::class, 'Delete'])->name('inventory.employee.destroy');
 
-				Route::post('/edit/access', [EmployeeController::class, 'EditAccessSave'])->name('inventory.employee.save.access');
-				Route::get('/edit/access/{id}', [EmployeeController::class, 'EditAccess'])->name('inventory.employee.edit.access');
+				Route::put('/access/save', [EmployeeController::class, 'Store'])->name('inventory.employee.access.store');
+				Route::get('/access/{id}/edit', [EmployeeController::class, 'Edit'])->name('inventory.employee.access.edit');
 			});
 		});
 	});
@@ -77,64 +76,59 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::prefix('admin')->group(function () {
 				Route::get('/dashboard', [AdminController::class, 'Index'])->name('online.admin.index');
 				Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
-				Route::post('/course/save', [AdminController::class, 'SaveCourse'])->name('online.course.save');
-				ROute::post('/course/edit', [AdminController::class, 'EditCourse'])->name('online.course.edit');
-				Route::post('/user/delete', [AdminController::class, 'DeleteUser'])->name('online.user.delete');
-				Route::post('/subject/delete', [AdminController::class, 'EditSubject'])->name('online.subject.edit');
-				Route::post('profile/{id}', [UserProfileController::class, 'Save'])->name('online.admin.profile.save');
-				Route::get('profile/{id}', [UserProfileController::class, 'Show'])->name('online.admin.profile.edit');
+				Route::post('/course/save', [AdminController::class, 'SaveCourse'])->name('online.course.store');
+				Route::put('/course/update', [AdminController::class, 'UpdateCourse'])->name('online.course.update');
+				Route::delete('/user/delete', [AdminController::class, 'DeleteUser'])->name('online.user.destroy');
+				Route::put('/subject/update', [AdminController::class, 'UpdateSubject'])->name('online.subject.update');
 			});
 		});
 
 		Route::middleware('permission:exam_faculty_access')->group(function () {
 			Route::prefix('faculty')->group(function () {
 				Route::get('/dashboard', [FacultyController::class, 'Index'])->name('online.faculty.index');
-				Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.show');
-				Route::post('/subject/save', [FacultyController::class, 'SaveSubject'])->name('online.subject.save');
-				Route::get('/examination', [FacultyController::class, 'ExaminationShow'])->name('online.exam.show');
-				Route::post('/examination/save', [FacultyController::class, 'ExaminationSave'])->name('online.exam.save');
-				Route::post('/examination/view', [FacultyController::class, 'ExaminationView'])->name('online.exam.view');
-				Route::post('/examination/update', [FacultyController::class, 'ExaminationUpdate'])->name('online.exam.update');
-				Route::post('profile/{id}', [UserProfileController::class, 'Save'])->name('online.faculty.profile.save');
-				Route::get('profile/{id}', [UserProfileController::class, 'Show'])->name('online.faculty.profile.edit');
-				Route::get('/student/{id}/exam_score', [FacultyController::class, 'ShowScore'])->name('online.faculty.show.student.score');
+				Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.index');
+				Route::post('/subject/save', [FacultyController::class, 'SaveSubject'])->name('online.subject.store');
+				Route::get('/examination', [FacultyController::class, 'ExaminationShow'])->name('online.exam.index');
+				Route::post('/examination/save', [FacultyController::class, 'ExaminationSave'])->name('online.exam.store');
+				Route::post('/examination/view', [FacultyController::class, 'ExaminationView'])->name('online.exam.show');
+				Route::patch('/examination/update', [FacultyController::class, 'ExaminationUpdate'])->name('online.exam.update');
+				Route::get('/student/{id}/exam_score', [FacultyController::class, 'ShowScore'])->name('online.faculty.student.score.show');
 			});
 		});
 
 		Route::middleware('permission:exam_student_access')->group(function () {
 			Route::prefix('student')->group(function () {
 				Route::get('/dashboard', [StudentController::class, 'Index'])->name('online.student.index');
-				Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam');
-				Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.save');
-				Route::post('profile/{id}', [UserProfileController::class, 'Save'])->name('online.student.profile.save');
-				Route::get('profile/{id}', [UserProfileController::class, 'Show'])->name('online.student.profile.edit');
+				Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam.show');
+				Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.store');
 			});
 		});
+		Route::patch('profile/update', [UserProfileController::class, 'Update'])->name('online.profile.update');
+		Route::get('profile/{id}/edit', [UserProfileController::class, 'Show'])->name('online.profile.edit');
 	});
 	/* END */
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
 		/* Admin and Customer route */
-
 		Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index')
 			->middleware(
 				'permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list|view_menu_order_list|view_menu_user_list'
 			);
 		/* Customer route */
 		Route::middleware('permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list')->group(function () {
-			Route::post('/order', [MenuController::class, 'store'])->name('order.save');
-			Route::get('/checkCoupon/{code}', [MenuController::class, 'checkCoupon'])->name('order.check.coupon');
-			Route::get('/order/details/{order_number}', [MenuController::class, 'view'])->name('order.details.view');
+			Route::post('/order', [MenuController::class, 'store'])->name('order.store');
+			Route::get('/checkCoupon/{code}', [MenuController::class, 'show'])->name('order.coupon.show');
+			Route::get('/order/details/{order_number}', [MenuController::class, 'showdetails'])->name('order.details.show');
 			/* paginate using ajax */
-			Route::get('/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order');
-			Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon');
+			Route::get('/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order.show');
+			Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon.show');
 		});
 		/* Admin Maintenance route */
 		Route::middleware('permission:view_menu_order_list|view_menu_user_list')->group(function(){
-			Route::post('/item/addedit', [MenuController::class, 'AddEditItem'])->name('order.admin.item.updatecreate');
+			Route::post('/item/addedit', [MenuController::class, 'storeupdateitem'])->name('order.admin.item.store');
 			/* paginate using ajax */
-			Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order');
-			Route::get('/show/admin/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user');
+			Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order.show');
+			Route::get('/show/admin/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user.show');
 		});
 	});
 	/* END */
@@ -147,58 +141,46 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 				Route::get('/dashboard', [PayrollAdminController::class, 'Index'])->name('payroll.admin.index');
 
 				Route::get('/user', [PayrollAdminController::class, 'UserIndex'])->name('payroll.admin.user.index');
-				Route::post('/user/save', [PayrollAdminController::class, 'UserCreate'])->name('payroll.admin.user.create');
+				Route::post('/user/save', [PayrollAdminController::class, 'UserCreate'])->name('payroll.admin.user.store');
 
-				Route::get('/changepassword', function () {
-					return view('payroll.changepassword');
-				})->name('payroll.admin.password.index');
+				Route::view('/changepassword', 'payroll.changepassword')->name('payroll.admin.password.index');
 				
-				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.admin.password.create');
+				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.admin.password.update');
 
-				Route::get('/salarygrade', function () { 
-					return view('payroll.admin.salarygrade'); 
-				})->name('payroll.admin.salarygrade.index');
+				Route::view('/salarygrade', 'payroll.admin.salarygrade')->name('payroll.admin.salarygrade.index');
 
-				Route::post('/salarygrade/save', [PayrollAdminController::class, 'SalaryGradeCreate'])->name('payroll.admin.salarygrade.create');
+				Route::post('/salarygrade/save', [PayrollAdminController::class, 'SalaryGradeCreate'])->name('payroll.admin.salarygrade.store');
 
-				Route::get('/holiday', function () {
-					return view('payroll.admin.holiday');
-				})->name('payroll.admin.holiday.index');
+				Route::view('/holiday', 'payroll.admin.holiday')->name('payroll.admin.holiday.index');
 
-				Route::post('/holiday/save', [PayrollAdminController::class, 'HolidayCreate'])->name('payroll.admin.holiday.create');
+				Route::post('/holiday/save', [PayrollAdminController::class, 'HolidayCreate'])->name('payroll.admin.holiday.store');
 
-				Route::get('/addition', function () {
-					return view('payroll.admin.addition');
-				})->name('payroll.admin.addition.index');
+				Route::view('/addition', 'payroll.admin.addition')->name('payroll.admin.addition.index');
 				
-				Route::post('/addition/save', [PayrollAdminController::class, 'AdditionCreate'])->name('payroll.admin.addition.create');
+				Route::post('/addition/save', [PayrollAdminController::class, 'AdditionCreate'])->name('payroll.admin.addition.store');
 
-				Route::get('/deduction', function () {
-					return view('payroll.admin.deduction');
-				})->name('payroll.admin.deduction.index');
+				Route::view('/deduction', 'payroll.admin.deduction')->name('payroll.admin.deduction.index');
 				
-				Route::post('/deduction/save', [PayrollAdminController::class, 'DeductionCreate'])->name('payroll.admin.deduction.create');
+				Route::post('/deduction/save', [PayrollAdminController::class, 'DeductionCreate'])->name('payroll.admin.deduction.store');
 
-				Route::get('/workschedule', function () {
-					return view('payroll.admin.workschedule');
-				})->name('payroll.admin.schedule.index');
+				Route::view('/workschedule', 'payroll.admin.workschedule')->name('payroll.admin.schedule.index');
 				
-				Route::post('/workschedule/save', [PayrollAdminController::class, 'ScheduleCreate'])->name('payroll.admin.schedule.create');
+				Route::post('/workschedule/save', [PayrollAdminController::class, 'ScheduleCreate'])->name('payroll.admin.schedule.store');
 
 				Route::get('/cutoff/edit', [PayrollAdminController::class, 'CutoffEdit'])->name('payroll.admin.cutoff.edit');
-				Route::post('/cutoff/update', [PayrollAdminController::class, 'CutoffUpdate'])->name('payroll.admin.cutoff.update');
+				Route::put('/cutoff/update', [PayrollAdminController::class, 'CutoffUpdate'])->name('payroll.admin.cutoff.update');
 
 				Route::get('/attendancerequest', [PayrollAdminController::class, 'AttendanceRequestIndex'])->name('payroll.admin.requestchange.index');
-				Route::post('/attendancerequest/action', [PayrollAdminController::class, 'RequestAction'])->name('payroll.admin.requestchange.create');
+				Route::patch('/attendancerequest/action', [PayrollAdminController::class, 'RequestAction'])->name('payroll.admin.requestchange.update');
 
-				Route::post('/salary/compute', [PayrollAdminController::class, 'ComputeSalary'])->name('payroll.admin.salary.create');
+				Route::post('/salary/compute', [PayrollAdminController::class, 'ComputeSalary'])->name('payroll.admin.salary.store');
 
-				Route::get('/workschedule/edit/{id}', [PayrollAdminController::class, 'ScheduleEdit'])->name('payroll.admin.schedule.edit');
-				Route::get('/deduction/edit/{id}', [PayrollAdminController::class, 'DeductionEdit'])->name('payroll.admin.deduction.edit');
-				Route::get('/addition/edit/{id}', [PayrollAdminController::class, 'AdditionEdit'])->name('payroll.admin.addition.edit');
-				Route::get('/holiday/edit/{id}', [PayrollAdminController::class, 'HolidayEdit'])->name('payroll.admin.holiday.edit');
-				Route::get('/salarygrade/edit/{id}', [PayrollAdminController::class, 'SalaryGradeEdit'])->name('payroll.admin.salarygrade.edit');
-				Route::get('/user/edit/{id}', [PayrollAdminController::class, 'UserEdit'])->name('payroll.admin.user.edit');
+				Route::get('/workschedule/{id}/edit', [PayrollAdminController::class, 'ScheduleEdit'])->name('payroll.admin.schedule.edit');
+				Route::get('/deduction/{id}/edit', [PayrollAdminController::class, 'DeductionEdit'])->name('payroll.admin.deduction.edit');
+				Route::get('/addition/{id}/edit', [PayrollAdminController::class, 'AdditionEdit'])->name('payroll.admin.addition.edit');
+				Route::get('/holiday/{id}/edit', [PayrollAdminController::class, 'HolidayEdit'])->name('payroll.admin.holiday.edit');
+				Route::get('/salarygrade/{id}/edit', [PayrollAdminController::class, 'SalaryGradeEdit'])->name('payroll.admin.salarygrade.edit');
+				Route::get('/user/{id}/edit', [PayrollAdminController::class, 'UserEdit'])->name('payroll.admin.user.edit');
 			});
 		});
 
@@ -206,11 +188,9 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::prefix('employee')->group(function() {
 				Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
 
-				Route::get('/changepassword', function () {
-					return view('payroll.changepassword');
-				})->name('payroll.employee.password.index');
+				Route::view('/changepassword', 'payroll.changepassword')->name('payroll.employee.password.index');
 
-				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.employee.password.create');
+				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.employee.password.update');
 
 				Route::post('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
 				
@@ -221,7 +201,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 				Route::get('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.index');
 				Route::post('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.show');
 				
-				Route::get('/dtr/changerequest/{id}', [PayrollEmployeeController::class, 'DTRChangeRequest'])->name('payroll.employee.dtr.show');
+				Route::get('/dtr/{id}/edit', [PayrollEmployeeController::class, 'DTRChangeRequest'])->name('payroll.employee.dtr.edit');
 			});
 		});
 	});

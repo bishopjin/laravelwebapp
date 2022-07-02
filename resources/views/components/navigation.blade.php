@@ -15,13 +15,13 @@
 
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <!-- consolidated system -->
-                        <a href="{{ route('home') }}" class="dropdown-item">Home</a>
+                        <a href="{{ route('index') }}" class="dropdown-item">Home</a>
 
                     </div>
                 </li>
                 <li class="nav-item d-block d-md-none">
                     <div aria-labelledby="navbarDropdown">
-                        <a href="{{ route('home') }}" class="dropdown-item">Home</a>
+                        <a href="{{ route('index') }}" class="dropdown-item">Home</a>
                     </div>
                 </li>
             </ul>

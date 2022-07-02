@@ -12,7 +12,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.subject.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.subject.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
@@ -74,7 +74,7 @@
                                             {{ __('Selection - Choices for the question above it.') }}
                                         </p>
                                         <hr>
-                                        <form method="POST" action="{{ route('online.exam.save') }}">
+                                        <form method="POST" action="{{ route('online.exam.store') }}">
                                             @csrf
                                             <div class="form-group pb-4">
                                                 <div class="row">
@@ -118,13 +118,13 @@
                                     </span>
                                 </div>
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('online.exam.view') }}">
+                                    <form method="POST" action="{{ route('online.exam.show') }}">
                                         @csrf
                                         <div class="form-group">
-                                            <label>Examination Code</label>
+                                            <label for="exam_code">Examination Code</label>
                                             <div class="d-flex flex-column flex-md-row">
-                                                <input type="text" name="exam_code" class="form-control me-2" value="@isset($exam_code) {{ $exam_code }} @endisset">
-                                                <input type="submit" value="View" class="btn btn-outline-success px-md-4">
+                                                <input type="text" name="exam_code" id="exam_code" class="form-control me-2" value="@isset($exam_code) {{ $exam_code }} @endisset">
+                                                <input type="submit" value="View" class="btn btn-outline-success px-md-4 d-none" id="submitBtn">
                                             </div>
                                         </div>
                                     </form>
@@ -207,15 +207,17 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        var examGeneratedForm = $('#examGeneratedForm');
-        var examSettings = $('#examSettings');
-        var numberofquestion = $('#numberofquestion');
-        var numberofselection = $('#numberofselection');
-        var createFormBtn = $('#createFormBtn');
-        var resetFormBtn = $('#resetFormBtn');
-        var questionContainer = $('#questionContainer');
-        var nqwarning = $('#nqwarning');
-        var nswarning = $('#nswarning');
+        var examGeneratedForm = $('#examGeneratedForm'),
+            examSettings = $('#examSettings'),
+            numberofquestion = $('#numberofquestion'),
+            numberofselection = $('#numberofselection'),
+            createFormBtn = $('#createFormBtn'),
+            resetFormBtn = $('#resetFormBtn'),
+            questionContainer = $('#questionContainer'),
+            nqwarning = $('#nqwarning'),
+            nswarning = $('#nswarning'),
+            submitBtn = $('#submitBtn'),
+            examcode = $('#exam_code');
 
         $(examGeneratedForm).hide();
 
@@ -225,6 +227,9 @@
             $(examSettings).show();
         });
 
+        $(exam_code).on('keyup', function () {
+             $(this).val() != '' ? $(submitBtn).removeClass('d-none').show() : $(submitBtn).hide();
+        });
         $(createFormBtn).on('click', function(){
             /* change the url */
             window.history.pushState(' ', `{{ ('Laravel Web App v2.0') }}`, '{{ URL::to("/online-exam/faculty/examination") }}');
@@ -281,7 +286,7 @@
                 $.ajax({
                     url: '{{ route("online.exam.update") }}',
                     type: 'POST',
-                    data: {id : eleId, key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}'},
+                    data: {id : eleId, key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}', '_method': 'PATCH',},
                     dataType: 'json',
                     success: function(result, status, xhr){
                         $('.modal').show();

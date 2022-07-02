@@ -40,7 +40,7 @@
 														$arrdate = explode(' ', $period['paydate']);
 													@endphp
 													@if(intval(date('d')) >= intval($arrdate[1]) AND intval(date('d')) <= intval($arrdate[1]) + 5)
-														<form method="POST" action="{{ route('payroll.admin.salary.create') }}">
+														<form method="POST" action="{{ route('payroll.admin.salary.store') }}">
 															@csrf
 															<div class="form-group">
 																<input type="hidden" name="cutoffId" value="{{ $period['id'] }}">
@@ -303,9 +303,9 @@
 												@php 
 													$sched = explode('-', $user->workschedule->schedule);
 												@endphp
-												<td>{{ $user->userprofile->lastname ?? $user->lastname }}</td>
-												<td>{{ $user->userprofile->firstname ?? $user->firstname }}</td>
-												<td>{{ $user->userprofile->middlename ?? $user->middlename }}</td>
+												<td>{{ $user->user->lastname ?? $user->lastname }}</td>
+												<td>{{ $user->user->firstname ?? $user->firstname }}</td>
+												<td>{{ $user->user->middlename ?? $user->middlename }}</td>
 												<td>{{ $user->workschedule->schedule ? date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) : 'None' }}</td>
 												<td>{{ $user->salarygrade->salary_grade ?? 'None' }}</td>
 												<td>{{ $user->salarygrade ? 'Registered' : 'Not Registered' }}</td>

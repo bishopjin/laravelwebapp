@@ -32,13 +32,10 @@
                                         <div class="col-md-6 d-grid pb-md-0 pb-3">
                                             <div>
                                                 <span class="fw-bold">{{ __('Name: ') }}</span>
-                                                @php
-                                                    $user = auth::user()->userprofile;
-                                                @endphp
-                                                {{ $user->lastname }}, {{ $user->firstname }} {{ $user->middlename }}
+                                                {{ auth::user()->full_name }}
                                             </div>
                                             <div>
-                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course->course }}</span>
+                                                <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -56,7 +53,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-11">
                                     <label class="fw-bold pb-2">{{ __('Subject: ') }}{{ $exams[0]->subject }}</label>
-                                    <form method="POST" action="{{ route('online.student.exam.save') }}" id="examForm">
+                                    <form method="POST" action="{{ route('online.student.exam.store') }}" id="examForm">
                                         @csrf
                                         <input type="hidden" name="facultyID" value="{{ $exams[0]->user_id }}">
                                         <input type="hidden" name="exams_id" value="{{ $exams[0]->id }}">

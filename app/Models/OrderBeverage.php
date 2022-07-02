@@ -28,11 +28,11 @@ class OrderBeverage extends Model
 
     public function beveragename()
     {
-        return $this->belongsTo(OrderBeverageName::class, 'order_beverage_name_id', 'id');
+        return $this->belongsTo(OrderBeverageName::class, 'order_beverage_name_id');
     }
 
     public function beveragesize()
     {
-        return $this->belongsTo(OrderBeverageSize::class, 'order_beverage_size_id', 'id');
+        return $this->belongsTo(OrderBeverageSize::class, 'order_beverage_size_id');
     }
 }

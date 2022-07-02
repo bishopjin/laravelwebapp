@@ -19,4 +19,9 @@ class OrderCoupon extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function orderorder()
+    {
+    	return $this->hasMany(OrderOrder::class);
+    }
 }

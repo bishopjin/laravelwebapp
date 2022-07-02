@@ -8,7 +8,7 @@
                 <div class="card-header fw-bolder d-flex flex-row justify-content-between align-items-center">
                     <span>{{ __('Employee Log') }}</span>
                     <span>
-                        <a href="{{ route('inventory.employee.edit') }}" class="btn btn-outline-success px-3 fw-bolder">{{ __('Edit User') }}</a>
+                        <a href="{{ route('inventory.employee.edit.index') }}" class="btn btn-outline-success px-3 fw-bolder">{{ __('Edit User') }}</a>
                     </span>
                 </div>
 
@@ -35,7 +35,7 @@
                                     @endphp
                                     <tr>
                                         <td class="fw-bolder">{{ $item->user_id }}</td>
-                                        <td>{{ $item->userprofile->full_name }}</td>
+                                        <td>{{ $item->user->full_name }}</td>
                                         <td>{{ $date_in[1] }}</td>
                                         <td>{{ $date_in[0] }}</td>
                                         <td>{{ $date_out[1] }}</td>

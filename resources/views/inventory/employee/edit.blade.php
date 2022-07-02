@@ -26,24 +26,24 @@
                                     @php
                                         $active = false;
                                         $notactive = false;
-                                        if ($user->isactive)
+                                        if ($user->trashed())
                                         {   
-                                            $btn_label = 'Disable';
-                                            $active = true;
+                                            $btn_label = 'Enable';
+                                            $notactive = true;
                                         }
                                         else 
                                         {
-                                            $btn_label = 'Enable';
-                                            $notactive = true;
+                                            $btn_label = 'Disable';
+                                            $active = true;
                                         }
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $user->id }}</td>
-                                        <td>{{ $user->userprofile->full_name }}</td>
+                                        <td>{{ $user->full_name }}</td>
                                         <!-- standalone system -->
                                         {{-- <td class="text-center">{{ $user->user_type }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('inventory.employee.edit.access', $user->user_id) }} " class="btn btn-outline-primary">Edit Access Level</a>
+                                            <a href="{{ route('inventory.employee.edit.access', $user->id) }} " class="btn btn-outline-primary">Edit Access Level</a>
                                         </td> --}}
                                         <!-- End -->
                                         <!-- consolidated system  -->
@@ -51,10 +51,10 @@
                                         <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
                                         <!-- End -->
                                         <td class="text-center">
-                                            <form method="POST" action="{{ route('inventory.employee.delete') }}">
+                                            <form method="POST" action="{{ route('inventory.employee.destroy') }}">
                                                 @csrf
-                                                <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                                <input type="hidden" name="status" value="{{ $user->isactive }}">
+                                                @method('DELETE')
+                                                <input type="hidden" name="id" value="{{ $user->id }}">
                                                 <input type="submit" value="{{ $btn_label }}"
                                                     @class(['btn', 'btn-outline-danger' => $active, 
                                                     'btn-outline-success' => $notactive])>

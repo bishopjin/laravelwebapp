@@ -20,11 +20,11 @@ class PayrollSalaryDeduction extends Model
 
     public function payrollcutoff()
     {
-    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id', 'id');
+    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id');
     }
 
     public function payrolldeduction()
     {
-    	return $this->belongsTo(PayrollDeduction::class, 'payroll_deduction_id', 'id');
+    	return $this->belongsTo(PayrollDeduction::class, 'payroll_deduction_id');
     }
 }

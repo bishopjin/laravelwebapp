@@ -71,7 +71,7 @@
 												<td>
 													@if($data->time_out)
 														@if($data->changeRequest == 1)
-															<a href="{{ route('payroll.employee.dtr.show', ['id' => $data->id]) }}" class="fw-bold text-success">
+															<a href="{{ route('payroll.employee.dtr.edit', ['id' => $data->id]) }}" class="fw-bold text-success">
 																{{ __('Pending Request') }}
 															</a>
 														@elseif($data->changeRequest == 2)
@@ -81,7 +81,7 @@
 														@elseif($data->changeRequest == 4)
 															{{ __('Computed') }}
 														@else
-															<a href="{{ route('payroll.employee.dtr.show', ['id' => $data->id]) }}" class="fw-bold">
+															<a href="{{ route('payroll.employee.dtr.edit', ['id' => $data->id]) }}" class="fw-bold">
 																{{ __('Request Change') }}
 															</a>
 														@endif

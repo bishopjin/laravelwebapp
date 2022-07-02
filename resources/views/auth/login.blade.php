@@ -54,8 +54,8 @@
                                 </div>
                             </div>
                         @endif
-                        <!-- <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
+                        <div class="row mb-3 justify-content-center">
+                            <div class="col-md-10">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
@@ -64,7 +64,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="row justify-content-center pb-2">
                             <div class="col-md-10 d-flex justify-content-end small">
                                 <div class="small">

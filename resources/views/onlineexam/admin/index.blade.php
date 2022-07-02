@@ -36,21 +36,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @isset($userProfile)
-                                        @foreach($userProfile as $user)
+                                    @isset($users)
+                                        @foreach($users as $user)
                                             <tr>
                                                 <td>{{ $user->full_name }}</td>
                                                 <td>{{ $user->gender->gender }}</td>
                                                 <td>{{ $user->onlinecourse->course }}</td>
                                                 <td>{{ __('For standalone system only') }}</td>
                                                 <td>
-                                                    <form method="POST" action="{{ route('online.user.delete') }}">
+                                                    <form method="POST" action="{{ route('online.user.destroy') }}">
                                                         @csrf
-                                                        <input type="hidden" name="user_id" value="{{ $user->user->id }}">
-                                                        <input type="hidden" name="access_level" value="{{ $user->user->access_level }}">
-                                                        <input type="hidden" name="isactive" value="{{ $user->user->isactive }}">
-                                                        <input type="submit" value="@if($user->user->isactive) Disable Account @else Enable Account @endif" 
-                                                            class="btn @if($user->user->isactive) btn-outline-danger @else btn-outline-success @endif">
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="id" value="{{ $user->id }}">
+                                                        <input type="submit" value="@if($user->trashed()) Enable Account @else Disable Account @endif" 
+                                                            class="btn @if($user->trashed()) btn-outline-success @else btn-outline-danger @endif">
                                                     </form>
                                                 </td>
                                             </tr>
@@ -59,8 +58,8 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
-                                @isset($userProfile)
-                                    {{ $userProfile->links() }}
+                                @isset($users)
+                                    {{ $users->links() }}
                                 @endisset
                             </div>
                         </div>
@@ -85,7 +84,7 @@
                                             @endphp
                                             <tr>
                                                 <td id="{{ $subjectID }}">{{ $subject->subject }}</td>
-                                                <td>{{ $subject->userprofile->full_name }}</td>
+                                                <td>{{ $subject->user->full_name }}</td>
                                                 <td>
                                                     <a href="javascript:void(0)" class="btn btn-outline-success editSubject" id="{{ $subject->id }}">Edit</a>
                                                 </td>
@@ -124,8 +123,9 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('online.subject.edit') }}" class="p-md-4">
+                    <form method="POST" action="{{ route('online.subject.update') }}" class="p-md-4">
                         @csrf
+                        @method('PUT')
                         <div class="form-group mb-3">
                             <input type="text" name="subject" id="subjectname" class="form-control" autocomplete="off">
                             <input type="hidden" name="subject_id" id="editID">

@@ -33,18 +33,15 @@
                                             <div>
                                                 <div class="pb-2">
                                                     <span class="fw-bold">{{ __('Name: ') }}</span>
-                                                    @php
-                                                        $user = auth::user()->userprofile;
-                                                    @endphp
-                                                    {{ $user->full_name }}
+                                                    {{ auth::user()->full_name }}
                                                 </div>
                                                 <div>
-                                                    <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course->course }}</span>
+                                                    <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course }}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <form method="POST" action="{{ route('online.student.exam') }}">
+                                            <form method="POST" action="{{ route('online.student.exam.show') }}">
                                                 @csrf
                                                 <label class="fw-bold pb-2">{{ __('Examination Code') }}</label>
                                                 <div class="form-group">

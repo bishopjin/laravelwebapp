@@ -37,7 +37,7 @@
                         <input type="text" class="form-control" value="{{ $item_detail->price ?? '' }}" readonly="">
                     </div>
                     <div class="form-group d-flex justify-content-center py-2">
-                        <a href="{{ route('inventory.product.create') }}" class="btn btn-outline-primary">Add New Item</a>
+                        <a href="{{ route('inventory.product.store') }}" class="btn btn-outline-primary">Add New Item</a>
                     </div>
                 </div>
             </div>

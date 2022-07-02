@@ -28,17 +28,17 @@ class PayrollAttendance extends Model
 
     public function payrollcutoff()
     {
-    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id', 'id');
+    	return $this->belongsTo(PayrollCutOff::class, 'payroll_cut_off_id');
     }
 
     public function holiday()
     {
-        return $this->belongsTo(PayrollHoliday::class, 'payroll_holiday_id', 'id');
+        return $this->belongsTo(PayrollHoliday::class, 'payroll_holiday_id');
     }
 
     public function workschedule()
     {
-        return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id', 'id');
+        return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id');
     }
 
     public function attendancerequest()
@@ -48,6 +48,16 @@ class PayrollAttendance extends Model
 
     public function payslip()
     {
-        return $this->belongsTo(PayrollPayslip::class, 'payroll_payslip_id', 'id');
+        return $this->belongsTo(PayrollPayslip::class, 'payroll_payslip_id');
+    }
+
+    public function payrollsalarydeduction()
+    {
+        return $this->belongsToMany(PayrollSalaryDeduction::class, 'payroll_salary_deductions');
+    }
+
+    public function payrollsalaryaddition()
+    {
+        return $this->belongsToMany(PayrollSalaryAddition::class, 'payroll_salary_additions');
     }
 }

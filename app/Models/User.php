@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles; 
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes; 
 
     /**
      * The attributes that are mass assignable.
@@ -21,8 +22,13 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'password',
-        'access_level',
-        'isactive',
+        'firstname', 
+        'middlename', 
+        'lastname', 
+        'email', 
+        'gender_id', 
+        'online_course_id', 
+        'DOB'
     ];
 
     /**
@@ -40,16 +46,86 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'access_level' => 'integer',
-        'isactive' => 'boolean',
+        'DOB' => 'date',
+        'gender_id' => 'integer',
     ];
 
-    protected $attributes = [
-        'isactive' => true,
-    ];
+    protected $attributes = ['online_course_id' => 1,];
 
-    public function userprofile()
+    /* accessor */
+    protected function getFullNameAttribute()
     {
-        return $this->hasOne(UsersProfile::class);
+        return "{$this->lastname}, {$this->firstname} {$this->middlename}";
+    }
+
+    /* Local Scope */
+    public function scopeNotadmin($query)
+    {   
+        return $query->where('id', '>', 1);
+    }
+
+    public function scopeNotself($query, $id)
+    {
+        return $query->where('id', '!=', $id);
+    }
+
+    public function onlinecourse()
+    {
+        return $this->belongsTo(OnlineCourse::class, 'online_course_id');
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class);
+    }
+
+    public function onlinesubject()
+    {
+        return $this->hasMany(OnlineSubject::class);
+    }
+
+    public function onlineexam()
+    {
+        return $this->hasMany(OnlineExam::class);
+    }
+
+    public function onlineexamination()
+    {
+        return $this->hasMany(OnlineExamination::class);
+    }
+
+    public function inventoryreceive()
+    {
+        return $this->hasMany(InventoryItemReceive::class);
+    }
+
+    public function inventoryorder()
+    {
+        return $this->hasMany(InventoryItemOrder::class);
+    }
+
+    public function employeelog()
+    {
+        return $this->hasMany(InventoryEmployeeLog::class);
+    }
+
+    public function payrollcutoff()
+    {
+        return $this->hasMany(PayrollCutOff::class);
+    }
+
+    public function payrollemployee()
+    {
+        return $this->hasOne(PayrollEmployee::class);
+    }
+
+    public function approverattendancerequest()
+    {
+        return $this->hasMany(PayrollAttendanceRequest::class, 'approver_id');
+    }
+
+    public function requestorattendancerequest()
+    {
+        return $this->hasMany(PayrollAttendanceRequest::class, 'employee_id');
     }
 }

@@ -17,8 +17,15 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
-            $table->integer('access_level');
-            $table->boolean('isactive');
+            $table->string('firstname');
+            $table->string('middlename')->nullable();
+            $table->string('lastname');
+            $table->string('email')->unique();
+            $table->integer('gender_id');
+            $table->integer('online_course_id');
+            $table->date('DOB');
+            $table->string('remember_token');
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

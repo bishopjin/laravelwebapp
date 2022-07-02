@@ -23,6 +23,11 @@ class OrderOrder extends Model
         'updated_at',
     ];
 
+    public function coupon()
+    {
+        return $this->belongsTo(OrderCoupon::class);
+    }
+
     /* polymorphic t=relationship s*/
     public function orderable()
     {

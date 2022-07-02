@@ -21,8 +21,8 @@ class InventoryEmployeeLog extends Model
         'updated_at',
     ];
     
-    public function userprofile()
+    public function user()
     {
-    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    	return $this->belongsTo(User::class);
     }
 }

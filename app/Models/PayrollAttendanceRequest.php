@@ -21,18 +21,18 @@ class PayrollAttendanceRequest extends Model
         'status',
     ];
 
-    public function userprofile()
+    public function user()
     {
-    	return $this->belongsTo(UsersProfile::class, 'approver_id', 'user_id');
+    	return $this->belongsTo(User::class, 'approver_id');
     }
 
     public function employee()
     {
-    	return $this->belongsTo(UsersProfile::class, 'employee_id', 'user_id');
+    	return $this->belongsTo(User::class, 'employee_id');
     }
 
     public function attendance()
     {
-        return $this->belongsTo(PayrollAttendance::class, 'payroll_attendance_id', 'id');
+        return $this->belongsTo(PayrollAttendance::class, 'payroll_attendance_id');
     }
 }

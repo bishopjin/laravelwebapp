@@ -7,7 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Work Schedule') }}</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.schedule.create') }}" class="px-5">
+						<form method="POST" action="{{ route('payroll.admin.schedule.store') }}" class="px-5">
 							@csrf
 
 							@php

@@ -16,10 +16,8 @@ class StudentController extends Controller
 {
     protected function Index(Request $request)
     {
-        $user = User::find($request->user()->id)->userprofile;
-
-    	$course = OnlineCourse::find($user->online_course_id);
-        
+        $user = User::with('onlinecourse')->find($request->user()->id);
+        $course = $user->onlinecourse->course;
     	$exam_result = OnlineExamination::with(['onlineexam'])->where('user_id', $request->user()->id)->get();
 
         $subjects = OnlineExam::with('onlinesubject')->get();
@@ -31,9 +29,8 @@ class StudentController extends Controller
     {
     	$find_exam = [];
 
-        $user = User::find($request->user()->id)->userprofile;
-
-        $course = OnlineCourse::find($user->online_course_id);
+        $user = User::with('onlinecourse')->find($request->user()->id);
+        $course = $user->onlinecourse->course;
 
     	$exams = OnlineExam::with('onlinesubject')
     			->where('online_exams.exam_code', $request->input('exam_code'))->get();
@@ -44,7 +41,7 @@ class StudentController extends Controller
     	}
 
     	$validator = Validator::make($request->all(), [
-    		'exam_code' => 'required|string|max:50',
+    		'exam_code' => ['required', 'string', 'max:50'],
     	]);
 
     	if ($validator->fails()) {

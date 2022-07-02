@@ -9,7 +9,7 @@
 					<div class="card-body">
 						<form method="POST" action="{{ route('payroll.admin.cutoff.update') }}">
 							@csrf
-
+							@method('PUT')
 							@php
 								$fco = explode('to', $cutOff[0]->cut_off);
 								$sco = explode('to', $cutOff[1]->cut_off);

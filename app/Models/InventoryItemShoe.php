@@ -30,27 +30,27 @@ class InventoryItemShoe extends Model
 
     public function brand()
     {
-        return $this->belongsTo(InventoryItemBrand::class, 'inventory_item_brand_id', 'id');
+        return $this->belongsTo(InventoryItemBrand::class, 'inventory_item_brand_id');
     }
 
     public function size()
     {
-        return $this->belongsTo(InventoryItemSize::class, 'inventory_item_size_id', 'id');
+        return $this->belongsTo(InventoryItemSize::class, 'inventory_item_size_id');
     }
 
     public function color()
     {
-        return $this->belongsTo(InventoryItemColor::class, 'inventory_item_color_id', 'id');
+        return $this->belongsTo(InventoryItemColor::class, 'inventory_item_color_id');
     }
 
     public function type()
     {
-        return $this->belongsTo(InventoryItemType::class, 'inventory_item_type_id', 'id');
+        return $this->belongsTo(InventoryItemType::class, 'inventory_item_type_id');
     }
 
     public function category()
     {
-        return $this->belongsTo(InventoryItemCategory::class, 'inventory_item_category_id', 'id');
+        return $this->belongsTo(InventoryItemCategory::class, 'inventory_item_category_id');
     }
 
     public function order()

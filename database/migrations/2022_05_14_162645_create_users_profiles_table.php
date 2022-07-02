@@ -16,14 +16,6 @@ class CreateUsersProfilesTable extends Migration
         Schema::create('users_profiles', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('firstname');
-            $table->string('middlename')->nullable();
-            $table->string('lastname');
-            $table->string('email');
-            $table->integer('gender_id');
-            $table->integer('online_course_id');
-            $table->integer('online_access_level_id')->default(1);
-            $table->date('DOB');
             $table->timestamps();
         });
     } 

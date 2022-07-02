@@ -9,7 +9,7 @@ class OnlineExam extends Model
 {
     use HasFactory; 
 
-    protected $guarded = [];
+    protected $fillable = ['user_id', 'exam_code', 'online_subject_id', 'timer'];
 
     protected $casts = ['timer' => 'integer', 'online_subject_id' => 'integer'];
 
@@ -25,12 +25,12 @@ class OnlineExam extends Model
 
     public function onlinesubject()
     {
-    	return $this->belongsTo(OnlineSubject::class, 'online_subject_id', 'id');
+    	return $this->belongsTo(OnlineSubject::class, 'online_subject_id');
     }
 
-    public function userprofile()
+    public function user()
     {
-    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    	return $this->belongsTo(User::class);
     }
 
     public function onlineexamination()

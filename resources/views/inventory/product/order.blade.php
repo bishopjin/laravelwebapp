@@ -175,9 +175,8 @@
             
             if (itemIDVal && itemIDVal.search(/[^0-9]/i) == -1) {
                 $.ajax({
-                    url: '{{ route("inventory.order.show") }}',
-                    type: 'POST',
-                    data: {item_id : itemIDVal, _token : '{{ csrf_token() }}'},
+                    url: '{{ url()->current() }}' + '/' + itemIDVal,
+                    type: 'GET',
                     dataType: 'json',
                     success: function(result, status, xhr){
                         if (!$.isEmptyObject(result)) {
@@ -239,7 +238,7 @@
                 let qtyVal = $(qty).val();
 
                 $.ajax({
-                    url: '{{ route("inventory.order.create") }}',
+                    url: '{{ route("inventory.order.store") }}',
                     type: 'POST',
                     data: {_token : '{{ csrf_token() }}', shoe_id : itemIdVal, qty : qtyVal},
                     dataType: 'json',

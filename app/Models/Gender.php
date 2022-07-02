@@ -14,8 +14,8 @@ class Gender extends Model
         'updated_at',
     ];
 
-    public function userprofile()
+    public function user()
     {
-    	return $this->hasMany(UsersProfile::class);
+    	return $this->hasMany(User::class);
     }
 }

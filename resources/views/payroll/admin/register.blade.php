@@ -7,7 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Payroll Registration') }}</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.user.create') }}" class="px-4">
+						<form method="POST" action="{{ route('payroll.admin.user.store') }}" class="px-4">
 							@csrf
 
 							@php

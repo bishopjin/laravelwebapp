@@ -11,7 +11,7 @@ use App\Models\OrderBeverageName;
 use App\Models\OrderBeverage;
 use App\Models\OrderOrder;
 use App\Models\OrderTax;
-use App\Models\UsersProfile;
+use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MenuController extends Controller
@@ -28,9 +28,6 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
-        $page = 1;
-        $perPage = 10;
-
         if (OrderBurger::exists())
         {
             $burgers = OrderBurger::select('id', 'name', 'price')->get();
@@ -51,16 +48,8 @@ class MenuController extends Controller
 
         if (OrderOrder::exists()) 
         {
-            $orderA = OrderOrder::where('user_id', $request->user()->id)->select('order_number')->distinct()->get();
-            $collection = collect($orderA);
-
-            $orders = new LengthAwarePaginator(
-                    $collection->forPage($request->page ? : $page, $perPage),
-                    $collection->count(),
-                    $perPage,
-                    $request->page,
-                    ['path' => url()->current()]
-                );
+            $orders = OrderOrder::where('user_id', $request->user()->id)->select('order_number')
+                ->groupBy('order_number')->paginate(10);
         }
         else { $orders = collect(new OrderOrder);}
 
@@ -92,17 +81,13 @@ class MenuController extends Controller
         }
     }
 
-    public function checkCoupon(Request $request, $code)
+    public function show(Request $request, $code)
     {
         /* check voucher validity */
         $coupon = OrderCoupon::where('code', $code)->select('discount')->get();
 
-        if ($coupon->count() > 0) 
-        {
-            $response = $coupon[0]->discount;
-        }
-        else { $response = false; }
-
+        $response = $coupon->count() > 0 ? $coupon[0]->discount : false;
+        
         return response()->json($response);
     }
 
@@ -153,7 +138,7 @@ class MenuController extends Controller
         return response()->json($orderNumber);
     }
 
-    public function view(Request $request, $order_number)
+    public function showdetails(Request $request, $order_number)
     {
         if (OrderTax::exists())
         {
@@ -161,27 +146,14 @@ class MenuController extends Controller
         }
         else { $tax = collect(new OrderTax); }
 
-        $orders = OrderOrder::select('item_qty', 'item_id', 'order_coupon_id', 'order_number', 'user_id', 'item_price')
-            ->where('order_number', $order_number)->get();
+        $orders = OrderOrder::with('coupon')->where('order_number', $order_number)->get();
 
         if ($orders->count() > 0) 
         {
             $order = [];
             foreach ($orders as $item_order) {
                 $data = [];
-                $coupon_code = 0;
-                $coupon_discount = 0;
                 $size = '0';
-
-                if (intval($item_order->order_coupon_id) > 0)
-                {
-                    $coupon = OrderCoupon::find($item_order->order_coupon_id);
-                    if ($coupon->count() > 0) 
-                    {
-                        $coupon_code = $coupon->code;
-                        $coupon_discount = $coupon->discount;
-                    }
-                }
 
                 if (intval($item_order->item_id) > 20000 && intval($item_order->item_id) < 30000) 
                 {
@@ -206,7 +178,7 @@ class MenuController extends Controller
                 }
                 
                 $data = array('ItemName' => $item, 'ItemQty' => $item_order->item_qty, 'ItemSize' => $size,
-                    'ItemPrice' => $price, 'CouponCode' => $coupon_code, 'Discount' => $coupon_discount);
+                    'ItemPrice' => $price, 'CouponCode' => $item_order->coupon->code ?? 0, 'Discount' => $item_order->coupon->discount ?? 0);
 
                 array_push($order, $data);
             }
@@ -215,7 +187,7 @@ class MenuController extends Controller
     }
 
     /* Admin Maintenance Controller */
-    public function AddEditItem(Request $request) 
+    public function storeupdateitem(Request $request) 
     {
         //$item_id = intval($request->input('id'));
         $item_name = $request->input('param1');
@@ -225,12 +197,11 @@ class MenuController extends Controller
         switch ($request->input('param0')) 
         {
             case 'burger':
-                $create_record = OrderBurger::updateOrCreate(
+                $result = OrderBurger::updateOrCreate(
                     ['name' => $item_name],
                     ['price' => $item_size_price]
                 );
 
-                $result = OrderBurger::find($create_record->id);
                 break;
 
             case 'beverage':
@@ -256,30 +227,26 @@ class MenuController extends Controller
                 break;
 
             case 'combo':
-                $create_record = OrderComboMeal::updateOrCreate(
+                $result = OrderComboMeal::updateOrCreate(
                     ['name' => $item_name],
                     ['price' => $item_size_price]
                 );
 
-                $result = OrderComboMeal::find($create_record->id);
                 break;
 
             case 'tax':
-                $create_record = OrderTax::updateOrCreate(
+                $result = OrderTax::updateOrCreate(
                     ['tax' => $item_name],
                     ['percentage' => ($item_size_price / 100)]
                 );
 
-                $result = OrderTax::find($create_record->id);
                 break;
 
             default:
-                $create_record = OrderCoupon::updateOrCreate(
+                $result = OrderCoupon::updateOrCreate(
                     ['code' => $item_name],
                     ['discount' => ($item_size_price / 100)]
                 );
-
-                $result = OrderCoupon::find($create_record->id);
         }
         return response()->json($result);
     }
@@ -350,9 +317,7 @@ class MenuController extends Controller
     /* services */
     private function GetAllUsers()
     {
-        $userprofile = UsersProfile::with('gender')
-                    ->join('users', 'users_profiles.user_id', '=', 'users.id')
-                    ->paginate(10, ['*'], 'user');
+        $userprofile = User::with('gender')->paginate(10, ['*'], 'user');
 
         return $userprofile;
     }

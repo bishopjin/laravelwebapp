@@ -12,12 +12,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.subject.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.subject.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.exam.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('online.exam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -38,7 +38,7 @@
                                 <div class="card-header">{{ __('Details') }}</div>
                                 <div class="card-body">
                                     <div class="fw-bold fs-5">{{ __('Student Name: ') }}
-                                        {{ $exam_result[0]->userprofile->full_name }}
+                                        {{ $exam_result[0]->student->full_name }}
                                     </div>
                                     <hr>
                                     @foreach($exam_result as $result)

@@ -83,7 +83,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="payroll-mobile-link" href="{{ route('home') }}">
+                                <a class="payroll-mobile-link" href="{{ route('index') }}">
                                     {{ __('Home') }}
                                 </a>
                             </li>
@@ -201,7 +201,7 @@
                                         {{ __('Change Password') }}
                                     </a>
                                 @endcan
-                                <a class="dropdown-item" href="{{ route('home') }}">
+                                <a class="dropdown-item" href="{{ route('index') }}">
                                     {{ __('Home') }}
                                 </a>
                             </div>

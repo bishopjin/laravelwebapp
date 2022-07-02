@@ -48,11 +48,11 @@
                                     <a href="{{ route('inventory.product.index') }}" class="sidebar-link">{{ __('Add New Product') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('inventory.employee.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
+                                    <a href="{{ route('inventory.employee.logs.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
                                 </li>
                             @endcan
                             <li class="d-md-none d-lg-none d-sm-block">
-                                <a class="sidebar-link" href="{{ route('home') }}">
+                                <a class="sidebar-link" href="{{ route('index') }}">
                                     {{ __('Home') }}
                                 </a>
                             </li>
@@ -67,7 +67,7 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('home') }}">
+                                <a class="dropdown-item" href="{{ route('index') }}">
                                     {{ __('Home') }}
                                 </a>
                             </div>
@@ -105,14 +105,14 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{ route('inventory.employee.index') }}" 
-                            class="sidebar-link @if(Route::current()->getName() === 'inventory.employee.index' || Route::current()->getName() === 'inventory.employee.edit') selected-link @endif">
+                        <a href="{{ route('inventory.employee.logs.index') }}" 
+                            class="sidebar-link @if(Route::current()->getName() === 'inventory.employee.logs.index' || Route::current()->getName() === 'inventory.employee.edit') selected-link @endif">
                             {{ __('Employee Logs') }}
                         </a>
                     </li>
                 @endcan
                 <li class="d-md-none d-lg-none d-sm-block">
-                    <a class="sidebar-link" href="{{ route('home') }}">
+                    <a class="sidebar-link" href="{{ route('index') }}">
                         {{ __('Home') }}
                     </a>
                 </li>

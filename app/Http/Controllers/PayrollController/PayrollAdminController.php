@@ -5,7 +5,6 @@ namespace App\Http\Controllers\PayrollController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\UsersProfile;
 use App\Models\PayrollSalaryGrade;
 use App\Models\PayrollEmployee;
 use App\Models\PayrollHoliday;
@@ -40,11 +39,11 @@ class PayrollAdminController extends Controller
 
 		if (PayrollEmployee::exists()) 
 		{
-			$users = PayrollEmployee::with(['userprofile', 'salarygrade', 'workschedule'])->paginate(10, ['*'], 'user');
+			$users = PayrollEmployee::with(['user', 'salarygrade', 'workschedule'])->paginate(10, ['*'], 'user');
 		}
         else 
         {
-            $users = UsersProfile::find($request->user()->id)->paginate(10, ['*'], 'user');
+            $users = User::find($request->user()->id)->paginate(10, ['*'], 'user');
         }
 
         if ($cutOff->count() > 0)
@@ -104,7 +103,7 @@ class PayrollAdminController extends Controller
        
         if ($details->count() == 0) 
         {
-            $details = UsersProfile::find($id);
+            $details = User::find($id);
         }
 
     	if ($details->count() > 0) 
@@ -148,7 +147,7 @@ class PayrollAdminController extends Controller
 
 	        	if ($user_create->id > 0) 
 	        	{
-	        		$profile_create = UsersProfile::create([
+	        		$profile_create = User::create([
 	        			'user_id' => $user_create->id,
 	        			'firstname' => $request->input('username'),
 	        			'middlename' => $request->input('middlename') ?? '',

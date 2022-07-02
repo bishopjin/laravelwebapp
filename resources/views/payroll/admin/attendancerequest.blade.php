@@ -68,8 +68,9 @@
 													<table class="w-100">
 														<tr>
 															<td>
-																<form method="POST" action="{{ route('payroll.admin.requestchange.create') }}">
+																<form method="POST" action="{{ route('payroll.admin.requestchange.update') }}">
 																	@csrf
+																	@method('PATCH')
 																	<div class="form-group">
 																		<input type="hidden" name="id" value="{{ $data->id }}">
 																		<input type="hidden" name="status" value="1">
@@ -78,8 +79,9 @@
 																</form>
 															</td>
 															<td>
-																<form method="POST" action="{{ route('payroll.admin.requestchange.create') }}">
+																<form method="POST" action="{{ route('payroll.admin.requestchange.update') }}">
 																	@csrf
+																	@method('PATCH')
 																	<div class="form-group">
 																		<input type="hidden" name="id" value="{{ $data->id }}">
 																		<input type="hidden" name="status" value="2">

@@ -22,13 +22,18 @@ class OnlineExamination extends Model
         'updated_at',
     ];
     
-    public function userprofile()
+    public function faculty()
     {
-    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    	return $this->belongsTo(User::class, 'faculty_id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function onlineexam()
     {
-    	return $this->belongsTo(OnlineExam::class, 'online_exam_id', 'id');
+    	return $this->belongsTo(OnlineExam::class, 'online_exam_id');
     }
 }

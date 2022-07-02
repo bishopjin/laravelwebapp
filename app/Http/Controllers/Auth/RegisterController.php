@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use App\Models\UsersProfile;
 use App\Models\InventoryEmployeeLog;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -57,7 +56,7 @@ class RegisterController extends Controller
             'givenname' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'string', 'max:1'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'unique:users'],
             'DOB' => ['date'],
         ]);
     }
@@ -70,28 +69,18 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user_count = User::all()->count();
-        $access_level = $user_count > 0 ? 2 : 1;
-
         $user = User::create([
             'username' => $data['username'],
-            'access_level' => $access_level,
             'password' => Hash::make($data['password']),
-            'isactive' => 1,
-        ]);
-
-        $user_profile = UsersProfile::create([
-            'user_id' => $user->id,
             'firstname' => $data['givenname'],
             'middlename' => $data['middlename'] ?? NULL,
             'email' => $data['email'],
             'lastname' => $data['surname'],
             'gender_id' => $data['gender'],
-            'online_course_id' => 1,
             'DOB' => $data['DOB'],
         ]);
 
-        if ($user_profile) {
+        if ($user->id > 0) {
             InventoryEmployeeLog::create([
                 'user_id' => $user->id,
                 'time_in' => date('Y-m-d h:i:s'),

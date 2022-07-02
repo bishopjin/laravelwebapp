@@ -15,9 +15,4 @@ class OnlineCourse extends Model
         'created_at',
         'updated_at',
     ];
-
-    public function userprofile()
-    {
-    	return $this->hasMany(UsersProfile::class);
-    }
 }

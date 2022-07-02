@@ -32,7 +32,7 @@
                             <div class="card border-warning">
                                 <div class="card-header border-bottom border-warning">{{ __('New Subject') }}</div>
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('online.subject.save') }}">
+                                    <form method="POST" action="{{ route('online.subject.store') }}">
                                         @csrf
                                         <div class="form-group d-grid gap-2">
                                             <label class="">{{ __('Subject') }}</label>

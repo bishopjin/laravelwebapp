@@ -15,18 +15,18 @@ class PayrollEmployee extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function userprofile()
+    public function user()
     {
-    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    	return $this->belongsTo(User::class);
     }
 
     public function salarygrade()
     {
-    	return $this->belongsTo(PayrollSalaryGrade::class, 'payroll_salary_grade_id', 'id');
+    	return $this->belongsTo(PayrollSalaryGrade::class, 'payroll_salary_grade_id');
     }
 
     public function workschedule()
     {
-        return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id', 'id');
+        return $this->belongsTo(PayrollWorkSchedule::class, 'payroll_work_schedule_id');
     }
 }

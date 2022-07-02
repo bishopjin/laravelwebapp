@@ -440,7 +440,7 @@
             
             if (noError) {
                 $.ajax({
-                    url: '{{ route("order.save") }}',
+                    url: '{{ route("order.store") }}',
                     type: 'POST',
                     data: {_token : '{{ csrf_token() }}', code : $(code).val(), quantity : qty_object},
                     dataType: 'json',

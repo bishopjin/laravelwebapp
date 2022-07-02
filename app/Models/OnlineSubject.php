@@ -24,9 +24,8 @@ class OnlineSubject extends Model
     	return $this->hasMany(OnlineExam::class);
     }
 
-    public function userprofile()
+    public function user()
     {
-    	/* refered to the user id, instead of userproflie id : reason = from old system */
-    	return $this->belongsTo(UsersProfile::class, 'user_id', 'user_id');
+    	return $this->belongsTo(User::class);
     }
 }

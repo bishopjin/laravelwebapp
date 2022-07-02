@@ -77,13 +77,13 @@
                                     {{ __('Student List') }}
                                 </a>
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.exam.show') # @else {{ route('online.exam.show') }} @endif">
+                                    href="@if(Route::current()->getName() === 'online.exam.index') # @else {{ route('online.exam.index') }} @endif">
                                     {{ __('Examination List') }}
                                 </a>
                             </div>
                         @endif
                         <div class="d-block d-md-none mt-1 bg-primary">
-                            <a class="dropdown-item" href="{{ route('home') }}">
+                            <a class="dropdown-item" href="{{ route('index') }}">
                                 <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                             </a>
                         </div>
@@ -95,24 +95,10 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" aria-labelledby="navbarDropdown">
-                                    @php
-                                        if(Auth::user()->hasRole('Admin'))
-                                        {
-                                            $profile_route = 'online.admin.profile.edit';
-                                        }
-                                        elseif(Auth::user()->hasRole('Faculty'))
-                                        {
-                                            $profile_route = 'online.faculty.profile.edit';
-                                        }
-                                        else 
-                                        { 
-                                            $profile_route = 'online.student.profile.edit'; 
-                                        }
-                                    @endphp
-                                    <a class="dropdown-item" href="{{ route($profile_route, Auth::user()->id) }}">
+                                    <a class="dropdown-item" href="{{ route('online.profile.edit', Auth::user()->id) }}">
                                         <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('home') }}">
+                                    <a class="dropdown-item" href="{{ route('index') }}">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                                     </a>
                                 </div>

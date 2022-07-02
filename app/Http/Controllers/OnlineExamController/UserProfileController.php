@@ -4,7 +4,7 @@ namespace App\Http\Controllers\OnlineExamController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\UsersProfile;
+use App\Models\User;
 use App\Models\OnlineCourse;
 use Illuminate\Support\Facades\Validator;
  
@@ -12,41 +12,28 @@ class UserProfileController extends Controller
 {
     protected function Show(Request $request)
     {
-        if($request->user()->can('exam_admin_access')) 
-        {
-            $view_name = 'onlineexam.admin.profile';
-        }
-        elseif($request->user()->can('exam_faculty_access'))
-        {
-            $view_name = 'onlineexam.faculty.profile';
-        }
-        else
-        {
-            $view_name = 'onlineexam.student.profile'; 
-        }
-
         $courses = OnlineCourse::all();
-        $user_details = UsersProfile::where('user_id', $request->user()->id)->get();
+        $user_details = User::find($request->user()->id);
         
-        return view($view_name)->with(compact('user_details', 'courses'));
+        return view('onlineexam.profile')->with(compact('user_details', 'courses'));
     }
 
-    protected function Save(Request $request, $id)
+    protected function Update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-                'firstname' => 'required|string|max:255',
-                'lastname' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255',
-                'dateofbirth' => 'required|date',
-                'gender' => 'required|numeric|max:1',
+                'firstname' => ['required', 'string', 'max:255'],
+                'lastname' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'dateofbirth' => ['required', 'date'],
+                'gender' => ['required', 'numeric', 'max:1'],
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('admin.profile.edit', $id)->withErrors($validator)->withInput();
+            return redirect()->route('online.profile.edit', $request->user()->id)->withErrors($validator)->withInput();
         }
         else
         {
-            $updated = UsersProfile::where('user_id', $id)->update([
+            $updated = User::find($request->user()->id)->update([
                 'firstname' => $request->input('firstname'),
                 'middlename' => $request->input('middlename') ?? null,
                 'lastname' => $request->input('lastname'),
@@ -70,7 +57,6 @@ class UserProfileController extends Controller
                 {
                     $route_name = 'online.student.index'; 
                 }
-
                 return redirect()->route($route_name);
             }
         }

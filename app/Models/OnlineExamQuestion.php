@@ -34,7 +34,7 @@ class OnlineExamQuestion extends Model
 
     public function exam()
     {
-        return $this->belongsTo(OnlineExam::class, 'online_exam_id', 'id');
+        return $this->belongsTo(OnlineExam::class);
     }
 
     public function examselection()

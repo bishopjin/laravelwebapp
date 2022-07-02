@@ -8,7 +8,7 @@
                 <div class="card-header fw-bolder">{{ __('New Item') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('inventory.product.create') }}" class="px-md-5">
+                    <form method="POST" action="{{ route('inventory.product.store') }}" class="px-md-5">
                         @csrf
                         <div class="form-group pb-3">
                             <label>Brand</label>

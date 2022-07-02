@@ -34,7 +34,7 @@ class PayrollEmployeeController extends Controller
     	$startDT = new Carbon($request->input('strDt')).'00:00:00';
     	$endDT = new Carbon($request->input('endDt').'23:59:00');
 
-    	$attendance = PayrollAttendance::where('user_id', $request->user()->id)
+    	$attendance = PayrollAttendance::with(['workschedule', 'holiday'])->where('user_id', $request->user()->id)
     			->whereBetween('created_at', [$startDT, $endDT])
     			->orderBy('created_at', 'desc')
     			->paginate(15, ['*'], 'attendance');
@@ -184,7 +184,7 @@ class PayrollEmployeeController extends Controller
     protected function DTRChangeRequest(Request $request, $id)
     {
         $dtrData = PayrollAttendance::with('attendancerequest')->find($id);
-        $users = PayrollEmployee::with('userprofile')->where('user_id', '!=', $request->user()->id)->get();
+        $users = PayrollEmployee::with('user')->where('user_id', '!=', $request->user()->id)->get();
 
         return view('payroll.employee.requestchange')->with(compact('dtrData', 'users'));
     }

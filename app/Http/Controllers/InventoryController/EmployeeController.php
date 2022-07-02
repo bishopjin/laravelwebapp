@@ -6,63 +6,56 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use App\Models\UsersProfile;
-use App\Models\InventoryAccessLevel;
 use App\Models\InventoryEmployeeLog;
+use Spatie\Permission\Models\Role;
 
 class EmployeeController extends Controller
 {
     /* Employee login logout */
     protected function Index(Request $request)
     {
-        $employee_log = InventoryEmployeeLog::with('userprofile')->paginate(10);
+        $employee_log = InventoryEmployeeLog::with('user')->paginate(10);
         return view('inventory.employee.index')->with(compact('employee_log'));
     }
 
-    protected function Edit(Request $request)
+    protected function Show(Request $request)
     {
-        $user_details = User::with('userprofile')->where('id', '>', 1)->paginate(10);
+        $user_details = User::withTrashed()->notadmin()->notself($request->user()->id)->paginate(10);
         return view('inventory.employee.edit')->with(compact('user_details'));
     }
 
-    protected function EditAccess(Request $request, $id)
+    protected function Edit(Request $request, $id)
     {
-        $user_details = User::with('userprofile')->find($id);
-                
-        $access_level = InventoryAccessLevel::select('id', 'user_type')->get();
-        return view('inventory.employee.editaccess')->with(compact('user_details', 'access_level'));
+        $user_details = User::find($id);
+        $roles = Role::select('id', 'name')->where('id', '<', 3)->get();
+        return view('inventory.employee.editaccess')->with(compact('user_details', 'roles'));
     }
 
-    protected function EditAccessSave(Request $request)
+    protected function Store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|numeric',
-            'access_level' => 'required|numeric',
+            'id' => ['required', 'numeric'],
+            'user_role' => ['required'],
         ]);
-
+ 
         if ($validator->fails()) {
-            return redirect()->route('inventory.employee.edit.access', $request->input('user_id'))->withErrors($validator)->withInput();
+            return redirect()->route('inventory.employee.access.edit', $request->input('id'))->withErrors($validator)->withInput();
         }
         else
         {
-            $update_access_level = User::find($request->input('user_id'))
-                    ->update(['access_level' => $request->input('access_level')]);
-
-            if ($update_access_level > 0)
-            {
-                return redirect()->route('inventory.employee.edit');
-            }
+            $user = User::find($request->input('id'));
+            $user->assignRole($request->input('user_role'));
+            
+            return redirect()->route('inventory.employee.edit.index');
         }
     }
 
-    protected function DeactivateUser(Request $request)
+    protected function Delete(Request $request)
     {
-        $update_access_level = User::find($request->input('user_id'))
-                ->update(['isactive' => $request->input('status') == 0 ? 1 : 0]);
+        $user = User::withTrashed()->find($request->input('id'));
 
-        if ($update_access_level > 0)
-        {
-            return redirect()->route('inventory.employee.edit');
-        }
+        $user->trashed() ? $user->restore() : $user->delete();
+        
+        return redirect()->route('inventory.employee.edit.index');
     }
 }
