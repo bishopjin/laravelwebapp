@@ -33,7 +33,7 @@
                                             <div>
                                                 <div class="pb-2">
                                                     <span class="fw-bold">{{ __('Name: ') }}</span>
-                                                    {{ auth::user()->full_name }}
+                                                    {{ Auth::user()->full_name }}
                                                 </div>
                                                 <div>
                                                     <span class="fw-bold">{{ __('Course: ') }}</span><span>{{ $course }}</span>

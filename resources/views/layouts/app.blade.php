@@ -50,14 +50,6 @@
                 }
             });
 
-            $('#dwnlink').on('click', function() {
-                $('.modal').show();
-            });
-
-            $('#closebtn').on('click', function() {
-                $('.modal').hide();
-            });
-
             PayPal.Donation.Button({
                 env:'production',
                 hosted_button_id:'RTNBQFUDN867N',

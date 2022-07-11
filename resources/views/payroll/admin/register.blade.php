@@ -20,9 +20,9 @@
 
 								if(isset($details))
 								{
-									$firstname = $details->userprofile->firstname ?? $details->firstname;
-									$middlename = $details->userprofile->middlename ?? $details->middlename;
-									$lastname = $details->userprofile->lastname ?? $details->lastname;
+									$firstname = $details->user->firstname ?? $details->firstname;
+									$middlename = $details->user->middlename ?? $details->middlename;
+									$lastname = $details->user->lastname ?? $details->lastname;
 									$salary_grade_id = $details->payroll_salary_grade_id;
 									$salary_rate = $details->salary_rate;
 									$work_sched_id = $details->payroll_work_schedule_id;
@@ -143,7 +143,7 @@
 							@endif
 							<input type="hidden" name="id" value="{{ $userid }}">
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.dashboard.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
 								<input type="submit" value="Save" class="btn btn-outline-primary">
 							</div>
 						</form>

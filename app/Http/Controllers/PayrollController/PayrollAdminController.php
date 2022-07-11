@@ -99,7 +99,7 @@ class PayrollAdminController extends Controller
 	/* */
     protected function UserEdit(Request $request, $id)
     {
-        $details = PayrollEmployee::with(['userprofile'])->find($id);
+        $details = PayrollEmployee::with(['user'])->find($id);
        
         if ($details->count() == 0) 
         {

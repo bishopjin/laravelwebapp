@@ -57,7 +57,7 @@
 								<div class="fw-bold">{{ \Session::get('message') }}</div>
 							@endif
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.dashboard.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
 								<input type="submit" value="Update" class="btn btn-outline-primary">
 							</div>
 						</form>

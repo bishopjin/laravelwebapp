@@ -5,73 +5,94 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class HomeController extends Controller
 {
-    /* select web app user access */
-    protected function AppAccess(Request $request, $urlPath, $accessLevel) 
+    protected function PermissionIndex()
     {
-        /* remove role and permission */
-        $request->user()->syncRoles([]);
-        $request->user()->syncPermissions([]);
+        $users = User::paginate(10, ['*'], 'user');
+        $rolepermission = Role::with('permissions')->get();
+        
+        return view('userpermission')->with(compact('users', 'rolepermission'));
+    }
 
-        if ($urlPath == 'inventory') {
-            if ($accessLevel == '1') 
-            {
-                $request->user()->assignRole('Admin');
-                $request->user()->givePermissionTo(['view_edit_user', 'add_new_item']);
-            }
-            else
-            {
-                $request->user()->assignRole('NoneAdmin');
-                $request->user()->givePermissionTo('get_add_stock');
-            }
-            return redirect()->route('inventory.dashboard.index');
-        }
-        elseif ($urlPath == 'online-exam') {
-            if ($accessLevel == '1') 
-            {
-                $request->user()->assignRole('Admin');
-                $request->user()->givePermissionTo('exam_admin_access');
-            }
-            else if ($accessLevel == '2') 
-            {
-                $request->user()->assignRole('Faculty');
-                $request->user()->givePermissionTo('exam_faculty_access');
-            }
-            else
-            {
-                $request->user()->assignRole('Student');
-                $request->user()->givePermissionTo('exam_student_access');
-            }
+    protected function UserPersmissionShow(Request $request, $id, $action)
+    {
+        $curuser = User::find($id);
+        $userpermissions = $curuser != null ? $curuser->getAllPermissions() : null;
+        $rolepermission = Role::with('permissions')->get();
+        $permissions = Permission::all();
+        $users = User::paginate(10, ['*'], 'user');
+        
+        return view('userpermission')->with(compact('userpermissions', 'permissions', 'users', 'curuser', 'action', 'rolepermission'));
+    }
 
-            return redirect()->route('online.dashboard.index');
+    protected function UserRoleShow(Request $request, $id, $action)
+    {
+        $curuser = User::find($id);
+        $userroles = $curuser != null ? $curuser->getRoleNames() : null;
+        $rolepermission = Role::with('permissions')->get();
+        $roles = Role::all();
+        $users = User::paginate(10, ['*'], 'user');
+
+        return view('userpermission')->with(compact('userroles', 'roles', 'users', 'curuser', 'action', 'rolepermission'));
+    }
+
+    protected function UserRoleUpdate(Request $request)
+    {
+        $roles = $request->input('role');
+        $user = User::find($request->input('id'));
+
+        if ($request->input('id') != 1)
+        {
+            if ($key = array_search('Super Admin', $roles) != false)
+            {
+                unset($roles[$key]);
+            }
         }
-        elseif ($urlPath == 'menu-ordering') {
-            if ($accessLevel == '1') 
+        else
+        {   
+            /* add super admin role and prevent from removing it on user id 1 */
+            if ($key = array_search('Super Admin', $roles) == false)
             {
-                $request->user()->assignRole('Admin');
-                $request->user()->givePermissionTo(['view_menu_order_list', 'view_menu_user_list']);
+                array_push($roles, 'Super Admin');
             }
-            else
-            {
-                $request->user()->assignRole('Customer');
-                $request->user()->givePermissionTo(['create_menu_orders', 'view_menu_order_history', 'view_menu_coupon_list']);
-            }
-            return redirect()->route('order.dashboard.index');
         }
-        elseif ($urlPath == 'payroll') {
-            if ($accessLevel == '1') 
-            {
-                $request->user()->assignRole('Admin');
-                $request->user()->givePermissionTo('payroll_admin_access');
-            }
-            else
-            {
-                $request->user()->assignRole('Employee');
-                $request->user()->givePermissionTo('payroll_employee_access');
-            }
-            return redirect()->route('payroll.dashboard.index');
-        }
+
+        $addprms = $user->syncRoles($roles);
+
+        return redirect()->route('users.permission.index');
+    }
+
+    protected function UserPermissionUpdate(Request $request)
+    {
+        $user = User::find($request->input('id'));
+        $addprms = $user->syncPermissions($request->input('role'));
+        
+        return redirect()->route('users.permission.index');
+    }
+
+    protected function RolePermissionIndex()
+    {
+        $roles = Role::with('permissions')->get();
+        return view('rolepermission')->with(compact('roles'));
+    }
+
+    protected function RolePermissionShow(Request $request, $name)
+    {
+        $permissions = Permission::all();
+        $rolepermissions = Role::findByName($name, 'web')->permissions;
+        $roles = Role::with('permissions')->get();
+
+        return view('rolepermission')->with(compact('permissions', 'name', 'roles', 'rolepermissions'))->render();
+    }
+
+    protected function RolePermissionUpdate(Request $request)
+    {
+        $role = Role::findByName($request->input('rolename'), 'web');
+        $role->syncPermissions($request->input('permission'));
+        $request->flash();
+        return redirect()->back();
     }
 }

@@ -46,7 +46,7 @@ trait AuthenticatesUsers
 
         if ($this->attemptLogin($request)) {
             /* check if account is active */ 
-            if ($request->user()->isactive == 0)
+            if ($request->user()->trashed())
             {
                 $this->logout($request);
                 /* redirect with session data */
@@ -108,7 +108,7 @@ trait AuthenticatesUsers
      */
     protected function credentials(Request $request)
     {
-        return $request->only($this->username(), 'password', 'isactive');
+        return $request->only($this->username(), 'password');
     }
 
     /**

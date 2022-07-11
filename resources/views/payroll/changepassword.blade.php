@@ -7,8 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Change Password') }}</div>
 					<div class="card-body">
-						<form method="POST" class="px-5" 
-							action="{{ session('user_access') == '1' ? route('payroll.admin.password.create') : route('payroll.employee.password.create') }}">
+						<form method="POST" class="px-5" action="{{ route('payroll.password.update') }}">
 							@csrf
 							<div class="form-group pb-2">
 								<label for="oldpass">{{ __('Old Password') }}</label>
@@ -42,7 +41,11 @@
 								<div class="fw-bold {{ \Session::get('font') }}">{{ \Session::get('message') }}</div>
 							@endif
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.dashboard.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								@if(Auth::user()->can('payroll admin access') AND str_contains(url()->current(), 'admin/user/changepassword'))
+									<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								@else
+									<a href="{{ route('payroll.employee.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								@endif
 								<input type="submit" value="Save" class="btn btn-outline-primary">
 							</div>
 						</form>

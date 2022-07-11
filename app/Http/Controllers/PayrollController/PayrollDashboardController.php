@@ -10,18 +10,6 @@ use App\Models\User;
 
 class PayrollDashboardController extends Controller
 {
-    protected function Index(Request $request)
-    {
-    	if($request->user()->can('payroll_admin_access')) 
-    	{
-    		return redirect()->route('payroll.admin.index');
-    	}
-    	else
-    	{
-    		return redirect()->route('payroll.employee.index');
-    	}
-    }
-
     protected function ChangePassSave(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -31,14 +19,7 @@ class PayrollDashboardController extends Controller
 
         if ($validator->fails()) 
         {
-            if($request->user()->can('payroll_admin_access')) 
-            {
-                return redirect()->route('payroll.admin.password.index')->withErrors($validator)->withInput();
-            }
-            else
-            {
-                return redirect()->route('payroll.employee.password.index')->withErrors($validator)->withInput();
-            }
+            return redirect()->back()->withErrors($validator)->withInput();
         }
         else
         {

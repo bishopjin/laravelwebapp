@@ -33,7 +33,12 @@
                     <!-- mobile Navbar -->
                     <div class="navbar-nav me-auto d-md-none d-lg-none d-sm-block">
                         <ul class="list-unstyled">
-                            @can ('payroll_admin_access') 
+                            @if(Auth::user()->can('payroll admin access') AND str_contains(url()->current(), 'payroll/admin'))
+                                <li class="">
+                                    <a class="payroll-mobile-link" href="{{ route('payroll.admin.index') }}">
+                                        {{ __('Dashboard') }}
+                                    </a>
+                                </li>
                                 <li class="">
                                     <a href="{{ route('payroll.admin.deduction.index') }}" class="payroll-mobile-link">{{ __('Deduction') }}</a>
                                 </li>
@@ -56,12 +61,16 @@
                                     <a href="{{ route('payroll.admin.requestchange.index') }}" class="payroll-mobile-link">{{ __('Attendance Change Request') }}</a>
                                 </li>
                                 <li>
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.admin.password.index') }}">
+                                    <a class="payroll-mobile-link" href="{{ route('payroll.password.index', ['name' => 'admin']) }}">
                                         {{ __('Change Password') }}
                                     </a>
                                 </li>
-                            @endcan
-                            @can('payroll_employee_access')
+                            @elseif(Auth::user()->can('payroll employee access'))
+                                <li class="">
+                                    <a class="payroll-mobile-link" href="{{ route('payroll.employee.index') }}">
+                                        {{ __('Dashboard') }}
+                                    </a>
+                                </li>
                                 <li class="">
                                     <a href="{{ route('payroll.employee.dtr.index') }}" class="payroll-mobile-link">{{ __('Daily Time Recorder') }}</a>
                                 </li>
@@ -72,16 +81,11 @@
                                     {{-- <a href="{{ route('payroll.employee.payslip.show') }}" class="payroll-mobile-link">{{ __('Payslip') }}</a> --}}
                                 </li>
                                 <li>
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.employee.password.index') }}">
+                                    <a class="payroll-mobile-link" href="{{ route('payroll.password.index', ['name' => 'employee']) }}">
                                         {{ __('Change Password') }}
                                     </a>
                                 </li>
-                            @endcan
-                            <li class="">
-                                <a class="payroll-mobile-link" href="{{ route('payroll.dashboard.index') }}">
-                                    {{ __('Dashboard') }}
-                                </a>
-                            </li>
+                            @endif
                             <li>
                                 <a class="payroll-mobile-link" href="{{ route('index') }}">
                                     {{ __('Home') }}
@@ -92,9 +96,9 @@
 
                     <!-- Left Side Of Navbar -->
                     <!-- employee -->
-                    @can ('payroll_employee_access') 
+                    @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/employee')) 
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="@if(Route::current()->getName() == 'payroll.employee.index') # @else  {{ route('payroll.dashboard.index') }} @endif">
+                            href="@if(Route::current()->getName() == 'payroll.employee.index') # @else  {{ route('payroll.employee.index') }} @endif">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
@@ -130,10 +134,9 @@
                         </ul>
                     <!-- end of employee -->
                     <!-- admin -->
-                    @endcan
-                    @can('payroll_admin_access')
+                    @elseif(Auth::user()->can('payroll admin access'))
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="@if(Route::current()->getName() == 'payroll.admin.index') # @else {{ route('payroll.dashboard.index') }} @endif">
+                            href="@if(Route::current()->getName() == 'payroll.admin.index') '#'' @else {{ route('payroll.admin.index') }} @endif">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
@@ -179,7 +182,8 @@
                                 </div>
                             </li>
                         </ul>
-                    @endcan
+                    @endif
+
                     <!-- end admin -->
                     <!-- End Left side -->
                     <!-- Right Side Of Navbar -->
@@ -191,16 +195,15 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownEmployee">
-                                @can ('payroll_admin_access') 
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.password.index') }}">
+                                @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/employee'))
+                                    <a class="dropdown-item" href="{{ route('payroll.password.index', ['name' => 'employee']) }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @endcan
-                                @can('payroll_employee_access')
-                                    <a class="dropdown-item" href="{{ route('payroll.employee.password.index') }}">
+                                @elseif (Auth::user()->can('payroll admin access'))
+                                    <a class="dropdown-item" href="{{ route('payroll.password.index', ['name' => 'admin']) }}">
                                         {{ __('Change Password') }}
                                     </a>
-                                @endcan
+                                @endif
                                 <a class="dropdown-item" href="{{ route('index') }}">
                                     {{ __('Home') }}
                                 </a>

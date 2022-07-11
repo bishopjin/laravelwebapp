@@ -26,7 +26,7 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request)
+    public function AdminIndex(Request $request)
     {
         if (OrderBurger::exists())
         {
@@ -65,20 +65,55 @@ class MenuController extends Controller
         }
         else { $taxes = collect(new OrderTax); }
 
-        if ($request->user()->can('view_menu_order_list') AND $request->user()->can('view_menu_user_list'))
+        $pagination = $this->GetAllOrder($request, $taxes);
+
+        $users = $this->GetAllUsers();
+
+        return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
+    }
+
+    public function CustomerIndex(Request $request)
+    {
+        if (OrderBurger::exists())
         {
-            $pagination = $this->GetAllOrder($request, $taxes);
-
-            $users = $this->GetAllUsers();
-
-            return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
+            $burgers = OrderBurger::select('id', 'name', 'price')->get();
         }
-        else
+        else { $burgers = collect(new OrderBurger); }
+        
+        if (OrderComboMeal::exists()) 
         {
-            $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
+            $combos = OrderComboMeal::select('id', 'name', 'price')->get();
+        }
+        else { $combos = collect(new OrderComboMeal); }
+
+        if (OrderBeverageName::exists()) 
+        {
+            $beverages = OrderBeverage::with(['beveragename', 'beveragesize'])->get();
+        }
+        else { $beverages = collect(new OrderBeverage); }
+
+        if (OrderOrder::exists()) 
+        {
+            $orders = OrderOrder::where('user_id', $request->user()->id)->select('order_number')
+                ->groupBy('order_number')->paginate(10);
+        }
+        else { $orders = collect(new OrderOrder);}
+
+        if (OrderCoupon::exists())
+        {
+            $coupons = OrderCoupon::select('id', 'code', 'discount')->get();
+        }
+        else { $coupons = collect(new OrderCoupon); }
+
+        if (OrderTax::exists())
+        {
+            $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
+        }
+        else { $taxes = collect(new OrderTax); }
+
+        $coupons = OrderCoupon::select('id', 'code', 'discount')->paginate(10, ['*'], 'coupon');
             
-            return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'taxes', 'coupons'));
-        }
+        return view('menuorder.home')->with(compact('burgers', 'combos', 'beverages', 'orders', 'taxes', 'coupons'));
     }
 
     public function show(Request $request, $code)

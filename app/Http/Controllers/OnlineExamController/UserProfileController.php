@@ -45,11 +45,11 @@ class UserProfileController extends Controller
 
             if ($updated > 0)
             {   
-                if($request->user()->can('exam_admin_access')) 
+                if($request->user()->can('exam admin access')) 
                 {
                     $route_name = 'online.admin.index';
                 }
-                elseif($request->user()->can('exam_faculty_access'))
+                elseif($request->user()->can('exam faculty access'))
                 {
                     $route_name = 'online.faculty.index';
                 }

@@ -42,15 +42,14 @@
                             <li class="">
                                 <a href="{{ route('inventory.order.index') }}" class="sidebar-link">{{ __('Order Item') }}</a>
                             </li>
-
-                            @can('view_edit_user')
+                            @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
                                 <li class="">
                                     <a href="{{ route('inventory.product.index') }}" class="sidebar-link">{{ __('Add New Product') }}</a>
                                 </li>
                                 <li class="">
                                     <a href="{{ route('inventory.employee.logs.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
                                 </li>
-                            @endcan
+                            @endif
                             <li class="d-md-none d-lg-none d-sm-block">
                                 <a class="sidebar-link" href="{{ route('index') }}">
                                     {{ __('Home') }}
@@ -97,7 +96,7 @@
                         {{ __('Order Item') }}
                     </a>
                 </li>
-                @can('view_edit_user')
+                @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
                     <li class="">
                         <a href="{{ route('inventory.product.index') }}" 
                             class="sidebar-link @if(Route::current()->getName() === 'inventory.product.index' || Route::current()->getName() === 'inventory.product.view') selected-link @endif">
@@ -110,7 +109,7 @@
                             {{ __('Employee Logs') }}
                         </a>
                     </li>
-                @endcan
+                @endif
                 <li class="d-md-none d-lg-none d-sm-block">
                     <a class="sidebar-link" href="{{ route('index') }}">
                         {{ __('Home') }}

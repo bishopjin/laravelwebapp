@@ -37,20 +37,23 @@ class CreatePermissionTables extends Migration
         });
 
         DB::table('permissions')->insert([
-            ['name' => 'view_edit_user', 'guard_name' => 'web'],
-            ['name' => 'add_new_item', 'guard_name' => 'web'],
-            ['name' => 'get_add_stock', 'guard_name' => 'web'],
-            ['name' => 'add_edit_menu', 'guard_name' => 'web'],
-            ['name' => 'view_menu_order_list', 'guard_name' => 'web'],
-            ['name' => 'view_menu_user_list', 'guard_name' => 'web'],
-            ['name' => 'create_menu_orders', 'guard_name' => 'web'],
-            ['name' => 'view_menu_order_history', 'guard_name' => 'web'],
-            ['name' => 'view_menu_coupon_list', 'guard_name' => 'web'],
-            ['name' => 'exam_student_access', 'guard_name' => 'web'],
-            ['name' => 'exam_faculty_access', 'guard_name' => 'web'],
-            ['name' => 'exam_admin_access', 'guard_name' => 'web'],
-            ['name' => 'payroll_admin_access', 'guard_name' => 'web'],
-            ['name' => 'payroll_employee_access', 'guard_name' => 'web'],
+            ['name' => 'inventory view user', 'guard_name' => 'web'],
+            ['name' => 'inventory edit user', 'guard_name' => 'web'],
+            ['name' => 'inventory add new item', 'guard_name' => 'web'],
+            ['name' => 'inventory get stock', 'guard_name' => 'web'],
+            ['name' => 'inventory add stock', 'guard_name' => 'web'],
+            ['name' => 'menu add item', 'guard_name' => 'web'],
+            ['name' => 'menu edit item', 'guard_name' => 'web'],
+            ['name' => 'menu view order list', 'guard_name' => 'web'],
+            ['name' => 'menu view user list', 'guard_name' => 'web'],
+            ['name' => 'menu create orders', 'guard_name' => 'web'],
+            ['name' => 'menu view order history', 'guard_name' => 'web'],
+            ['name' => 'menu view coupon list', 'guard_name' => 'web'],
+            ['name' => 'exam student access', 'guard_name' => 'web'],
+            ['name' => 'exam faculty access', 'guard_name' => 'web'],
+            ['name' => 'exam admin access', 'guard_name' => 'web'],
+            ['name' => 'payroll admin access', 'guard_name' => 'web'],
+            ['name' => 'payroll employee access', 'guard_name' => 'web'],
         ]);
 
         Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
@@ -71,6 +74,7 @@ class CreatePermissionTables extends Migration
         });
 
         DB::table('roles')->insert([
+            ['name' => 'Super Admin', 'guard_name' => 'web'],
             ['name' => 'Admin', 'guard_name' => 'web'],
             ['name' => 'NoneAdmin', 'guard_name' => 'web'],
             ['name' => 'Customer', 'guard_name' => 'web'],

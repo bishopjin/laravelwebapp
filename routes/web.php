@@ -9,7 +9,6 @@ use App\Http\Controllers\OnlineExamController\UserProfileController;
 use App\Http\Controllers\OnlineExamController\AdminController;
 use App\Http\Controllers\OnlineExamController\FacultyController;
 use App\Http\Controllers\OnlineExamController\StudentController;
-use App\Http\Controllers\OnlineExamController\ExamController;
 use App\Http\Controllers\OnlineMenuController\MenuController;
 use App\Http\Controllers\PayrollController\PayrollEmployeeController;
 use App\Http\Controllers\PayrollController\PayrollAdminController;
@@ -33,10 +32,22 @@ Auth::routes();
 
 Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::view('/', 'home')->name('index');
-	Route::get('/{urlPath}/{accessLevel}', [HomeController::class, 'AppAccess'])->name('access.index');
 
+	Route::middleware('role:Super Admin')->group(function () {
+		Route::get('/userpermission', [HomeController::class, 'PermissionIndex'])->name('users.permission.index');
+		Route::put('/user/role/update', [HomeController::class, 'UserRoleUpdate'])->name('users.role.update');
+		Route::put('/user/permission/update', [HomeController::class, 'UserPermissionUpdate'])->name('users.permission.update');
+
+		Route::get('/role/permission', [HomeController::class, 'RolePermissionIndex'])->name('roles.permission.index');
+		Route::put('/role/permission/update', [HomeController::class, 'RolePermissionUpdate'])->name('roles.permission.update');
+		Route::get('/role/permission/{name}/edit', [HomeController::class, 'RolePermissionShow'])->name('roles.permission.show');
+
+		Route::get('/permission/user/{id}/{action}', [HomeController::class, 'UserPersmissionShow'])->name('users.permission.show');
+		Route::get('/role/user/{id}/{action}', [HomeController::class, 'UserRoleShow'])->name('users.role.show');
+	});
+	
 	/* Inventory Route */
-	Route::prefix('inventory')->group(function() {
+	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('inventory')->group(function() {
 		Route::get('/', [DashboardController::class, 'Index'])->name('inventory.dashboard.index');
 		Route::prefix('product')->group(function () {
 			Route::get('/order', [ProductController::class, 'OrderIndex'])->name('inventory.order.index');
@@ -47,7 +58,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 
 			Route::post('/deliver', [ProductController::class, 'DeliverStore'])->name('inventory.deliver.store');
 
-			Route::middleware('permission:add_new_item')->group(function () {
+			Route::middleware('permission:inventory add new item')->group(function () {
 				Route::get('/add', [ProductController::class, 'ProductIndex'])->name('inventory.product.index');
 				Route::post('/add', [ProductController::class, 'ProductStore'])->name('inventory.product.store');
 				Route::get('/view/{id}', [ProductController::class, 'ProductShow'])->name('inventory.product.show');
@@ -55,7 +66,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		});	
 		
 		Route::prefix('employee')->group(function() {
-			Route::middleware('permission:view_edit_user')->group(function () {
+			Route::middleware('permission:inventory view user|inventory edit user')->group(function () {
 				Route::get('/logs', [EmployeeController::class, 'Index'])->name('inventory.employee.logs.index');
 				Route::get('/edit', [EmployeeController::class, 'Show'])->name('inventory.employee.edit.index');
 
@@ -70,9 +81,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* END */
 	/* Online Exam route */
 	Route::prefix('online-exam')->group(function() {
-		Route::get('/', [ExamController::class, 'Index'])->name('online.dashboard.index');
-
-		Route::middleware('permission:exam_admin_access')->group(function () {
+		Route::middleware('permission:exam admin access')->group(function () {
 			Route::prefix('admin')->group(function () {
 				Route::get('/dashboard', [AdminController::class, 'Index'])->name('online.admin.index');
 				Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
@@ -83,7 +92,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			});
 		});
 
-		Route::middleware('permission:exam_faculty_access')->group(function () {
+		Route::middleware('permission:exam faculty access')->group(function () {
 			Route::prefix('faculty')->group(function () {
 				Route::get('/dashboard', [FacultyController::class, 'Index'])->name('online.faculty.index');
 				Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.index');
@@ -96,7 +105,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			});
 		});
 
-		Route::middleware('permission:exam_student_access')->group(function () {
+		Route::middleware('permission:exam student access')->group(function () {
 			Route::prefix('student')->group(function () {
 				Route::get('/dashboard', [StudentController::class, 'Index'])->name('online.student.index');
 				Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam.show');
@@ -110,12 +119,13 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
 		/* Admin and Customer route */
-		Route::get('/', [MenuController::class, 'index'])->name('order.dashboard.index')
-			->middleware(
-				'permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list|view_menu_order_list|view_menu_user_list'
-			);
+		Route::get('/admin', [MenuController::class, 'AdminIndex'])->name('order.admin.dashboard.index')
+			->middleware('permission:menu view user list|menu view order list|menu edit item| menu add item');
+
+		Route::get('/customer', [MenuController::class, 'CustomerIndex'])->name('order.customer.dashboard.index')
+			->middleware('permission:menu create orders|menu view order history|menu view coupon list');
 		/* Customer route */
-		Route::middleware('permission:create_menu_orders|view_menu_order_history|view_menu_coupon_list')->group(function () {
+		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
 			Route::post('/order', [MenuController::class, 'store'])->name('order.store');
 			Route::get('/checkCoupon/{code}', [MenuController::class, 'show'])->name('order.coupon.show');
 			Route::get('/order/details/{order_number}', [MenuController::class, 'showdetails'])->name('order.details.show');
@@ -124,7 +134,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::get('/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon.show');
 		});
 		/* Admin Maintenance route */
-		Route::middleware('permission:view_menu_order_list|view_menu_user_list')->group(function(){
+		Route::middleware('permission:menu view order list|menu view user list')->group(function(){
 			Route::post('/item/addedit', [MenuController::class, 'storeupdateitem'])->name('order.admin.item.store');
 			/* paginate using ajax */
 			Route::get('/show/admin/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order.show');
@@ -134,18 +144,17 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* END */
 	/* Payroll route */
 	Route::prefix('payroll')->group(function() {
-		Route::get('/', [PayrollDashboardController::class, 'Index'])->name('payroll.dashboard.index');
-		
-		Route::middleware('permission:payroll_admin_access')->group(function () {
+		Route::middleware('permission:payroll admin access|payroll employee access')->group(function() {
+			Route::view('/{name}/user/changepassword', 'payroll.changepassword')->name('payroll.password.index');
+			Route::post('user/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.password.update');
+		});
+
+		Route::middleware('permission:payroll admin access')->group(function () {
 			Route::prefix('admin')->group(function() {
 				Route::get('/dashboard', [PayrollAdminController::class, 'Index'])->name('payroll.admin.index');
 
 				Route::get('/user', [PayrollAdminController::class, 'UserIndex'])->name('payroll.admin.user.index');
 				Route::post('/user/save', [PayrollAdminController::class, 'UserCreate'])->name('payroll.admin.user.store');
-
-				Route::view('/changepassword', 'payroll.changepassword')->name('payroll.admin.password.index');
-				
-				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.admin.password.update');
 
 				Route::view('/salarygrade', 'payroll.admin.salarygrade')->name('payroll.admin.salarygrade.index');
 
@@ -184,13 +193,9 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			});
 		});
 
-		Route::middleware('permission:payroll_employee_access')->group(function () {
+		Route::middleware('permission:payroll employee access')->group(function () {
 			Route::prefix('employee')->group(function() {
 				Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
-
-				Route::view('/changepassword', 'payroll.changepassword')->name('payroll.employee.password.index');
-
-				Route::post('/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.employee.password.update');
 
 				Route::post('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
 				

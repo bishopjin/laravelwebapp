@@ -4,28 +4,35 @@
 	<div class="container">
         <div class="row">
             <div class="col">
-                <!-- <h4>{{ __('Hello') }}&nbsp;{{ Auth::user()->username ?? __('Guest') }}</h4> -->
-                <h4 class="navbar-nav nav-item dropdown">
+                <div class="h5">
                     {{ __('Hello') }}
-                    <div class="d-flex align-items-baseline">
-                        <i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->username ?? __('Guest') }}
-                        </a>
+                    <div class="pt-2 d-flex">
+                        <div class="d-flex gap-2 justify-content-md-around flex-md-row flex-column">
+                            <div class="d-flex gap-1 align-items-center justify-content-md-center">
+                                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                {{ Auth::user()->username ?? __('Guest') }}
+                            </div>
+                            @hasrole('Super Admin')
+                                <div class="pt-md-0 pt-1 small d-flex align-items-center justify-content-md-center">
+                                    <a href="{{ route('users.permission.index') }}" class="small text-decoration-none">
+                                        {{ __('Permission') }}
+                                    </a>
+                                </div>
+                            @endhasrole
+                            <div class="pt-md-0 pt-1 small d-flex align-items-center">
+                                <a class="small text-decoration-none" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault();
+                                                 document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
 
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();">
-                                <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;{{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </h4>
+                </div>
             </div>
         </div>
 
@@ -55,15 +62,15 @@
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('access.index', ['urlPath' => 'inventory', 'accessLevel' => '1']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Admin') }}
-                            </a>
-                            <a href="{{ route('access.index', ['urlPath' => 'inventory', 'accessLevel' => '2']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Non-Admin') }}
-                            </a>
+                        <div class="d-flex">
+                            @if(Auth::user()->hasAnyPermission(['inventory view user', 'inventory edit user', 'inventory add new item', 'inventory get stock', 'inventory add stock']))
+                                <a href="{{ route('inventory.dashboard.index') }}" 
+                                    class="btn btn-outline-primary rounded-pill w-100">
+                                    {{ __('Log In') }}
+                                </a>
+                            @else
+                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -87,15 +94,23 @@
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('access.index', ['urlPath' => 'menu-ordering', 'accessLevel' => '1']) }}"
-                                class="btn btn-outline-primary w-100 rounded-pill">
-                                {{ __('Admin') }}
-                            </a>
-                            <a href="{{ route('access.index', ['urlPath' => 'menu-ordering', 'accessLevel' => '2']) }}" 
-                                class="btn btn-outline-primary w-100 rounded-pill">
-                                {{ __('Customer') }}
-                            </a>
+                        <div class="d-flex gap-2 flex-md-row flex-column">
+                            @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
+                                @if(Auth::user()->hasAnyPermission(['menu view user list', 'menu view order list', 'menu edit item', 'menu add item']))
+                                    <a href="{{ route('order.admin.dashboard.index') }}"
+                                        class="btn btn-outline-primary w-100 rounded-pill">
+                                        {{ __('Maintenance') }}
+                                    </a>
+                                @endif
+                                @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
+                                    <a href="{{ route('order.customer.dashboard.index') }}"
+                                        class="btn btn-outline-primary w-100 rounded-pill">
+                                        {{ __('Customer') }}
+                                    </a>
+                                @endif
+                            @else
+                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -118,16 +133,26 @@
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '1']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
-                            </a>
-                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '2']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
-                            </a>
-                            <a href="{{ route('access.index', ['urlPath' => 'online-exam', 'accessLevel' => '3']) }}" class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Student') }}
-                            </a>
+                        <div class="d-flex gap-2 flex-md-row flex-column">
+                            @if(Auth::user()->hasAnyPermission(['exam student access', 'exam faculty access', 'exam admin access']))
+                                @can('exam admin access')
+                                    <a href="{{ route('online.admin.index') }}" 
+                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
+                                    </a>
+                                @endcan
+                                @can('exam faculty access')
+                                    <a href="{{ route('online.faculty.index') }}" 
+                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
+                                    </a>
+                                @endcan
+                                @can('exam student access')
+                                    <a href="{{ route('online.student.index') }}" 
+                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Student') }}
+                                    </a>
+                                @endcan
+                            @else
+                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -153,15 +178,23 @@
 
                     <div class="card-footer">
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex justify-content-md-between flex-md-row flex-column gap-2">
-                            <a href="{{ route('access.index', ['urlPath' => 'payroll', 'accessLevel' => '1']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Admin') }}
-                            </a>
-                            <a href="{{ route('access.index', ['urlPath' => 'payroll', 'accessLevel' => '2']) }}" 
-                                class="btn btn-outline-primary rounded-pill w-100">
-                                {{ __('Employee') }}
-                            </a>
+                        <div class="d-flex gap-2 flex-md-row flex-column">
+                            @if(Auth::user()->hasAnyPermission(['payroll admin access', 'payroll employee access']))
+                                @can('payroll admin access')
+                                    <a href="{{ route('payroll.admin.index') }}" 
+                                        class="btn btn-outline-primary rounded-pill w-100">
+                                        {{ __('Admin') }}
+                                    </a>
+                                @endcan
+                                @can('payroll employee access')
+                                    <a href="{{ route('payroll.employee.index') }}" 
+                                        class="btn btn-outline-primary rounded-pill w-100">
+                                        {{ __('Emlployee') }}
+                                    </a>
+                                @endcan
+                            @else
+                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -178,7 +211,7 @@
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 06-22-2022') }}</span>
+                <span>{{ __('Last Updated : 07-11-2022') }}</span>
             </div>
         </div>   
         <div class="row py-2 py-md-3">

@@ -39,14 +39,17 @@
 													@php
 														$arrdate = explode(' ', $period['paydate']);
 													@endphp
-													@if(intval(date('d')) >= intval($arrdate[1]) AND intval(date('d')) <= intval($arrdate[1]) + 5)
-														<form method="POST" action="{{ route('payroll.admin.salary.store') }}">
-															@csrf
-															<div class="form-group">
-																<input type="hidden" name="cutoffId" value="{{ $period['id'] }}">
-																<input type="submit" class="btn btn-sm btn-outline-primary" value="Compute">
-															</div>
-														</form>
+													
+													@if(date('m', strtotime($arrdate[0])) == date('m'))
+														@if(intval(date('d')) >= intval($arrdate[1]) AND intval(date('d')) <= intval($arrdate[1]) + 5)
+															<form method="POST" action="{{ route('payroll.admin.salary.store') }}">
+																@csrf
+																<div class="form-group">
+																	<input type="hidden" name="cutoffId" value="{{ $period['id'] }}">
+																	<input type="submit" class="btn btn-sm btn-outline-primary" value="Compute">
+																</div>
+															</form>
+														@endif
 													@endif
 												</td>
 											</tr>

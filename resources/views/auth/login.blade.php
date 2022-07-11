@@ -7,7 +7,7 @@
             <div class="card shadow">
                 <div class="card-header d-flex justify-content-between">
                     <span>{{ __('Login') }}</span> 
-                    <span>{{ __('Laravel 8 Web Application v2.0') }}</span>
+                    <span>{{ __('Laravel 8 Web Application v2.0.9') }}</span>
                 </div>
 
                 <div class="card-body">
@@ -80,7 +80,7 @@
                             <div class="col-md-10 d-flex justify-content-between align-items-end">
                                 <div class="d-flex flex-column">
                                     <a href=" {{ route('register') }} " class="fw-bold">{{ __('Create Account') }}</a>
-                                    <a href="javascript:void(0);" id="dwnlink">
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#dlModal">
                                         {{ __('Download Source Code') }}
                                     </a>
                                 </div>
@@ -114,13 +114,13 @@
 </div>
 
 <!-- overlay/modal --> 
-<div class="modal">
+<div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="dlModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header fs-5">
                     <div class="modal-title">{{ __('Download Source Code') }}</div>
-                    <a href="javascript:void(0);" class="ms-auto pe-3" id="closebtn">
+                    <a href="javascript:void(0);" class="ms-auto pe-3" data-bs-dismiss="modal">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
