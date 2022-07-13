@@ -66,9 +66,9 @@
 										$approvername = '';
 										foreach($users as $user)
 										{
-											if($user->userprofile->user_id == $dtrData->attendancerequest->approver_id)
+											if($user->user->id == $dtrData->attendancerequest->approver_id)
 											{
-												$approvername = $user->userprofile->full_name;
+												$approvername = $user->user->full_name;
 												break;
 											}
 										}
@@ -99,7 +99,7 @@
 							</div>
 							<input type="hidden" name="id" value="{{ $dtrData->id }}">
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.dashboard.index') }}" class="btn btn-outline-success">{{ $dtrData->changeRequest == 0 ? __('Cancel') : __('Back') }}</a>
+								<a href="{{ route('payroll.employee.index') }}" class="btn btn-outline-success">{{ $dtrData->changeRequest == 0 ? __('Cancel') : __('Back') }}</a>
 								@if($dtrData->changeRequest == 0)
 									<input type="submit" value="Save" class="btn btn-outline-primary">
 								@endif

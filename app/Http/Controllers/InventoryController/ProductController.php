@@ -136,6 +136,12 @@ class ProductController extends Controller
         }
     }
 
+    protected function DeliverShow(Request $request, $id)
+    {
+        $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return response()->json($item_detail);
+    }
+
     protected function DeliverStore(Request $request)
     {
     	$validator = Validator::make($request->all(), [

@@ -54,8 +54,8 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::get('/order/{id}', [ProductController::class, 'OrderGet'])->name('inventory.order.show');
 
 			Route::view('/deliver', 'inventory.product.receive')->name('inventory.deliver.index');
-
 			Route::post('/deliver', [ProductController::class, 'DeliverStore'])->name('inventory.deliver.store');
+			Route::get('/deliver/{id}', [ProductController::class, 'DeliverShow'])->name('inventory.deliver.show');
 
 			Route::middleware('permission:inventory add new item')->group(function () {
 				Route::get('/add', [ProductController::class, 'ProductIndex'])->name('inventory.product.index');

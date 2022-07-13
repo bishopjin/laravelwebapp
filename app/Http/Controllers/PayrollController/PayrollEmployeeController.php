@@ -223,7 +223,7 @@ class PayrollEmployeeController extends Controller
                 PayrollAttendance::find($request->input('id'))->update(['changeRequest' => 1]);
             }
 
-            return redirect()->route('payroll.dashboard.index');
+            return redirect()->route('payroll.employee.index');
         }
     }
 }

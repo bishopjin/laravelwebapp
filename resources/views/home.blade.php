@@ -211,7 +211,7 @@
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 07-11-2022') }}</span>
+                <span>{{ __('Last Updated : 07-13-2022') }}</span>
             </div>
         </div>   
         <div class="row py-2 py-md-3">
