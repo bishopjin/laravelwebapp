@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
         //Sanctum
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        //custom
+        'validatepayrolluser' => \App\Http\Middleware\ValidatePayrollUser::class,
     ];
 }

@@ -60,16 +60,8 @@ class HomeController extends Controller
             }
         }
 
-        $addprms = $user->syncRoles($roles);
+        $addrls = $user->syncRoles($roles);
 
-        return redirect()->route('users.permission.index');
-    }
-
-    protected function UserPermissionUpdate(Request $request)
-    {
-        $user = User::find($request->input('id'));
-        $addprms = $user->syncPermissions($request->input('role'));
-        
         return redirect()->route('users.permission.index');
     }
 

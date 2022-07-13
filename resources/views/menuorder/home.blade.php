@@ -389,6 +389,7 @@
             $.ajax({
                 url: '{{ url()->full() }}/order/details/' + eleId,
                 type: 'GET',
+                Accept: 'application/json',
                 success: function (result, status, xhr) {
                     $(modalHeader).html('Order Details');
                     $(responseContent).html('');
@@ -410,6 +411,7 @@
                     url: '{{ url()->full() }}/checkCoupon/' + $(code).val(),
                     type: 'GET',
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr) {
                         if (!result) {
                             $(closeDialog).hide();
@@ -444,6 +446,7 @@
                     type: 'POST',
                     data: {_token : '{{ csrf_token() }}', code : $(code).val(), quantity : qty_object},
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr) {
                         if (parseInt(result) > 0) {
                             let allcheck = $('#orderMenu input:checked');
@@ -498,6 +501,7 @@
             $.ajax({
                 url: `{{ url()->full() }}${link}` + page,
                 type: 'GET',
+                Accept: 'application/json',
                 success : function(data) {
                     if (link.includes('page=')) {
                         eleID = '#orders';

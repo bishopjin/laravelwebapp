@@ -17,6 +17,11 @@
     <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
+    <noscript>
+        <div class="fw-bold h4 d-flex justify-content-center pt-3">
+            <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+        </div>
+    </noscript>
     <div id="">
         <main class="d-flex align-items-center">
             @yield('ordercontent')

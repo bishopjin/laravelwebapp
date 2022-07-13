@@ -12,7 +12,7 @@
 					<div class="card-body">
 						<form method="POST" action="{{ route('payroll.employee.dtr.create') }}" class="py-2 px-4">
 							@csrf
-
+							
 							@php
 								$sched = explode('-', $dtr[0]->workschedule->schedule); 
 								$day = date("l", mktime(0, 0, 0, date('m'), date('d'), date('Y')));
@@ -22,7 +22,7 @@
 								$lunchin = null;
 								$timeout = null;
 
-								if(isset($attendance))
+								if($attendance->count() > 0)
 								{
 									$timein = $attendance[0]->time_in ?? null;
 									$lunchout = $attendance[0]->time_out_break ?? null;

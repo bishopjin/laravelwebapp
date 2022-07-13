@@ -178,6 +178,7 @@
                     url: '{{ url()->current() }}' + '/' + itemIDVal,
                     type: 'GET',
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr){
                         if (!$.isEmptyObject(result)) {
                             $('#BID').val(result.brand.brand);
@@ -242,6 +243,7 @@
                     type: 'POST',
                     data: {_token : '{{ csrf_token() }}', shoe_id : itemIdVal, qty : qtyVal},
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr){
                         if(result){
                             $('#orderForm *').filter(':input').each(function(){

@@ -18,6 +18,11 @@
     <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #E64A19;">
+    <noscript>
+        <div class="fw-bold h4 d-flex justify-content-center pt-3">
+            <span class="text-light p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+        </div>
+    </noscript>
     <div id="app">
         @guest
             <main class="py-4 min-vh-100 d-flex align-items-center">

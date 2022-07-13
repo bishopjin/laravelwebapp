@@ -37,14 +37,13 @@ class PayrollAdminController extends Controller
 
 		$salary_grade = PayrollSalaryGrade::paginate(10, ['*'], 'salary');
 
+        $unregisterdusers = User::doesntHave('payrollemployee')->paginate(10, ['*'], 'unregistereduser');
+        
 		if (PayrollEmployee::exists()) 
 		{
 			$users = PayrollEmployee::with(['user', 'salarygrade', 'workschedule'])->paginate(10, ['*'], 'user');
 		}
-        else 
-        {
-            $users = User::find($request->user()->id)->paginate(10, ['*'], 'user');
-        }
+        
 
         if ($cutOff->count() > 0)
         {
@@ -85,7 +84,7 @@ class PayrollAdminController extends Controller
             }
         }
 			
-		return view('payroll.admin.index')->with(compact('holidays', 'users', 'salary_grade', 'addition', 'deduction', 'cutoffperiod', 'workSchedule'));
+		return view('payroll.admin.index')->with(compact('unregisterdusers', 'holidays', 'users', 'salary_grade', 'addition', 'deduction', 'cutoffperiod', 'workSchedule'));
 	}
 
 	protected function UserIndex()
@@ -99,10 +98,12 @@ class PayrollAdminController extends Controller
 	/* */
     protected function UserEdit(Request $request, $id)
     {
+        $isNew = false;
         $details = PayrollEmployee::with(['user'])->find($id);
-       
-        if ($details->count() == 0) 
+        
+        if (!$details) 
         {
+            $isNew = true;
             $details = User::find($id);
         }
 
@@ -111,7 +112,7 @@ class PayrollAdminController extends Controller
     		$salary_grade = PayrollSalaryGrade::all();
             $workSchedule = PayrollWorkSchedule::all();
 
-    		return view('payroll.admin.register')->with(compact('details', 'salary_grade', 'workSchedule'));
+    		return view('payroll.admin.register')->with(compact('isNew', 'details', 'salary_grade', 'workSchedule'));
     	}
     	else
     	{
@@ -121,6 +122,8 @@ class PayrollAdminController extends Controller
 
     protected function UserCreate(Request $request)
     {
+        $message = 'Registration failed';
+
 		if (intval($request->input('id')) == 0) 
 		{
 			$validator = Validator::make($request->all(), [
@@ -141,24 +144,16 @@ class PayrollAdminController extends Controller
 	        	$user_create = User::create([
     				'username' => $request->input('username'),
     				'password' => Hash::make($request->input('username')),
-    				'access_level' => 1,
-    				'isactive' => 1,
+    				'firstname' => $request->input('username'),
+                    'middlename' => $request->input('middlename') ?? '',
+                    'lastname' => $request->input('lastname'),
+                    'email' => $request->input('email'),
+                    'gender_id' => intval($request->input('gender')),
+                    'online_course_id' => 1,
+                    'DOB' => $request->input('DOB'),
     			]);
 
 	        	if ($user_create->id > 0) 
-	        	{
-	        		$profile_create = User::create([
-	        			'user_id' => $user_create->id,
-	        			'firstname' => $request->input('username'),
-	        			'middlename' => $request->input('middlename') ?? '',
-	        			'lastname' => $request->input('lastname'),
-	        			'email' => $request->input('email'),
-	        			'gender_id' => intval($request->input('gender')),
-	        			'online_course_id' => 1,
-	        			'DOB' => $request->input('DOB'),
-	        		]);
-	        	}
-	        	if ($profile_create) 
 	        	{
 	        		$created = PayrollEmployee::create([
 			    		'user_id' => $user_create->id,
@@ -167,6 +162,11 @@ class PayrollAdminController extends Controller
                         'salary_rate' => $request->input('salary_rate'),
 			    	]);
 	        	}
+
+                if ($created->id > 0) 
+                {
+                    $message = 'User registered';
+                }
 	        }
 		}
 		else
@@ -179,16 +179,13 @@ class PayrollAdminController extends Controller
                 'payroll_work_schedule_id' => $request->input('workschedule'),
                 'salary_rate' => $request->input('salary_rate'),
 	    	]);
+
+            if ($created->id > 0 OR $created->count() > 0) 
+            {
+                $message = 'User registered';
+            }
     	}
 
-    	if ($created->id > 0) 
-    	{
-    		$message = 'User registered';
-    	}
-    	else
-    	{
-    		$message = 'Registration failed';
-    	}
     	return redirect()->back()->with('message', $message);
     }
 

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\PayrollAttendance;
 use App\Models\PayrollPayslip;
-use App\Models\PayrollEmployee;
+use App\Models\PayrollEmployee; 
 use App\Models\PayrollCutOff;
 use App\Models\PayrollHoliday;
 use App\Models\PayrollWorkSchedule;
@@ -20,13 +20,13 @@ class PayrollEmployeeController extends Controller
 {
     protected function Index(Request $request)
     {
-    	$attendance = PayrollAttendance::with(['workschedule', 'holiday'])
-    			->where([
-    				['user_id', $request->user()->id],
-    				['created_at', 'LIKE', date('Y-m-d').'%'],
-    			])->orderBy('created_at', 'desc')->paginate(15, ['*'], 'attendance');
-    	$request->flash();
-    	return view('payroll.employee.index')->with(compact('attendance'));
+        $attendance = PayrollAttendance::with(['workschedule', 'holiday'])
+                ->where([
+                    ['user_id', $request->user()->id],
+                    ['created_at', 'LIKE', date('Y-m-d').'%'],
+                ])->orderBy('created_at', 'desc')->paginate(15, ['*'], 'attendance');
+        $request->flash();
+        return view('payroll.employee.index')->with(compact('attendance'));
     }
 
     protected function GetAttendance(Request $request)
@@ -80,7 +80,7 @@ class PayrollEmployeeController extends Controller
     	])->get();
     	
     	$dtr = PayrollEmployee::with('workschedule')->where('user_id', $request->user()->id)->get();
-
+        
     	return view('payroll.employee.dtr')->with(compact('dtr', 'attendance'));
     }
 

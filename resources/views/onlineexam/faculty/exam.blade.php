@@ -288,6 +288,7 @@
                     type: 'POST',
                     data: {id : eleId, key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}', '_method': 'PATCH',},
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr){
                         $('.modal').show();
                         $(ans).val(result);

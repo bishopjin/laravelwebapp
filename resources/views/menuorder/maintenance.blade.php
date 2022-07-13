@@ -467,6 +467,7 @@
                     type: 'POST',
                     data: data,
                     dataType: 'json',
+                    Accept: 'application/json',
                     success: function(result, status, xhr) {
                         if (!$.isEmptyObject(result)) {
                             $(modalHead).html('Success').css('color', '#0f0');
@@ -546,10 +547,10 @@
 
         function fetch_data(url, page){
             var eleID;
-
             $.ajax({
-                url: `{{ url()->full() }}/show/admin/${url}` + page,
+                url: `{{ url()->full() }}/show/${url}` + page,
                 type: 'GET',
+                Accept: 'application/json',
                 success : function(data) {
                     if (url == 'order?page=') {
                         eleID = '#admin-order';

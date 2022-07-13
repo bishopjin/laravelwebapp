@@ -54,6 +54,10 @@
 												</td>
 											</tr>
 										@endforeach
+									@else
+										<tr>
+											<td colspan="4" class="text-center">{{ __('No Data') }}</td>
+										</tr>
 									@endif
 								</tbody>
 							</table>
@@ -74,7 +78,7 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($workSchedule)
+									@if(isset($workSchedule))
 										@foreach($workSchedule as $schedule)
 											@php
 												$sched = explode('-', $schedule->schedule);
@@ -92,7 +96,11 @@
 												</td>
 											</tr>
 										@endforeach
-									@endisset		
+									@else
+										<tr>
+											<td colspan="4" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif		
 								</tbody>
 							</table>
 						</div>
@@ -115,7 +123,7 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($deduction)
+									@if(isset($deduction))
 										@foreach($deduction as $deduc)
 											<tr>
 												<td>{{ $deduc->name }}</td>
@@ -128,7 +136,11 @@
 												</td>
 											</tr>
 										@endforeach
-									@endisset
+									@else
+										<tr>
+											<td colspan="4" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
 								</tbody>
 							</table>
 							<div class="d-flex justify-content-end">
@@ -153,7 +165,7 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($addition)
+									@if(isset($addition))
 										@foreach($addition as $add)
 											<tr>
 												<td>{{ $add->name }}</td>
@@ -166,7 +178,11 @@
 												</td>
 											</tr>
 										@endforeach
-									@endisset
+									@else
+										<tr>
+											<td colspan="4" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
 								</tbody>
 							</table>
 							<div class="d-flex justify-content-end">
@@ -196,7 +212,7 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($holidays)
+									@if(isset($holidays))
 										@foreach($holidays as $holiday)
 											@php
 												$dateArr = explode('-', $holiday->date);
@@ -216,7 +232,11 @@
 												</td>
 											</tr>
 										@endforeach
-									@endisset
+									@else
+										<tr>
+											<td colspan="6" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
 								</tbody>
 							</table>
 							<div class="d-flex justify-content-end">
@@ -247,7 +267,7 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($salary_grade)
+									@if(isset($salary_grade))
 										@foreach($salary_grade as $grade)
 											<tr>
 												<td>{{ $grade->salary_grade }}</td>
@@ -263,7 +283,11 @@
 												</td>
 											</tr>
 										@endforeach
-									@endisset
+									@else
+										<tr>
+											<td colspan="7" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
 								</tbody>
 							</table>
 							<div class="d-flex justify-content-end">
@@ -279,14 +303,7 @@
 		<div class="row pb-3">
 			<div class="col">
 				<div class="card shadow">
-					<div class="card-header d-flex justify-content-between">
-						<span>{{ __('Employee List') }}</span>
-						<span class="fw-bold text-danger">
-							@if($errors->any())
-								{{ $errors->first() }}
-							@endif
-						</span>
-					</div>
+					<div class="card-header">{{ __('Employee List') }}</div>
 					<div class="card-body">
 						<div class="table-responsive">
 							<table class="table">
@@ -300,31 +317,88 @@
 									<th>{{ __('Action') }}</th>
 								</thead>
 								<tbody>
-									@isset($users)
+									@if(isset($users))
 										@foreach($users as $user)
 											<tr>
 												@php 
 													$sched = explode('-', $user->workschedule->schedule);
 												@endphp
-												<td>{{ $user->user->lastname ?? $user->lastname }}</td>
-												<td>{{ $user->user->firstname ?? $user->firstname }}</td>
-												<td>{{ $user->user->middlename ?? $user->middlename }}</td>
-												<td>{{ $user->workschedule->schedule ? date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) : 'None' }}</td>
-												<td>{{ $user->salarygrade->salary_grade ?? 'None' }}</td>
-												<td>{{ $user->salarygrade ? 'Registered' : 'Not Registered' }}</td>
+												<td>{{ $user->user->lastname }}</td>
+												<td>{{ $user->user->firstname }}</td>
+												<td>{{ $user->user->middlename }}</td>
+												<td>{{ date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) }}</td>
+												<td>{{ $user->salarygrade->salary_grade }}</td>
+												<td>{{ __('Registered') }}</td>
 												<td>
 													<a href="{{ route('payroll.admin.user.edit', ['id' => $user->user_id]) }}" class="btn btn-sm btn-outline-success">
-														{{ $user->salarygrade ? 'Edit' : 'Register' }}
+														{{ __('Edit') }}
 													</a>
 												</td>
 											</tr>
 										@endforeach
-									@endisset
+									@else
+										<tr>
+											<td colspan="8" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
+
 								</tbody>
 							</table>
 							<div class="d-flex justify-content-end">
 								@isset($users)
 									{{ $users->links() }}
+								@endisset
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row pb-3">
+			<div class="col">
+				<div class="card shadow">
+					<div class="card-header">{{ __('Unregistered User(s) List') }}</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<th>{{ __('Lastname') }}</th>
+									<th>{{ __('Firstname') }}</th>
+									<th>{{ __('Middlename') }}</th>
+									<th>{{ __('Work Schedule') }}</th>
+									<th>{{ __('Salary Grade') }}</th>
+									<th>{{ __('Status') }}</th>
+									<th>{{ __('Action') }}</th>
+								</thead>
+								<tbody>
+									@if($unregisterdusers->count() > 0)
+										@foreach($unregisterdusers as $user)
+											<tr>
+												<td>{{ $user->lastname }}</td>
+												<td>{{ $user->firstname }}</td>
+												<td>{{ $user->middlename }}</td>
+												<td>{{ __('None') }}</td>
+												<td>{{ __('None') }}</td>
+												<td>{{ __('Not Registered') }}</td>
+												<td>
+													<a href="{{ route('payroll.admin.user.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-success">
+														{{ __('Register') }}
+													</a>
+												</td>
+											</tr>
+										@endforeach
+									@else
+										<tr>
+											<td colspan="8" class="text-center">{{ __('No Data') }}</td>
+										</tr>
+									@endif
+									
+								</tbody>
+							</table>
+							<div class="d-flex justify-content-end">
+								@isset($unregisterdusers)
+									{{ $unregisterdusers->links() }}
 								@endisset
 							</div>
 						</div>

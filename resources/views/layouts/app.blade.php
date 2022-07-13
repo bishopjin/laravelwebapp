@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ ('Laravel Web App v2.0') }}</title>
+    <title>{{ ('Laravel Web App v2.0.9') }}</title>
     
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
@@ -20,6 +20,11 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
+    <noscript>
+        <div class="fw-bold h4 d-flex justify-content-center pt-3">
+            <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+        </div>
+    </noscript>
     <div id="app">
         @guest     
             <main class="py-4 min-vh-100 d-flex align-items-center">

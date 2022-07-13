@@ -80,6 +80,11 @@
                             @endforeach
                         @endisset
                     </div>
+                    <div class="card-footer small">
+                        <span class="fw-bold">{{ __('NOTE: ') }}</span>
+                        {{ __('Permission(s) can only be granted/revoked thru role. 
+                            User should have a role and that role can have one or more or no permission.') }}
+                    </div>
                 </div>
             </div>
             <div class="col-md-6 d-flex">
@@ -152,15 +157,15 @@
                                     @endif
                                 @endif
                             @endisset
-                        
+                            
                             @isset($userpermissions)
                                 <div class="fw-bold pb-2">{{ __('User\'s Permission(s)') }}</div>
                                 @if($userpermissions->count() > 0)
                                     @foreach($userpermissions as $permission)
-                                        <div>{{ $permission->name }}</div>
+                                        <div class="fw-bold ps-4">{{ __('- ').$permission->name }}</div>
                                     @endforeach
                                 @else
-                                    {{ __('- no permission') }}
+                                    <div class="fw-bold ps-4 text-danger">{{ __('- no permission') }}</div>
                                 @endif
                             @endisset
                         @endisset

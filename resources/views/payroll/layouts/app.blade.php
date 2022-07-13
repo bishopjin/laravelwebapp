@@ -19,6 +19,11 @@
     <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #C8C8C8;">
+    <noscript>
+        <div class="fw-bold h4 d-flex justify-content-center pt-3">
+            <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+        </div>
+    </noscript>
     <div id="">
         <nav class="navbar navbar-expand-md navbar-light sticky-top shadow-sm payroll-nav-bg">
             <div class="container">
