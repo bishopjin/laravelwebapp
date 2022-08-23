@@ -76,6 +76,12 @@ class ProductController extends Controller
     	return view('inventory.product.view')->with(compact('item_detail'));
     }
 
+    protected function ProductShowApi(Request $request, $id)
+    {
+        $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return $item_detail;
+    }
+
     protected function OrderIndex(Request $request)
     {
         if (InventoryItemOrder::exists()) {

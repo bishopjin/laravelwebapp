@@ -14,7 +14,7 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
-                        <div class="row mb-3 justify-content-center">
+                        <div class="row justify-content-center">
                             
                             <div class="col-md-10">
                                 <label for="username" class="">{{ __('Username') }}</label>
@@ -33,7 +33,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3 justify-content-center">
+                        <div class="row justify-content-center">
                             <div class="col-md-10">
                                 <label for="password" class="">{{ __('Password') }}</label>
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="row mb-3 justify-content-center">
+                        <div class="row justify-content-center">
                             <div class="col-md-10">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-center pb-2">
+                        <div class="row justify-content-center">
                             <div class="col-md-10 d-flex justify-content-end small">
                                 <div class="small">
                                     <div class="small">
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row py-2 justify-content-center">
+                        <div class="row justify-content-center">
                             <div class="col-md-10 d-flex justify-content-between align-items-end">
                                 <div class="d-flex flex-column">
                                     <a href=" {{ route('register') }} " class="fw-bold">{{ __('Create Account') }}</a>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class="row pt-2 justify-content-center">
+                    <div class="row justify-content-center">
                         <div class="col-md-10 d-flex justify-content-start">
                             <div class="small fw-bolder d-flex flex-column">
                                 <span class="text-decoration-underline">{{ __('Default account :') }}</span>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <page-footer :current-date="'{{ date('Y') }}'" :urls="'https://www.genesedan.com/'"></page-footer>
+                    <x-footer/>
                 </div>
             </div>
         </div>

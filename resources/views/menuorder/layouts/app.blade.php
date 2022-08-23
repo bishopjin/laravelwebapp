@@ -12,9 +12,7 @@
 
     <title>{{ ('Online Menu Ordering - Laravel') }} &nbsp; {{ app()->version() }}</title>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ mix('/js/app.js') }}"></script>
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <noscript>
@@ -22,11 +20,12 @@
             <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
         </div>
     </noscript>
-    <div id="">
-        <main class="d-flex align-items-center">
+    <div id="app">
+        <main>
             @yield('ordercontent')
         </main>
     </div> 
-    
+    <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>

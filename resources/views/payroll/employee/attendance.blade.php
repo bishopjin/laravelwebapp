@@ -5,25 +5,10 @@
 		<div class="row">
 			<div class="col">
 				<div class="card shadow">
-					<div class="card-header">{{ __('Attendance') }}</div>
+					<div class="card-header">
+						<a href="{{ route('payroll.employee.index') }}" class="text-decoration-none">{{ __('Back') }}</a>
+					</div>
 					<div class="card-body">
-						<form method="GET" action="{{ route('payroll.employee.attendance.show') }}">
-							<div class="small">{{ __('Select Date') }}</div>
-							<div class="small d-flex flex-md-row flex-column align-items-md-end">
-								<div class="form-group pe-md-3 pb-md-0 pb-2">
-									<label class="small" for="strDt">{{ __('Start Date') }}</label>
-									<input type="date" class="form-control" id="strDt" name="strDt" value="{{ old('strDt') ?? date('Y-m-d') }}">
-								</div>
-								<div class="form-group pe-md-3 pb-md-0 pb-2">
-									<label class="small" for="endDt">{{ __('End Date') }}</label>
-									<input type="date" class="form-control" id="endDt" name="endDt" value="{{ old('endDt') ?? date('Y-m-d') }}">
-								</div>
-								<div class="form-group">
-									<input type="submit" class="btn btn-primary" value="Show Details">
-								</div>
-							</div>
-						</form>
-						<hr>
 						<div class="table-responsive">
 							<table class="table table-bordered table-striped">
 								<thead class="small">

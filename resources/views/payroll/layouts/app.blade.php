@@ -15,8 +15,6 @@
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #C8C8C8;">
     <noscript>
@@ -238,5 +236,7 @@
             </div>
         </div>
     </div>
+    <!-- Scripts -->
+    <script src="{{ asset('/js/app.js') }}"></script>
 </body>
 </html>

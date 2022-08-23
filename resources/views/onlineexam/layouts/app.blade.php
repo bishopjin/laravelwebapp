@@ -14,8 +14,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #E64A19;">
     <noscript>
@@ -23,7 +21,7 @@
             <span class="text-light p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
         </div>
     </noscript>
-    <div id="app">
+    <div id="">
         @guest
             <main class="py-4 min-vh-100 d-flex align-items-center">
                 @yield('onlinecontent')
@@ -118,5 +116,7 @@
             </main>
         @endguest
     </div>
+    <!-- Scripts -->
+    <script src="{{ asset('/js/app.js') }}"></script>
 </body>
 </html>

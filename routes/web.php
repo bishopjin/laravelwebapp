@@ -23,11 +23,6 @@ use App\Http\Controllers\PayrollController\PayrollDashboardController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/* test for sub-domain */
-Route::domain('testweb.genesedan.com')->group(function () {
-
-});
-
 Auth::routes();
 
 Route::middleware(['auth', 'auth:sanctum'])->group(function () {
@@ -117,12 +112,20 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* END */
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
+		Route::get('/admin', function () {
+		    return view('menuorder.index');
+		})->name('menuorder.admin.index');
+
+		Route::get('/customer', function () {
+		    return view('menuorder.index');
+		})->name('menuorder.customer.index');//->where('any','.*');
 		/* Admin and Customer route */
-		Route::get('/admin', [MenuController::class, 'AdminIndex'])->name('order.admin.dashboard.index')
+		/*Route::get('/admin', [MenuController::class, 'AdminIndex'])->name('order.admin.dashboard.index')
 			->middleware('permission:menu view user list|menu view order list|menu edit item| menu add item');
 
 		Route::get('/customer', [MenuController::class, 'CustomerIndex'])->name('order.customer.dashboard.index')
-			->middleware('permission:menu create orders|menu view order history|menu view coupon list');
+			->middleware('permission:menu create orders|menu view order history|menu view coupon list');*/
+
 		/* Customer route */
 		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
 			Route::post('/order', [MenuController::class, 'store'])->name('order.store');
@@ -198,7 +201,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 				Route::prefix('employee')->group(function() {
 					Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
 
-					Route::post('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
+					Route::get('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
 					
 					Route::get('/dtr', [PayrollEmployeeController::class, 'Dtr'])->name('payroll.employee.dtr.index');
 					Route::post('/dtr/save', [PayrollEmployeeController::class, 'DtrSave'])->name('payroll.employee.dtr.create');

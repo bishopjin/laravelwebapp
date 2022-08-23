@@ -96,14 +96,14 @@
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
-                                @if(Auth::user()->hasAnyPermission(['menu view user list', 'menu view order list', 'menu edit item', 'menu add item']))
-                                    <a href="{{ route('order.admin.dashboard.index') }}"
+                                @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
+                                    <a href="{{ route('menuorder.admin.index') }}"
                                         class="btn btn-outline-primary w-100 rounded-pill">
                                         {{ __('Maintenance') }}
                                     </a>
                                 @endif
                                 @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
-                                    <a href="{{ route('order.customer.dashboard.index') }}"
+                                    <a href="{{ route('menuorder.customer.index') }}"
                                         class="btn btn-outline-primary w-100 rounded-pill">
                                         {{ __('Customer') }}
                                     </a>

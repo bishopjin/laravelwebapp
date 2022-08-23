@@ -24,7 +24,7 @@ class PayrollEmployeeController extends Controller
                 ->where([
                     ['user_id', $request->user()->id],
                     ['created_at', 'LIKE', date('Y-m-d').'%'],
-                ])->orderBy('created_at', 'desc')->paginate(15, ['*'], 'attendance');
+                ])->orderBy('created_at', 'desc')->get();
         $request->flash();
         return view('payroll.employee.index')->with(compact('attendance'));
     }
@@ -36,15 +36,14 @@ class PayrollEmployeeController extends Controller
 
     	$attendance = PayrollAttendance::with(['workschedule', 'holiday'])->where('user_id', $request->user()->id)
     			->whereBetween('created_at', [$startDT, $endDT])
-    			->orderBy('created_at', 'desc')
-    			->paginate(15, ['*'], 'attendance');
+    			->orderBy('created_at', 'desc')->take(31)->get();
     	
     	if (!$attendance) 
     	{
     		$attendance = collect(new PayrollAttendance);
     	}
     	$request->flash();
-    	return view('payroll.employee.index')->with(compact('attendance'));
+    	return view('payroll.employee.attendance')->with(compact('attendance'));
     }
 
     protected function ViewPayslip(Request $request)

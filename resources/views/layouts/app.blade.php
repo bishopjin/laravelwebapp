@@ -13,7 +13,7 @@
     
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
-    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9822106822353440"
@@ -25,9 +25,9 @@
             <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
         </div>
     </noscript>
-    <div id="app">
+    <div>
         @guest     
-            <main class="py-4 min-vh-100 d-flex align-items-center">
+            <main class="min-vh-100 d-flex align-items-center">
                 @yield('content')
             </main>
         @else

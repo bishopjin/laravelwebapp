@@ -15,8 +15,6 @@
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
     <noscript>
@@ -24,7 +22,7 @@
             <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
         </div>
     </noscript>
-    <div id="">
+    <div>
         <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/inventory/') }}">
@@ -127,5 +125,7 @@
             @yield('inventorycontent')
         </main>
     </div>
+    <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>

@@ -22,7 +22,12 @@ class DashboardController extends Controller
     protected function Index(Request $request)
     {
         $shoe_inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
-        
         return view('inventory.dashboard')->with(compact('shoe_inventory'));
+    }
+
+    protected function IndexApi(Request $request)
+    {
+        $shoe_inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
+        return $shoe_inventory;
     }
 }
