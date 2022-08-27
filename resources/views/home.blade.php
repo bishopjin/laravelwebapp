@@ -85,7 +85,6 @@
                     
                     <div class="card-body">
                         <span class="fw-bold">{{ __('Menu Ordering Feature:') }}</span> <br>
-                        &nbsp; <span class="text-success fw-bold">{{ __('- Single page web application') }}</span> <br>
                         &nbsp; {{ __('- Create order') }} <br>
                         &nbsp; {{ __('- Discount and tax applied to the order') }} <br>
                         &nbsp; {{ __('- Order history') }} <br>
@@ -189,7 +188,7 @@
                                 @can('payroll employee access')
                                     <a href="{{ route('payroll.employee.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">
-                                        {{ __('Emlployee') }}
+                                        {{ __('Employee') }}
                                     </a>
                                 @endcan
                             @else

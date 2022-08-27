@@ -18,32 +18,45 @@ use Illuminate\Support\Facades\Hash;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+/* REST API login */
 Route::post('/login', function(Request $request) {
-	$response = array('access' => '0', 'token' => 'Access Denied');
-	
+	$response = array('role' => [], 'token' => 'Access Denied', 'id' => 0, 'permission' => []);
+
 	$user = User::where('username', $request->input('uname'))->first();
 	if ($user) 
 	{
 		if (Hash::check($request->input('pword'), $user->password)) 
 		{
+			$permissions = [];
+			if ($user->getPermissionsViaRoles()->count() > 0) 
+			{
+				foreach ($user->getPermissionsViaRoles() as $permission) 
+				{
+					array_push($permissions, $permission->name);
+				}
+			}
 			//$response = $user->createToken($request->input('origin'), ['menu-view-coupon-list'])->plainTextToken;
-			$response = array('access' => '1', 'token' => $user->createToken($request->input('origin'))->plainTextToken);
+			$response = array('role' => $user->getRoleNames(), 'token' => $user->createToken($request->input('origin'), $permissions)->plainTextToken, 'id' => $user->id, 'permission' => $permissions);
 		}
 	}
 
 	return response()->json($response);
 });
-
+/**/
 Route::middleware('auth:sanctum')->group(function () {
 	Route::post('/logout', function (Request $request) {
 		$request->user()->currentAccessToken()->delete();
 		return response()->json(['message' => 'User\'s Logged out.']);
 	});
 	/* inventory route */
-	Route::post('/inventory/addStock/store', [ProductController::class, 'DeliverStore']);
-	Route::get('/inventory/index', [DashboardController::class, 'IndexApi']);
-	Route::get('/inventory/get/{id}', [ProductController::class, 'ProductShowApi']);
+	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('/inventory')->group(function() {
+		Route::post('/addStock/store', [ProductController::class, 'DeliverStore']);
+		Route::post('/getStock/store', [ProductController::class, 'OrderStore']);
+		Route::get('/index', [DashboardController::class, 'IndexApi']);
+		Route::get('/get/{id}', [ProductController::class, 'ProductShowApi']);
+	});
 	/* End */
+
 	/* Customer route */
 	Route::middleware('ability:menu-create-orders,menu-view-order-history,menu-view-coupon-list')->group(function () {
 		Route::post('/order', [MenuController::class, 'store'])->name('order.store');
