@@ -33,6 +33,17 @@ class ProductController extends Controller
         return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
     }
 
+    protected function ProductIndexApi(Request $request)
+    {   
+        $brand = InventoryItemBrand::all();
+        $category = InventoryItemCategory::all();
+        $type = InventoryItemType::all();
+        $color = InventoryItemColor::all();
+        $size = InventoryItemSize::all();
+    
+        return array('brand' => $brand, 'category' => $category, 'type' => $type, 'color' => $color, 'size' => $size);
+    }
+
     /* */
     protected function ProductStore(Request $request)
     {
@@ -70,6 +81,35 @@ class ProductController extends Controller
         }
     }
 
+    protected function ProductStoreApi(Request $request)
+    {
+        $return = 0;
+        $validator = Validator::make($request->all(), [
+            'inventory_item_brand_id' => 'required|numeric',
+            'inventory_item_size_id' => 'required|numeric',
+            'inventory_item_color_id' => 'required|numeric',
+            'inventory_item_type_id' => 'required|numeric',
+            'inventory_item_category_id' => 'required|numeric',
+            'price'=> 'required|numeric',
+        ]);
+        
+        if (!$validator->fails()) {
+            /* create new record */
+            $create_record = InventoryItemShoe::updateOrCreate(
+                [
+                    'inventory_item_brand_id' => $request->input('inventory_item_brand_id'),
+                    'inventory_item_size_id' => $request->input('inventory_item_size_id'),
+                    'inventory_item_color_id' => $request->input('inventory_item_color_id'),
+                    'inventory_item_type_id' => $request->input('inventory_item_type_id'),
+                    'inventory_item_category_id' => $request->input('inventory_item_category_id'),
+                ],
+                ['price' => $request->input('price')]
+            );
+            $return = $create_record->id;
+        }
+        return $return;
+    }
+
     protected function ProductShow(Request $request, $id)
     {
         $item_detail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
@@ -92,6 +132,19 @@ class ProductController extends Controller
         else
         {
             return view('inventory.product.order');
+        }
+    }
+
+    protected function OrderIndexApi(Request $request)
+    {
+        if (InventoryItemOrder::exists()) {
+            $orders = InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+                ->paginate(10, ['*'], 'order');
+            return $orders;
+        }
+        else
+        {
+            return collect(new InventoryItemOrder);
         }
     }
 

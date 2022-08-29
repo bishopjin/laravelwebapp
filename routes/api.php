@@ -52,8 +52,24 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('/inventory')->group(function() {
 		Route::post('/addStock/store', [ProductController::class, 'DeliverStore']);
 		Route::post('/getStock/store', [ProductController::class, 'OrderStore']);
+		Route::post('/product/store', [ProductController::class, 'ProductStoreApi']);
+		Route::get('/employeelogs/index', [ProductController::class, 'OrderIndexApi']);
+		Route::get('/orders/index', [ProductController::class, 'OrderIndexApi']);
+		Route::get('/product/index', [ProductController::class, 'ProductIndexApi']);
 		Route::get('/index', [DashboardController::class, 'IndexApi']);
 		Route::get('/get/{id}', [ProductController::class, 'ProductShowApi']);
+
+		Route::prefix('employee')->group(function() {
+			Route::middleware('permission:inventory view user|inventory edit user')->group(function () {
+				Route::get('/logs', [EmployeeController::class, 'IndexApi']);
+				Route::get('/edit', [EmployeeController::class, 'Show']);
+
+				Route::delete('/delete', [EmployeeController::class, 'Delete']);
+
+				Route::put('/access/save', [EmployeeController::class, 'Store']);
+				Route::get('/access/{id}/edit', [EmployeeController::class, 'Edit']);
+			});
+		});
 	});
 	/* End */
 

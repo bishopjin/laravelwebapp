@@ -18,6 +18,12 @@ class EmployeeController extends Controller
         return view('inventory.employee.index')->with(compact('employee_log'));
     }
 
+    protected function IndexApi(Request $request)
+    {
+        $employee_log = InventoryEmployeeLog::with('user')->paginate(10, ['*'], 'employeeLogs');
+        return $employee_log;
+    }
+
     protected function Show(Request $request)
     {
         $user_details = User::withTrashed()->notadmin()->notself($request->user()->id)->paginate(10);
