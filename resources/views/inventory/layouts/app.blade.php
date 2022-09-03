@@ -15,6 +15,8 @@
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
     <noscript>
@@ -125,7 +127,5 @@
             @yield('inventorycontent')
         </main>
     </div>
-    <!-- Scripts -->
-    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>

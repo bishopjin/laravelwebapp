@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OnlineMenuController\MenuController;
 use App\Http\Controllers\InventoryController\DashboardController;
 use App\Http\Controllers\InventoryController\ProductController;
+use App\Http\Controllers\InventoryController\EmployeeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,21 +23,27 @@ use Illuminate\Support\Facades\Hash;
 Route::post('/login', function(Request $request) {
 	$response = array('role' => [], 'token' => 'Access Denied', 'id' => 0, 'permission' => []);
 
-	$user = User::where('username', $request->input('uname'))->first();
+	$user = User::withTrashed()->where('username', $request->input('uname'))->first();
 	if ($user) 
 	{
 		if (Hash::check($request->input('pword'), $user->password)) 
 		{
-			$permissions = [];
-			if ($user->getPermissionsViaRoles()->count() > 0) 
-			{
-				foreach ($user->getPermissionsViaRoles() as $permission) 
+			if (!$user->trashed())  {
+    			$permissions = [];
+				if ($user->getPermissionsViaRoles()->count() > 0) 
 				{
-					array_push($permissions, $permission->name);
+					foreach ($user->getPermissionsViaRoles() as $permission) 
+					{
+						array_push($permissions, $permission->name);
+					}
 				}
-			}
-			//$response = $user->createToken($request->input('origin'), ['menu-view-coupon-list'])->plainTextToken;
-			$response = array('role' => $user->getRoleNames(), 'token' => $user->createToken($request->input('origin'), $permissions)->plainTextToken, 'id' => $user->id, 'permission' => $permissions);
+				//$response = $user->createToken($request->input('origin'), ['menu-view-coupon-list'])->plainTextToken;
+				$response = array('role' => $user->getRoleNames(), 'token' => $user->createToken($request->input('origin'), $permissions)->plainTextToken, 'id' => $user->id, 'permission' => $permissions);
+		    }
+		    else
+	    	{
+	    		$response = array('role' => [], 'token' => 'User is not active', 'id' => 0, 'permission' => []);
+	    	}
 		}
 	}
 
@@ -49,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		return response()->json(['message' => 'User\'s Logged out.']);
 	});
 	/* inventory route */
-	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('/inventory')->group(function() {
+	Route::middleware('permission:inventory add stock|inventory get stock|inventory add new item')->prefix('/inventory')->group(function() {
 		Route::post('/addStock/store', [ProductController::class, 'DeliverStore']);
 		Route::post('/getStock/store', [ProductController::class, 'OrderStore']);
 		Route::post('/product/store', [ProductController::class, 'ProductStoreApi']);
@@ -59,12 +66,11 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/index', [DashboardController::class, 'IndexApi']);
 		Route::get('/get/{id}', [ProductController::class, 'ProductShowApi']);
 
-		Route::prefix('employee')->group(function() {
+		Route::prefix('/employee')->group(function() {
 			Route::middleware('permission:inventory view user|inventory edit user')->group(function () {
 				Route::get('/logs', [EmployeeController::class, 'IndexApi']);
-				Route::get('/edit', [EmployeeController::class, 'Show']);
-
-				Route::delete('/delete', [EmployeeController::class, 'Delete']);
+				Route::get('/edit', [EmployeeController::class, 'ShowApi']);
+				Route::delete('/delete', [EmployeeController::class, 'DeleteApi']);
 
 				Route::put('/access/save', [EmployeeController::class, 'Store']);
 				Route::get('/access/{id}/edit', [EmployeeController::class, 'Edit']);

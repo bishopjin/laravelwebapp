@@ -30,6 +30,12 @@ class EmployeeController extends Controller
         return view('inventory.employee.edit')->with(compact('user_details'));
     }
 
+    protected function ShowApi(Request $request)
+    {
+        $user_details = User::withTrashed()->notadmin()->notself($request->user()->id)->paginate(10, ['*'], 'edituser');
+        return $user_details;
+    }
+
     protected function Edit(Request $request, $id)
     {
         $user_details = User::find($id);
@@ -63,5 +69,14 @@ class EmployeeController extends Controller
         $user->trashed() ? $user->restore() : $user->delete();
         
         return redirect()->route('inventory.employee.edit.index');
+    }
+
+    protected function DeleteApi(Request $request)
+    {
+        $user = User::withTrashed()->find($request->input('id'));
+
+        $user->trashed() ? $user->restore() : $user->delete();
+        
+        return $user;
     }
 }
