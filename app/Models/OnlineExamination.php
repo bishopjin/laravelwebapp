@@ -24,12 +24,12 @@ class OnlineExamination extends Model
     
     public function faculty()
     {
-    	return $this->belongsTo(User::class, 'faculty_id');
+    	return $this->belongsTo(User::class, 'faculty_id')->withTrashed();
     }
 
     public function student()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     public function onlineexam()

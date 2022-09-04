@@ -46,7 +46,8 @@ class HomeController extends Controller
 
         if ($request->input('id') != 1)
         {
-            if ($key = array_search('Super Admin', $roles) != false)
+            $key = $roles ? array_search('Super Admin', $roles) : NULL;
+            if ($key)
             {
                 unset($roles[$key]);
             }

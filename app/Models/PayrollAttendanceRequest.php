@@ -23,12 +23,12 @@ class PayrollAttendanceRequest extends Model
 
     public function user()
     {
-    	return $this->belongsTo(User::class, 'approver_id');
+    	return $this->belongsTo(User::class, 'approver_id')->withTrashed();
     }
 
     public function employee()
     {
-    	return $this->belongsTo(User::class, 'employee_id');
+    	return $this->belongsTo(User::class, 'employee_id')->withTrashed();
     }
 
     public function attendance()

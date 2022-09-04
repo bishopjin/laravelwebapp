@@ -32,6 +32,6 @@ class InventoryItemOrder extends Model
 
     public function user()
     {
-    	return $this->belongsTo(User::class, 'order_by_id');
+    	return $this->belongsTo(User::class, 'order_by_id')->withTrashed();
     }
 }

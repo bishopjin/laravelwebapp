@@ -6,6 +6,7 @@ use App\Http\Controllers\OnlineMenuController\MenuController;
 use App\Http\Controllers\InventoryController\DashboardController;
 use App\Http\Controllers\InventoryController\ProductController;
 use App\Http\Controllers\InventoryController\EmployeeController;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,7 +21,8 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 /* REST API login */
-Route::post('/login', function(Request $request) {
+Route::post('/login', function(Request $request) 
+{
 	$response = array('role' => [], 'token' => 'Access Denied', 'id' => 0, 'permission' => []);
 
 	$user = User::withTrashed()->where('username', $request->input('uname'))->first();
@@ -49,8 +51,47 @@ Route::post('/login', function(Request $request) {
 
 	return response()->json($response);
 });
+/* register */
+Route::post('/register', function(Request $request)
+{
+	$response = array('id' => '0', 'msg' => array('message' => 'Failed'));
+
+	$validator = Validator::make($request->all(), [
+        'username' => ['required', 'string', 'max:255', 'unique:users'],
+        'password' => ['required', 'string', 'min:8'],
+        'firstname' => ['required', 'string', 'max:255'],
+        'lastname' => ['required', 'string', 'max:255'],
+        'gender_id' => ['required', 'string', 'max:1'],
+        'email' => ['required', 'email', 'unique:users'],
+        'DOB' => ['date'],
+    ]);
+
+    if (!$validator->fails()) 
+    {
+        $user = User::create([
+			'username' => $request->input('username'),
+			'password' => Hash::make($request->input('password')),
+			'firstname' => $request->input('firstname'),
+			'middlename' => $request->input('middlename') ?? NULL,
+			'email' => $request->input('email'),
+			'lastname' => $request->input('lastname'),
+			'gender_id' => $request->input('gender_id'),
+			'DOB' => $request->input('DOB'),
+		]);
+        $response = array('id' => $user->id > 0 ?  '1' : '0', 'msg' => array('message' => 'Successful'));
+    }
+    else {
+    	$response = array('id' => '2', 'msg' => array('message' => response()->json($validator->errors(), 500)));
+    }
+    return $response;
+});
 /**/
 Route::middleware('auth:sanctum')->group(function () {
+	/* get user id by token */
+	Route::get('/checkUser', function (Request $request) {
+		return auth('sanctum')->user()->id;
+	});
+
 	Route::post('/logout', function (Request $request) {
 		$request->user()->currentAccessToken()->delete();
 		return response()->json(['message' => 'User\'s Logged out.']);
