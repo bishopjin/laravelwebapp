@@ -9,7 +9,8 @@ use App\Http\Controllers\OnlineExamController\UserProfileController;
 use App\Http\Controllers\OnlineExamController\AdminController;
 use App\Http\Controllers\OnlineExamController\FacultyController;
 use App\Http\Controllers\OnlineExamController\StudentController;
-use App\Http\Controllers\OnlineMenuController\MenuController;
+use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
+use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
 use App\Http\Controllers\PayrollController\PayrollEmployeeController;
 use App\Http\Controllers\PayrollController\PayrollAdminController;
 use App\Http\Controllers\PayrollController\PayrollDashboardController;
@@ -112,35 +113,13 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* END */
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
-		Route::get('/admin', function () {
-		    return view('menuorder.index');
-		})->name('menuorder.admin.index');
-
-		Route::get('/customer', function () {
-		    return view('menuorder.index');
-		})->name('menuorder.customer.index');//->where('any','.*');
-		/* Admin and Customer route */
-		/*Route::get('/admin', [MenuController::class, 'AdminIndex'])->name('order.admin.dashboard.index')
-			->middleware('permission:menu view user list|menu view order list|menu edit item| menu add item');
-
-		Route::get('/customer', [MenuController::class, 'CustomerIndex'])->name('order.customer.dashboard.index')
-			->middleware('permission:menu create orders|menu view order history|menu view coupon list');*/
-
 		/* Customer route */
 		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
-			Route::post('/order', [MenuController::class, 'store'])->name('order.store');
-			Route::get('/customer/checkCoupon/{code}', [MenuController::class, 'show'])->name('order.coupon.show');
-			Route::get('/customer/order/details/{order_number}', [MenuController::class, 'showdetails'])->name('order.details.show');
-			/* paginate using ajax */
-			Route::get('/customer/show/page', [MenuController::class, 'GetCustOrderPaginate'])->name('pagination.cust.order.show');
-			Route::get('/customer/show/coupon', [MenuController::class, 'GetDiscountPaginate'])->name('pagination.user.coupon.show');
+			Route::resource('/menucustomer', CustomerDashboardController::class);//->only(['index', 'store']);
 		});
 		/* Admin Maintenance route */
 		Route::middleware('permission:menu view order list|menu view user list')->group(function(){
-			Route::post('/item/addedit', [MenuController::class, 'storeupdateitem'])->name('order.admin.item.store');
-			/* paginate using ajax */
-			Route::get('/admin/show/order', [MenuController::class, 'GetAdminOrderPaginate'])->name('pagination.admin.order.show');
-			Route::get('/admin/show/user', [MenuController::class, 'GetAdminUserPaginate'])->name('pagination.admin.user.show');
+			Route::resource('/menuadmin', AdminDashboardController::class);
 		});
 	});
 	/* END */
