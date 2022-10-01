@@ -49,7 +49,7 @@ class ExamController extends Controller
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
 
-        $subjects = OnlineSubject::find($request->input('subject'));
+        $subjects = OnlineSubject::findOrFail($request->input('subject'));
         
         if ($subjects)
         {
@@ -97,7 +97,7 @@ class ExamController extends Controller
                 }
                 elseif (str_contains($key, 'answer')) 
                 {
-                    $answer = OnlineExamQuestion::find($qId)
+                    $answer = OnlineExamQuestion::findOrFail($qId)
                         ->update(['key_to_correct' => $value]);
 
                     if ($answer > 0) 
@@ -186,7 +186,7 @@ class ExamController extends Controller
     {
         $new_key = $request->input('key_to_correct');
 
-        $update_key = OnlineExamQuestion::find($id)->update(['key_to_correct' => $new_key]);
+        $update_key = OnlineExamQuestion::findOrFail($id)->update(['key_to_correct' => $new_key]);
 
         return response()->json($new_key);
     }

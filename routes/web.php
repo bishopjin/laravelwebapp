@@ -9,8 +9,13 @@ use App\Http\Controllers\OnlineExamController\UserProfileController;
 use App\Http\Controllers\OnlineExamController\AdminController;
 use App\Http\Controllers\OnlineExamController\FacultyController;
 use App\Http\Controllers\OnlineExamController\StudentController;
+
 use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
 use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
+use App\Http\Controllers\PayrollController\web\admin\AdminPayrollDashboardController;
+use App\Http\Controllers\PayrollController\web\employee\EmployeePayrollDashboardController;
+use App\Http\Controllers\PayrollController\web\PayrollChangePasswordController;
+
 use App\Http\Controllers\PayrollController\PayrollEmployeeController;
 use App\Http\Controllers\PayrollController\PayrollAdminController;
 use App\Http\Controllers\PayrollController\PayrollDashboardController;
@@ -107,6 +112,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 				Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.store');
 			});
 		});
+
 		Route::patch('profile/update', [UserProfileController::class, 'Update'])->name('online.profile.update');
 		Route::get('profile/{id}/edit', [UserProfileController::class, 'Show'])->name('online.profile.edit');
 	});
@@ -115,84 +121,44 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::prefix('menu-ordering')->group(function() {
 		/* Customer route */
 		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
-			Route::resource('/menucustomer', CustomerDashboardController::class);//->only(['index', 'store']);
+			Route::prefix('customer')->group(function() {
+				Route::resource('/', CustomerDashboardController::class);//->only(['index', 'store']);
+			});
 		});
 		/* Admin Maintenance route */
 		Route::middleware('permission:menu view order list|menu view user list')->group(function(){
-			Route::resource('/menuadmin', AdminDashboardController::class);
+			Route::prefix('admin')->group(function () {
+				Route::resource('/', AdminDashboardController::class);
+			});
 		});
 	});
 	/* END */
 	/* Payroll route */
 	Route::prefix('payroll')->group(function() {
 		Route::view('/notregister', 'payroll.notregister')->name('notregister.index');
+
 		Route::middleware('validatepayrolluser')->group(function () {
-			Route::middleware('permission:payroll admin access|payroll employee access')->group(function() {
-				Route::view('/{name}/user/changepassword', 'payroll.changepassword')->name('payroll.password.index');
-				Route::post('user/changepassword', [PayrollDashboardController::class, 'ChangePassSave'])->name('payroll.password.update');
-			});
-
-			Route::middleware('permission:payroll admin access')->group(function () {
+			/* Admin */
+			Route::middleware('permission:payroll admin access')->group(function() {
 				Route::prefix('admin')->group(function() {
-					Route::get('/dashboard', [PayrollAdminController::class, 'Index'])->name('payroll.admin.index');
-
-					Route::get('/user', [PayrollAdminController::class, 'UserIndex'])->name('payroll.admin.user.index');
-					Route::post('/user/save', [PayrollAdminController::class, 'UserCreate'])->name('payroll.admin.user.store');
-
-					Route::view('/salarygrade', 'payroll.admin.salarygrade')->name('payroll.admin.salarygrade.index');
-
-					Route::post('/salarygrade/save', [PayrollAdminController::class, 'SalaryGradeCreate'])->name('payroll.admin.salarygrade.store');
-
-					Route::view('/holiday', 'payroll.admin.holiday')->name('payroll.admin.holiday.index');
-
-					Route::post('/holiday/save', [PayrollAdminController::class, 'HolidayCreate'])->name('payroll.admin.holiday.store');
-
-					Route::view('/addition', 'payroll.admin.addition')->name('payroll.admin.addition.index');
-					
-					Route::post('/addition/save', [PayrollAdminController::class, 'AdditionCreate'])->name('payroll.admin.addition.store');
-
-					Route::view('/deduction', 'payroll.admin.deduction')->name('payroll.admin.deduction.index');
-					
-					Route::post('/deduction/save', [PayrollAdminController::class, 'DeductionCreate'])->name('payroll.admin.deduction.store');
-
-					Route::view('/workschedule', 'payroll.admin.workschedule')->name('payroll.admin.schedule.index');
-					
-					Route::post('/workschedule/save', [PayrollAdminController::class, 'ScheduleCreate'])->name('payroll.admin.schedule.store');
-
-					Route::get('/cutoff/edit', [PayrollAdminController::class, 'CutoffEdit'])->name('payroll.admin.cutoff.edit');
-					Route::put('/cutoff/update', [PayrollAdminController::class, 'CutoffUpdate'])->name('payroll.admin.cutoff.update');
-
-					Route::get('/attendancerequest', [PayrollAdminController::class, 'AttendanceRequestIndex'])->name('payroll.admin.requestchange.index');
-					Route::patch('/attendancerequest/action', [PayrollAdminController::class, 'RequestAction'])->name('payroll.admin.requestchange.update');
-
-					Route::post('/salary/compute', [PayrollAdminController::class, 'ComputeSalary'])->name('payroll.admin.salary.store');
-
-					Route::get('/workschedule/{id}/edit', [PayrollAdminController::class, 'ScheduleEdit'])->name('payroll.admin.schedule.edit');
-					Route::get('/deduction/{id}/edit', [PayrollAdminController::class, 'DeductionEdit'])->name('payroll.admin.deduction.edit');
-					Route::get('/addition/{id}/edit', [PayrollAdminController::class, 'AdditionEdit'])->name('payroll.admin.addition.edit');
-					Route::get('/holiday/{id}/edit', [PayrollAdminController::class, 'HolidayEdit'])->name('payroll.admin.holiday.edit');
-					Route::get('/salarygrade/{id}/edit', [PayrollAdminController::class, 'SalaryGradeEdit'])->name('payroll.admin.salarygrade.edit');
-					Route::get('/user/{id}/edit', [PayrollAdminController::class, 'UserEdit'])->name('payroll.admin.user.edit');
+					Route::resource('/dashboard', AdminPayrollDashboardController::class)->names([
+						'index' => 'payroll.admin.index',
+					]);
 				});
 			});
-
+			/* Employee */
 			Route::middleware('permission:payroll employee access')->group(function () {
 				Route::prefix('employee')->group(function() {
-					Route::get('/dashboard', [PayrollEmployeeController::class, 'Index'])->name('payroll.employee.index');
-
-					Route::get('/dashboard/attendance', [PayrollEmployeeController::class, 'GetAttendance'])->name('payroll.employee.attendance.show');
-					
-					Route::get('/dtr', [PayrollEmployeeController::class, 'Dtr'])->name('payroll.employee.dtr.index');
-					Route::post('/dtr/save', [PayrollEmployeeController::class, 'DtrSave'])->name('payroll.employee.dtr.create');
-					Route::post('/dtr/createrequest', [PayrollEmployeeController::class, 'DTRRequestCreate'])->name('payroll.employee.dtr.request.create');
-
-					Route::get('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.index');
-					Route::post('/payslip/view', [PayrollEmployeeController::class, 'ViewPayslip'])->name('payroll.employee.payslip.show');
-					
-					Route::get('/dtr/{id}/edit', [PayrollEmployeeController::class, 'DTRChangeRequest'])->name('payroll.employee.dtr.edit');
+					Route::resource('/dashboard', EmployeePayrollDashboardController::class)->names([
+						'index' => 'payroll.employee.index',
+					]);
 				});
 			});
 		});
+		Route::resource('/changepassword', PayrollChangePasswordController::class)->names([
+			'create' => 'changepassword.create',
+			'update' => 'changepassword.update',
+		]);
 	});
 });
 /* END */

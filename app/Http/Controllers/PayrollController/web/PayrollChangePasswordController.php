@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\OnlineExamController\web;
+namespace App\Http\Controllers\PayrollController\web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\OnlineCourse;
-use App\Http\Requests\Profile;
+use App\Http\Requests\ChangePassword;
 
-class ProfileController extends Controller
+class PayrollChangePasswordController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +27,8 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
+        $userid = auth()->user()->id;
+        return view('payroll.changepassword')->with(compact('userid'));
     }
 
     /**
@@ -50,10 +50,7 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        $courses = OnlineCourse::get();
-        $userDetails = User::findOrFail($id);
-        
-        return view('onlineexam.profile')->with(compact('userDetails', 'courses'));
+        //
     }
 
     /**
@@ -70,33 +67,37 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ChangePassword  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Profile $request, $id)
+    public function update(ChangePassword $request, $id)
     {
         if ($request->validated()) 
-            $updated = User::findOrFail($id)->update($request->validated());
-
-            if ($updated > 0)
-            {   
-                /*if($request->user()->can('exam admin access')) 
+        {
+            if ($request->user()->id != 1)
+            {
+                $find_record = User::find($id);
+                
+                if (Hash::check($request->input('password'), $find_record->password)) 
                 {
-                    $route_name = 'online.admin.index';
+                    return redirect()->back()->with(['message' => 'New password must not be the same as old password.', 'font' => 'text-danger'])->withInput();
                 }
-                elseif($request->user()->can('exam faculty access'))
+                elseif (Hash::check($request->input('oldpass'), $find_record->password)) 
                 {
-                    $route_name = 'online.faculty.index';
+                    $update_pass = User::find($id)->update(['password' => Hash::make($request->input('password'))]);
                 }
                 else
                 {
-                    $route_name = 'online.student.index'; 
+                    return redirect()->back()->with(['message' => 'Old password incorrect', 'font' => 'text-danger'])->withInput();
                 }
-                return redirect()->route($route_name);*/
-                
-                return redirect()->back();
+                $message = 'Password changed';
             }
+            else
+            {
+                $message = 'Password change is not allowed for admin account.';
+            }
+            return redirect()->back()->with(['message' => $message]);
         }
     }
 

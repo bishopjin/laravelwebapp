@@ -49,7 +49,7 @@ class EmployeeController extends Controller
         }
         else
         {
-            $user = User::find($request->input('id'));
+            $user = User::findOrFail($request->input('id'));
             $user->assignRole($request->input('user_role'));
             
             return redirect()->route('inventory.employee.edit.index');
@@ -75,7 +75,7 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-        $userDetails = User::find($id);
+        $userDetails = User::findOrFail($id);
         $roles = Role::select('id', 'name')->where('id', '<', 3)->get();
         return view('inventory.employee.editaccess')->with(compact('userDetails', 'roles'));
     }
@@ -100,7 +100,7 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::withTrashed()->find($id);
+        $user = User::withTrashed()->findOrFail($id);
 
         $user->trashed() ? $user->restore() : $user->delete();
         

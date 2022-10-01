@@ -81,7 +81,7 @@ class ApiDashboardController extends Controller
 
         if (!$validator->fails()) 
         {
-            $subjectEdit = OnlineSubject::find($id)->update(['subject' => $request->input('subject')]);
+            $subjectEdit = OnlineSubject::findOrFail($id)->update(['subject' => $request->input('subject')]);
             $return = array('reqStatus' => 1, 'reqResponse' => $subjectEdit);
         }
         else
@@ -99,7 +99,7 @@ class ApiDashboardController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::withTrashed()->find($id);
+        $user = User::withTrashed()->findOrFail($id);
         
         return $user->trashed() ? $user->restore() : $user->delete();
     }

@@ -51,7 +51,10 @@ class User extends Authenticatable
         'gender_id' => 'integer',
     ];
 
-    protected $attributes = ['online_course_id' => 1,];
+    protected $attributes = [
+        'middlename' => null,
+        'online_course_id' => 1,
+    ];
 
     /* accessor */
     protected function getFullNameAttribute()

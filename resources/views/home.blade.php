@@ -96,13 +96,13 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
                                 @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
-                                    <a href="{{ route('menuadmin.index') }}"
+                                    <a href="menu-ordering/admin"
                                         class="btn btn-outline-primary w-100 rounded-pill">
                                         {{ __('Maintenance') }}
                                     </a>
                                 @endif
                                 @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
-                                    <a href="{{ route('menucustomer.index') }}"
+                                    <a href="menu-ordering/customer"
                                         class="btn btn-outline-primary w-100 rounded-pill">
                                         {{ __('Customer') }}
                                     </a>

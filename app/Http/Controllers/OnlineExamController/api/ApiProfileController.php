@@ -4,6 +4,7 @@ namespace App\Http\Controllers\OnlineExamController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Profile;
 
 class ApiProfileController extends Controller
 {
@@ -47,6 +48,7 @@ class ApiProfileController extends Controller
     public function show($id)
     {
         $courses = OnlineCourse::get();
+
         $userDetails = User::find($id);
         
         return response()->json(array('userDetails' => $userDetails, 'courses' => $courses));
@@ -70,32 +72,13 @@ class ApiProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Profile $request, $id)
     {
         $return = 0;
-        $validator = Validator::make($request->all(), [
-                'firstname' => ['required', 'string', 'max:255'],
-                'lastname' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'dateofbirth' => ['required', 'date'],
-                'gender' => ['required', 'numeric', 'max:1'],
-        ]);
 
-        if ($validator->fails()) 
-        {
-            return redirect()->route('online.profile.edit', $id)->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $updated = User::find($id)->update([
-                'firstname' => $request->input('firstname'),
-                'middlename' => $request->input('middlename') ?? null,
-                'lastname' => $request->input('lastname'),
-                'email' => $request->input('email'),
-                'DOB' => $request->input('dateofbirth'),
-                'gender_id' => $request->input('gender'),
-                'online_course_id' => $request->input('course') ?? 1,
-            ]);
+        if ($request->validated()) {
+
+            $updated = User::find($id)->update($request->validated());
 
             $return = $updated;
         }

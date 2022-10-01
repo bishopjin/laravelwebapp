@@ -20,7 +20,7 @@ class ApiDashboardController extends Controller
      */
     public function index()
     {
-        $user = User::with('onlinecourse')->find(auth()->user()->id);
+        $user = User::with('onlinecourse')->findOrFail(auth()->user()->id);
         $course = $user->onlinecourse->course;
         $examResult = OnlineExamination::with(['onlineexam'])->where('user_id', auth()->user()->id)->get();
 
@@ -78,7 +78,7 @@ class ApiDashboardController extends Controller
     {
         $findExam = [];
 
-        $user = User::with('onlinecourse')->find(auth()->user()->id);
+        $user = User::with('onlinecourse')->findOrFail(auth()->user()->id);
         $course = $user->onlinecourse->course;
 
         $exams = OnlineExam::with('onlinesubject')

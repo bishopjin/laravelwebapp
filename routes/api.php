@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//Route::apiResource('', );
 /* REST API login */
 Route::post('/login', function(Request $request) 
 {

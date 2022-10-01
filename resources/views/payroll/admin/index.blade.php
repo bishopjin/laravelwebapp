@@ -14,7 +14,7 @@
 					<div class="card-header d-flex justify-content-between align-items-center">
 						<span>{{ __('Cut-off Period') }}</span>
 						<span>
-							<a href="{{ route('payroll.admin.cutoff.edit') }}" class="text-decoration-none fw-bold">
+							<a href="#" class="text-decoration-none fw-bold">
 								{{ __('Edit') }}
 							</a>
 						</span>
@@ -89,7 +89,7 @@
 												<td>{{ $schedule->code }}</td>
 												<td class="small">{{ $worksched }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.schedule.edit', ['id' => $schedule->id]) }}" 
+													<a href="#" 
 														class="btn btn-sm btn-outline-success">
 														{{ __('Edit') }}
 													</a>
@@ -130,7 +130,7 @@
 												<td>{{ $deduc->rate * 100 }}{{ __('%') }}</td>
 												<td>{{ $deduc->amount }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.deduction.edit', ['id' => $deduc->id]) }}"
+													<a href="#"
 														class="btn btn-sm btn-outline-success">{{ __('Edit') }}	
 													</a>
 												</td>
@@ -172,7 +172,7 @@
 												<td>{{ $add->rate * 100 }}{{ __('%') }}</td>
 												<td>{{ $add->amount }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.addition.edit', ['id' => $add->id]) }}"
+													<a href="#"
 														class="btn btn-sm btn-outline-success">{{ __('Edit') }}	
 													</a>
 												</td>
@@ -226,7 +226,7 @@
 												<td>{{ $holiday->is_local == 0 ? 'No' : 'Yes' }}</td>
 												<td>{{ $holiday->rate * 100 }} {{ __('%') }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.holiday.edit', ['id' => $holiday->id]) }}"
+													<a href="#"
 														class="btn btn-sm btn-outline-success">{{ __('Edit') }}
 													</a>
 												</td>
@@ -277,7 +277,7 @@
 												<td>{{ $grade->ecola_applied ? 'Yes' : 'No' }}</td>
 												<td>{{ $grade->meal_allowance_applied ? 'Yes' : 'No' }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.salarygrade.edit', ['id' => $grade->id]) }}" 
+													<a href="#" 
 														class="btn btn-sm btn-outline-success">{{ __('Edit') }}
 													</a>
 												</td>
@@ -330,7 +330,7 @@
 												<td>{{ $user->salarygrade->salary_grade }}</td>
 												<td>{{ __('Registered') }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.user.edit', ['id' => $user->user_id]) }}" class="btn btn-sm btn-outline-success">
+													<a href="#" class="btn btn-sm btn-outline-success">
 														{{ __('Edit') }}
 													</a>
 												</td>
@@ -382,7 +382,7 @@
 												<td>{{ __('None') }}</td>
 												<td>{{ __('Not Registered') }}</td>
 												<td>
-													<a href="{{ route('payroll.admin.user.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-success">
+													<a href="#" class="btn btn-sm btn-outline-success">
 														{{ __('Register') }}
 													</a>
 												</td>

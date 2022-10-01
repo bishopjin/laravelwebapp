@@ -53,7 +53,7 @@ class ApiProductOrderController extends Controller
                 $orderNumber = 1000000000; 
             }
 
-            $itemshoe = InventoryItemShoe::find($request->input('shoe_id'));
+            $itemshoe = InventoryItemShoe::findOrFail($request->input('shoe_id'));
             
             if (intval($itemshoe->in_stock) >= intval($request->input('qty'))) {
                 $orderCreated = InventoryItemOrder::create([
@@ -89,7 +89,7 @@ class ApiProductOrderController extends Controller
      */
     public function show($id)
     {
-        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
     }
 
     /**

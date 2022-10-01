@@ -23,68 +23,7 @@ class PayrollAdminController extends Controller
 {
 	protected function Index(Request $request)
 	{
-        $cutoffperiod = [];
-
-        $workSchedule = PayrollWorkSchedule::all();
-
-        $cutOff = PayrollCutOff::all();
-
-		$holidays = PayrollHoliday::paginate(10, ['*'], 'holiday');
-
-		$addition = PayrollAddition::paginate(10, ['*'], 'sladd');
-
-		$deduction = PayrollDeduction::paginate(10, ['*'], 'slded');
-
-		$salary_grade = PayrollSalaryGrade::paginate(10, ['*'], 'salary');
-
-        $unregisterdusers = User::doesntHave('payrollemployee')->paginate(10, ['*'], 'unregistereduser');
         
-		if (PayrollEmployee::exists()) 
-		{
-			$users = PayrollEmployee::with(['user', 'salarygrade', 'workschedule'])->paginate(10, ['*'], 'user');
-		}
-        
-
-        if ($cutOff->count() > 0)
-        {
-            $co1 = 0;
-            $perid = 1;
-            $curYear = date('Y');
-            $curMonth = date('m');
-            $monthName = date('F', mktime(0, 0, 0, $curMonth));
-
-            foreach ($cutOff as $period) 
-            {
-                $cutoffArr = explode('to', $period->cut_off);
-                $paydate = $monthName.' '.(intval(trim($cutoffArr[1])) + 6);
-                $nextMo = date('F', mktime(0, 0, 0, $curMonth + 1));
-
-                if ($period->id == 1)
-                {
-                    $dateR = $monthName.' '.$cutoffArr[0].'to '.$monthName.' '.trim($cutoffArr[1]);
-                    $co1 = intval(trim($cutoffArr[0]));
-                }
-                else
-                {
-                    $daysOfTheCurMo = cal_days_in_month(CAL_GREGORIAN, $curMonth, $curYear);
-                    if ((intval(trim($cutoffArr[0]) + 14) > $daysOfTheCurMo)) 
-                    {
-                        $cutofStart = trim(explode('to', $period->cut_off)[0]);
-                        $dateR = $monthName.' '.$cutofStart.' to '.$nextMo.' '.trim($cutoffArr[1]);
-                    }
-                    else
-                    {
-                        $dateR = $monthName.' '.$cutoffArr[0].'to '.$monthName.' '.trim($cutoffArr[1]);
-                    }
-                    $perid = $period->id;
-                    $paydate = $nextMo.' '.((intval(trim($cutoffArr[1])) >= 30 ? $co1 : intval(trim($cutoffArr[1]))) + 6);
-                }
-
-                array_push($cutoffperiod, array('id' => $perid, 'cut_off' => $period->cut_off, 'daterange' => $dateR, 'paydate' => $paydate));
-            }
-        }
-			
-		return view('payroll.admin.index')->with(compact('unregisterdusers', 'holidays', 'users', 'salary_grade', 'addition', 'deduction', 'cutoffperiod', 'workSchedule'));
 	}
 
 	protected function UserIndex()

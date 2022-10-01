@@ -7,14 +7,15 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Change Password') }}</div>
 					<div class="card-body">
-						<form method="POST" class="px-5" action="{{ route('payroll.password.update') }}">
+						<form method="POST" class="px-5" action="{{ route('changepassword.update', ['changepassword' => $userid]) }}">
 							@csrf
+							@method('PATCH')
 							<div class="form-group pb-2">
-								<label for="oldpass">{{ __('Old Password') }}</label>
-								<input type="password" name="oldpass" id="oldpass" value="{{ old('oldpass') }}"
-									class="form-control @error('oldpass') is-invalid @enderror" required>
+								<label for="old_pass">{{ __('Old Password') }}</label>
+								<input type="password" name="old_pass" id="old_pass" value="{{ old('old_pass') }}"
+									class="form-control @error('old_pass') is-invalid @enderror">
 
-								@error('oldpass')
+								@error('old_pass')
 	                                <span class="invalid-feedback" role="alert">
 	                                    <strong>{{ $message }}</strong>
 	                                </span>
@@ -24,7 +25,7 @@
 							<div class="form-group pb-2">
 								<label for="password">{{ __('New Password') }}</label>
 								<input type="password" name="password" id="password" value="{{ old('password') }}"
-									class="form-control @error('password') is-invalid @enderror" required>
+									class="form-control @error('password') is-invalid @enderror">
 
 								@error('password')
 	                                <span class="invalid-feedback" role="alert">
@@ -34,14 +35,22 @@
 							</div>
 
 							<div class="form-group pb-3">
-								<label for="password-confirm" class="">{{ __('Confirm Password') }}</label>
-                           		<input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+								<label for="password_confirmation">{{ __('Confirm Password') }}</label>
+                           		<input id="password_confirmation" type="password" name="password_confirmation" value="{{ old('password_confirmation') }}" 
+                           		 	class="form-control @error('password_confirmation') is-invalid @enderror">
+
+                           		@error('password_confirmation')
+	                                <span class="invalid-feedback" role="alert">
+	                                    <strong>{{ $message }}</strong>
+	                                </span>
+	                            @enderror
 							</div>
+
 							@if(\Session::has('message'))
 								<div class="fw-bold {{ \Session::get('font') }}">{{ \Session::get('message') }}</div>
 							@endif
 							<div class="form-group d-flex justify-content-between py-3">
-								@if(Auth::user()->can('payroll admin access') AND str_contains(url()->current(), 'admin/user/changepassword'))
+								@if(Auth::user()->hasrole('Admin'))
 									<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
 								@else
 									<a href="{{ route('payroll.employee.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>

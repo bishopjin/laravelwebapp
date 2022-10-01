@@ -7,7 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Attendance') }}</div>
 					<div class="card-body">
-						<form method="GET" action="{{ route('payroll.employee.attendance.show') }}">
+						<form method="GET" action="#">
 							<div class="small">{{ __('Select Date') }}</div>
 							<div class="small d-flex flex-md-row flex-column align-items-md-end">
 								<div class="form-group pe-md-3 pb-md-0 pb-2">
@@ -70,7 +70,7 @@
 												<td>
 													@if($data->time_out)
 														@if($data->changeRequest == 1)
-															<a href="{{ route('payroll.employee.dtr.edit', ['id' => $data->id]) }}" class="fw-bold text-success">
+															<a href="#" class="fw-bold text-success">
 																{{ __('Pending Request') }}
 															</a>
 														@elseif($data->changeRequest == 2)
@@ -80,7 +80,7 @@
 														@elseif($data->changeRequest == 4)
 															{{ __('Computed') }}
 														@else
-															<a href="{{ route('payroll.employee.dtr.edit', ['id' => $data->id]) }}" class="fw-bold">
+															<a href="#" class="fw-bold">
 																{{ __('Request Change') }}
 															</a>
 														@endif

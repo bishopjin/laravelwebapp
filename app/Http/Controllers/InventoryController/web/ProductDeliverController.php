@@ -60,13 +60,13 @@ class ProductDeliverController extends Controller
                 $stock = 0;
 
                 $currentStock = InventoryItemShoe::select('in_stock')
-                    ->find($request->input('shoe_id'));
+                    ->findOrFail($request->input('shoe_id'));
 
                 $stock = $currentStock->in_stock;
 
                 $newStock = intval($request->input('qty')) + intval($stock);
 
-                $updatedStock = InventoryItemShoe::find($request->input('shoe_id'))
+                $updatedStock = InventoryItemShoe::findOrFail($request->input('shoe_id'))
                     ->update(['in_stock' => $newStock]);
 
                 return response()->json($updatedStock);
@@ -82,7 +82,7 @@ class ProductDeliverController extends Controller
      */
     public function show($id)
     {
-        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
     }
 
     /**

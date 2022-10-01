@@ -11,6 +11,7 @@ use App\Models\InventoryItemColor;
 use App\Models\InventoryItemSize;
 use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
+use App\Http\Requests\Product;
 
 class ApiProductController extends Controller
 {
@@ -43,39 +44,19 @@ class ApiProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Product  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Product $request)
     {
-        $validator = Validator::make($request->all(), [
-            'inventory_item_brand_id' => 'required|numeric',
-            'inventory_item_size_id' => 'required|numeric',
-            'inventory_item_color_id' => 'required|numeric',
-            'inventory_item_type_id' => 'required|numeric',
-            'inventory_item_category_id' => 'required|numeric',
-            'price'=> 'required|numeric',
-        ]);
-        
-        if (!$validator->fails()) 
-        {
-            /* create new record */
-            $createRecord = InventoryItemShoe::updateOrCreate(
-                [
-                    'inventory_item_brand_id' => $request->input('inventory_item_brand_id'),
-                    'inventory_item_size_id' => $request->input('inventory_item_size_id'),
-                    'inventory_item_color_id' => $request->input('inventory_item_color_id'),
-                    'inventory_item_type_id' => $request->input('inventory_item_type_id'),
-                    'inventory_item_category_id' => $request->input('inventory_item_category_id'),
-                ],
-                ['price' => $request->input('price')]
-            );
+        if ($request->validated()) {
+            $createRecord = InventoryItemShoe::create($request->validated());
+
             $return = array('reqStatus' => 1, 'reqResponse' => $createRecord->id);
-        }
-        else
-        {
+        } else {
             $return = array('reqStatus' => 0, 'reqResponse' => response()->json($validator->errors(), 500));
         }
+
         return response()->json($return);
     }
 
@@ -87,7 +68,7 @@ class ApiProductController extends Controller
      */
     public function show($id)
     {
-        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
     }
 
     /**

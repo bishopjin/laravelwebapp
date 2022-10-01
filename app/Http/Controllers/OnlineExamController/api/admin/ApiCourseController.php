@@ -73,7 +73,7 @@ class ApiCourseController extends Controller
      */
     public function edit($id)
     {
-        return OnlineCourse::find($id);
+        return OnlineCourse::findOrFail($id);
     }
 
     /**
@@ -91,7 +91,7 @@ class ApiCourseController extends Controller
 
         if (!$validator->fails()) 
         {
-            $courseEdit = OnlineCourse::find($request->input('course_id'))
+            $courseEdit = OnlineCourse::findOrFail($request->input('course_id'))
                 ->update(['course' => $request->input('course')]);
 
             $return = array('reqStatus' => 1, 'reqResponse' => $courseEdit);

@@ -86,7 +86,7 @@
                             </div>
                         @endif
                         <div class="d-block d-md-none mt-1 bg-primary">
-                            <a class="dropdown-item" href="{{ route('index') }}">
+                            <a class="dropdown-item" href="/">
                                 <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                             </a>
                         </div>
@@ -101,7 +101,7 @@
                                     <a class="dropdown-item" href="{{ route('online.profile.edit', Auth::user()->id) }}">
                                         <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('index') }}">
+                                    <a class="dropdown-item" href="/">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                                     </a>
                                 </div>

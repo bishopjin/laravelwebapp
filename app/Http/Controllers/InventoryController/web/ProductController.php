@@ -11,6 +11,7 @@ use App\Models\InventoryItemColor;
 use App\Models\InventoryItemSize;
 use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
+use App\Http\Requests\Product;
 
 class ProductController extends Controller
 {
@@ -48,35 +49,12 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'inventory_item_brand_id' => 'required|numeric',
-            'inventory_item_size_id' => 'required|numeric',
-            'inventory_item_color_id' => 'required|numeric',
-            'inventory_item_type_id' => 'required|numeric',
-            'inventory_item_category_id' => 'required|numeric',
-            'price'=> 'required|numeric',
-        ]);
-        
-        if ($validator->fails()) {
-            return redirect()->route('inventory.product.store')->withErrors($validator)->withInput();
-        }
-        else {
-            /* create new record */
-            $createRecord = InventoryItemShoe::updateOrCreate(
-                [
-                    'inventory_item_brand_id' => $request->input('inventory_item_brand_id'),
-                    'inventory_item_size_id' => $request->input('inventory_item_size_id'),
-                    'inventory_item_color_id' => $request->input('inventory_item_color_id'),
-                    'inventory_item_type_id' => $request->input('inventory_item_type_id'),
-                    'inventory_item_category_id' => $request->input('inventory_item_category_id'),
-                ],
-                ['price' => $request->input('price')]
-            );
+        if ($request->validated()) {
+            $createRecord = InventoryItemShoe::create($request->validated());
 
             if ($createRecord->id > 0) { 
                 return redirect()->route('inventory.product.show', ['id' => $createRecord->id]); 
-            }
-            else { 
+            } else { 
                 return redirect()->route('inventory.product.store')->withInput(); 
             }
         }
@@ -90,7 +68,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $itemDetail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->find($id);
+        $itemDetail = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
         return view('inventory.product.view')->with(compact('itemDetail'));
     }
 

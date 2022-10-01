@@ -20,13 +20,7 @@ class PayrollEmployeeController extends Controller
 {
     protected function Index(Request $request)
     {
-        $attendance = PayrollAttendance::with(['workschedule', 'holiday'])
-                ->where([
-                    ['user_id', $request->user()->id],
-                    ['created_at', 'LIKE', date('Y-m-d').'%'],
-                ])->orderBy('created_at', 'desc')->get();
-        $request->flash();
-        return view('payroll.employee.index')->with(compact('attendance'));
+        
     }
 
     protected function GetAttendance(Request $request)

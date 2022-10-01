@@ -4,6 +4,15 @@ namespace App\Http\Controllers\OnlineMenuController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\OrderBurger;
+use App\Models\OrderComboMeal;
+use App\Models\OrderCoupon;
+use App\Models\OrderBeverageName;
+use App\Models\OrderBeverage;
+use App\Models\OrderOrder;
+use App\Models\OrderTax;
+use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApiAdminDashboardController extends Controller
 {

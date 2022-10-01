@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\OnlineExamController\web\admin;
+namespace App\Http\Controllers\PayrollController\web\employee;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\OnlineSubject; 
+use App\Models\PayrollAttendance;
 
-class DashboardController extends Controller
+class EmployeePayrollDashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +15,13 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $subjects = OnlineSubject::with('user')->paginate(10, ['*'], 'subject');
-        
-        $users = User::withTrashed()->with(['gender', 'onlinecourse'])->notadmin()->notself($request->user()->id)->paginate(10, ['*'], 'users');
-        
-        return view('onlineexam.admin.index')->with(compact('users', 'subjects'));
+        $attendance = PayrollAttendance::with(['workschedule', 'holiday'])
+                ->where([
+                    ['user_id', auth()->user()->id],
+                    ['created_at', 'LIKE', date('Y-m-d').'%'],
+                ])->orderBy('created_at', 'desc')->get();
+        //$request->flash();
+        return view('payroll.employee.index')->with(compact('attendance'));
     }
 
     /**
@@ -75,20 +76,7 @@ class DashboardController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-                'subject' => ['required', 'string', 'unique:online_subjects', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('online.admin.index')->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $course_edit = OnlineSubject::findOrFail($id)
-                ->update(['subject' => $request->input('subject')]);
-
-            return redirect()->back();
-        }
+        //
     }
 
     /**
@@ -99,10 +87,6 @@ class DashboardController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        
-        $user->trashed() ? $user->restore() : $user->delete();
-        
-        return redirect()->back();
+        //
     }
 }

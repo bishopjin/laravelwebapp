@@ -83,7 +83,7 @@ class ApiEmployeeController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::withTrashed()->find($id);
+        $user = User::withTrashed()->findOrFail($id);
 
         return $user->trashed() ? $user->restore() : $user->delete();
     }

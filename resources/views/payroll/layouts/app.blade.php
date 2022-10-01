@@ -43,30 +43,25 @@
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.deduction.index') }}" class="payroll-mobile-link">{{ __('Deduction') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Deduction') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.addition.index') }}" class="payroll-mobile-link">{{ __('Addition') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Addition') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.salarygrade.index') }}" class="payroll-mobile-link">{{ __('Salary Grade') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Salary Grade') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.holiday.index') }}" class="payroll-mobile-link">{{ __('Holiday') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Holiday') }}</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('payroll.admin.schedule.index') }}" class="payroll-mobile-link">{{ __('Work Schedule') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Work Schedule') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.user.index') }}" class="payroll-mobile-link">{{ __('Register') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Register') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.admin.requestchange.index') }}" class="payroll-mobile-link">{{ __('Attendance Change Request') }}</a>
-                                </li>
-                                <li>
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.password.index', ['name' => 'admin']) }}">
-                                        {{ __('Change Password') }}
-                                    </a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Attendance Change Request') }}</a>
                                 </li>
                             @elseif(Auth::user()->can('payroll employee access'))
                                 <li class="">
@@ -75,22 +70,22 @@
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('payroll.employee.dtr.index') }}" class="payroll-mobile-link">{{ __('Daily Time Recorder') }}</a>
+                                    <a href="#" class="payroll-mobile-link">{{ __('Daily Time Recorder') }}</a>
                                 </li>
                                 <li class="">
                                     <a class="payroll-mobile-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#laModal">
                                         {{ __('Payslip') }}
                                     </a>
-                                    {{-- <a href="{{ route('payroll.employee.payslip.show') }}" class="payroll-mobile-link">{{ __('Payslip') }}</a> --}}
-                                </li>
-                                <li>
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.password.index', ['name' => 'employee']) }}">
-                                        {{ __('Change Password') }}
-                                    </a>
+                                    {{-- <a href="#" class="payroll-mobile-link">{{ __('Payslip') }}</a> --}}
                                 </li>
                             @endif
                             <li>
-                                <a class="payroll-mobile-link" href="{{ route('index') }}">
+                                <a class="payroll-mobile-link" href="{{ route('changepassword.create') }}">
+                                    {{ __('Change Password') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="payroll-mobile-link" href="/">
                                     {{ __('Home') }}
                                 </a>
                             </li>
@@ -101,7 +96,7 @@
                     <!-- employee -->
                     @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/employee')) 
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="@if(Route::current()->getName() == 'payroll.employee.index') # @else  {{ route('payroll.employee.index') }} @endif">
+                            href="{{ route('payroll.employee.index') }}">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
@@ -112,7 +107,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin">
-                                    <a class="dropdown-item" href="{{ route('payroll.employee.dtr.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Daily Time Recorder') }}
                                     </a>
                                 </div>
@@ -129,7 +124,7 @@
                                     <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#laModal">
                                         {{ __('View') }}
                                     </a>
-                                    {{-- <a class="dropdown-item" href="{{ route('payroll.employee.payslip.show') }}">
+                                    {{-- <a class="dropdown-item" href="#">
                                         {{ __('View') }}
                                     </a> --}}
                                 </div>
@@ -139,7 +134,7 @@
                     <!-- admin -->
                     @elseif(Auth::user()->can('payroll admin access'))
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="@if(Route::current()->getName() == 'payroll.admin.index') '#'' @else {{ route('payroll.admin.index') }} @endif">
+                            href="{{ route('payroll.admin.index') }}">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
@@ -150,19 +145,19 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin1">
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.deduction.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Deduction') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.addition.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Addition') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.salarygrade.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Salary Grade') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.holiday.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Holiday') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.schedule.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Work Schedule') }}
                                     </a>
                                 </div>
@@ -176,10 +171,10 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownAdmin2">
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.user.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Register') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('payroll.admin.requestchange.index') }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ __('Attendance Change Request') }}
                                     </a>
                                 </div>
@@ -198,16 +193,10 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right mt-2 payroll-nav-bg" aria-labelledby="navbarDropdownEmployee">
-                                @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/employee'))
-                                    <a class="dropdown-item" href="{{ route('payroll.password.index', ['name' => 'employee']) }}">
-                                        {{ __('Change Password') }}
-                                    </a>
-                                @elseif (Auth::user()->can('payroll admin access'))
-                                    <a class="dropdown-item" href="{{ route('payroll.password.index', ['name' => 'admin']) }}">
-                                        {{ __('Change Password') }}
-                                    </a>
-                                @endif
-                                <a class="dropdown-item" href="{{ route('index') }}">
+                                <a class="dropdown-item" href="{{ route('changepassword.create') }}">
+                                    {{ __('Change Password') }}
+                                </a>
+                                <a class="dropdown-item" href="/">
                                     {{ __('Home') }}
                                 </a>
                             </div>
