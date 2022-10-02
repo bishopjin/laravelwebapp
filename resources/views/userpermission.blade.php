@@ -20,26 +20,25 @@
                                     <th>{{ __('Permission(s)') }}</th>
                                 </thead>
                                 <tbody>
-                                    @isset($users)
-                                        @foreach($users as $user)
-                                            <tr>
-                                                <td>{{ $user->full_name }}</td>
-                                                <td>{{ $user->username }}</td>
-                                                <td>{{ \Hash::check('12345678', $user->password) ? 'Yes' : 'No' }}</td>
-                                                <td>
-                                                    <span class="d-flex gap-2 fw-bold">
-                                                        <a href="{{ route('users.role.show', ['id' => $user->id, 'action' => 'view']) }}" class="text-decoration-none text-info">{{ __('View') }}</a>&#124;
-                                                        <a href="{{ route('users.role.show', ['id' => $user->id, 'action' => 'edit']) }}" class="text-decoration-none text-primary">{{ __('Edit') }}</a>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span class="d-flex gap-2 fw-bold">
-                                                        <a href="{{ route('users.permission.show', ['id' => $user->id, 'action' => 'view']) }}" class="text-decoration-none text-info">{{ __('View') }}</a>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endisset
+                                    @forelse($users as $user)
+                                        <tr>
+                                            <td>{{ $user->full_name }}</td>
+                                            <td>{{ $user->username }}</td>
+                                            <td>{{ \Hash::check('12345678', $user->password) ? 'Yes' : 'No' }}</td>
+                                            <td>
+                                                <span class="d-flex gap-2 fw-bold">
+                                                    <a href="{{ route('userspermission.edit', ['userspermission' => $user->id]) }}" class="text-decoration-none text-info">{{ __('View') }}</a>&#124;
+                                                    <a href="{{ route('userspermission.edit', ['userspermission' => $user->id]) }}" class="text-decoration-none text-primary">{{ __('Edit') }}</a>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="d-flex gap-2 fw-bold">
+                                                    <a href="{{ route('userspermission.show', ['userspermission' => $user->id]) }}" class="text-decoration-none text-info">{{ __('View') }}</a>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                    @endforelse
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
@@ -58,27 +57,26 @@
                 <div class="card w-100">
                     <div class="card-header d-flex justify-content-between">
                         <span>{{ __('Role\'s permission') }}</span>
-                        <a href="{{ route('roles.permission.index') }}" class="text-decoration-none fw-bold">{{ __('Edit') }}</a>
+                        <a href="{{ route('usersrole.index') }}" class="text-decoration-none fw-bold">{{ __('Edit') }}</a>
                     </div>
                     <div class="card-body py-3">
                         <div class="fw-bold">{{ __('Role name') }}</div>
-                        @isset($rolepermission)
-                            @foreach($rolepermission as $role)
-                                @if($role->name != 'Super Admin')
-                                    <div class="px-4">
-                                        <div class="fw-bold">{{ $role->name }}</div>
+                        @forelse($rolepermission as $role)
+                            @if($role->name != 'Super Admin')
+                                <div class="px-4">
+                                    <div class="fw-bold">{{ $role->name }}</div>
 
-                                        @if($role->permissions->count() > 0)
-                                            @foreach($role->permissions as $permission)
-                                                <div class="px-4">{{ __('- ') }}{{ $permission->name }}</div>
-                                            @endforeach
-                                        @else
-                                            <div class="px-4">{{ __('- No permission') }}</div>
-                                        @endif
-                                    </div>
-                                @endif
-                            @endforeach
-                        @endisset
+                                    @if($role->permissions->count() > 0)
+                                        @foreach($role->permissions as $permission)
+                                            <div class="px-4">{{ __('- ') }}{{ $permission->name }}</div>
+                                        @endforeach
+                                    @else
+                                        <div class="px-4">{{ __('- No permission') }}</div>
+                                    @endif
+                                </div>
+                            @endif
+                        @empty
+                        @endforelse
                     </div>
                     <div class="card-footer small">
                         <span class="fw-bold">{{ __('NOTE: ') }}</span>
@@ -95,7 +93,7 @@
                             @isset($roles)
                                 <div class="fw-bold pb-2">{{ __('User\'s Role(s)') }}</div>
                                 @if($action == 'edit')
-                                    <form method="POST" action="{{ route('users.role.update') }}">
+                                    <form method="POST" action="{{ route('userspermission.update', ['userspermission' => $curuser->id]) }}">
                                         @csrf
                                         @method('PUT')
                                         @foreach($roles as $role)
@@ -143,7 +141,6 @@
                                             @endif
                                         @endforeach
                                         <div class="form-group px-4">
-                                            <input type="hidden" name="id" value="{{ $curuser->id }}">
                                             <input type="submit" value="Save" class="btn btn-primary">
                                         </div>
                                     </form>

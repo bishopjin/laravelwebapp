@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UsersPermissionController;
+use App\Http\Controllers\UsersRoleController;
 use App\Http\Controllers\InventoryController\web\DashboardController;
 use App\Http\Controllers\InventoryController\web\ProductController;
 use App\Http\Controllers\InventoryController\web\ProductDeliverController;
@@ -38,15 +39,8 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::view('/', 'home')->name('index');
 
 	Route::middleware('role:Super Admin')->group(function () {
-		Route::get('/userpermission', [HomeController::class, 'PermissionIndex'])->name('users.permission.index');
-		Route::put('/user/role/update', [HomeController::class, 'UserRoleUpdate'])->name('users.role.update');
-
-		Route::get('/role/permission', [HomeController::class, 'RolePermissionIndex'])->name('roles.permission.index');
-		Route::put('/role/permission/update', [HomeController::class, 'RolePermissionUpdate'])->name('roles.permission.update');
-		Route::get('/role/permission/{name}/edit', [HomeController::class, 'RolePermissionShow'])->name('roles.permission.show');
-
-		Route::get('/permission/user/{id}/{action}', [HomeController::class, 'UserPersmissionShow'])->name('users.permission.show');
-		Route::get('/role/user/{id}/{action}', [HomeController::class, 'UserRoleShow'])->name('users.role.show');
+		Route::resource('userspermission', UsersPermissionController::class);
+		Route::resource('usersrole', UsersRoleController::class);
 	});
 	
 	/* Inventory Route */
@@ -71,35 +65,15 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* Online Exam route */
 	Route::prefix('online-exam')->group(function() {
 		Route::middleware('permission:exam admin access')->group(function () {
-			Route::prefix('admin')->group(function () {
-				Route::get('/dashboard', [AdminController::class, 'Index'])->name('online.admin.index');
-				Route::get('/course', [AdminController::class, 'ShowCourse'])->name('online.course.show');
-				Route::post('/course/save', [AdminController::class, 'SaveCourse'])->name('online.course.store');
-				Route::put('/course/update', [AdminController::class, 'UpdateCourse'])->name('online.course.update');
-				Route::delete('/user/delete', [AdminController::class, 'DeleteUser'])->name('online.user.destroy');
-				Route::put('/subject/update', [AdminController::class, 'UpdateSubject'])->name('online.subject.update');
-			});
+			Route::resource('admin', AdminController::class);
 		});
 
 		Route::middleware('permission:exam faculty access')->group(function () {
-			Route::prefix('faculty')->group(function () {
-				Route::get('/dashboard', [FacultyController::class, 'Index'])->name('online.faculty.index');
-				Route::get('/subject', [FacultyController::class, 'ShowSubject'])->name('online.subject.index');
-				Route::post('/subject/save', [FacultyController::class, 'SaveSubject'])->name('online.subject.store');
-				Route::get('/examination', [FacultyController::class, 'ExaminationShow'])->name('online.exam.index');
-				Route::post('/examination/save', [FacultyController::class, 'ExaminationSave'])->name('online.exam.store');
-				Route::post('/examination/view', [FacultyController::class, 'ExaminationView'])->name('online.exam.show');
-				Route::patch('/examination/update', [FacultyController::class, 'ExaminationUpdate'])->name('online.exam.update');
-				Route::get('/student/{id}/exam_score', [FacultyController::class, 'ShowScore'])->name('online.faculty.student.score.show');
-			});
+			Route::resource('faculty', FacultyController::class);
 		});
 
 		Route::middleware('permission:exam student access')->group(function () {
-			Route::prefix('student')->group(function () {
-				Route::get('/dashboard', [StudentController::class, 'Index'])->name('online.student.index');
-				Route::post('exam', [StudentController::class, 'ShowExamination'])->name('online.student.exam.show');
-				Route::post('exam/save', [StudentController::class, 'SaveExamination'])->name('online.student.exam.store');
-			});
+			Route::resource('student', StudentController::class);
 		});
 
 		Route::patch('profile/update', [UserProfileController::class, 'Update'])->name('online.profile.update');
@@ -110,15 +84,11 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::prefix('menu-ordering')->group(function() {
 		/* Customer route */
 		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
-			Route::prefix('customer')->group(function() {
-				Route::resource('/', CustomerDashboardController::class);//->only(['index', 'store']);
-			});
+			Route::resource('customer', CustomerDashboardController::class);//->only(['index', 'store']);
 		});
 		/* Admin Maintenance route */
 		Route::middleware('permission:menu view order list|menu view user list')->group(function(){
-			Route::prefix('admin')->group(function () {
-				Route::resource('/', AdminDashboardController::class);
-			});
+			Route::resource('admin', AdminDashboardController::class);
 		});
 	});
 	/* END */
@@ -129,25 +99,14 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		Route::middleware('validatepayrolluser')->group(function () {
 			/* Admin */
 			Route::middleware('permission:payroll admin access')->group(function() {
-				Route::prefix('admin')->group(function() {
-					Route::resource('/dashboard', AdminPayrollDashboardController::class)->names([
-						'index' => 'payroll.admin.index',
-					]);
-				});
+				Route::resource('admin', AdminPayrollDashboardController::class);
 			});
 			/* Employee */
 			Route::middleware('permission:payroll employee access')->group(function () {
-				Route::prefix('employee')->group(function() {
-					Route::resource('/dashboard', EmployeePayrollDashboardController::class)->names([
-						'index' => 'payroll.employee.index',
-					]);
-				});
+				Route::resource('employee', EmployeePayrollDashboardController::class);
 			});
 		});
-		Route::resource('/changepassword', PayrollChangePasswordController::class)->names([
-			'create' => 'changepassword.create',
-			'update' => 'changepassword.update',
-		]);
+		Route::resource('changepassword', PayrollChangePasswordController::class);
 	});
 });
 /* END */

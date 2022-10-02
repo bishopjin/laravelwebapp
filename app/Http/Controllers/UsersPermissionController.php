@@ -7,44 +7,101 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
 
-class HomeController extends Controller
+class UsersPermissionController extends Controller
 {
-    protected function PermissionIndex()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
         $users = User::paginate(10, ['*'], 'user');
+
         $rolepermission = Role::with('permissions')->get();
         
         return view('userpermission')->with(compact('users', 'rolepermission'));
     }
 
-    protected function UserPersmissionShow(Request $request, $id, $action)
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
-        $curuser = User::find($id);
-        $userpermissions = $curuser != null ? $curuser->getAllPermissions() : null;
-        $rolepermission = Role::with('permissions')->get();
-        $permissions = Permission::all();
-        $users = User::paginate(10, ['*'], 'user');
-        
-        return view('userpermission')->with(compact('userpermissions', 'permissions', 'users', 'curuser', 'action', 'rolepermission'));
+        //
     }
 
-    protected function UserRoleShow(Request $request, $id, $action)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
         $curuser = User::find($id);
-        $userroles = $curuser != null ? $curuser->getRoleNames() : null;
+
+        $userpermissions = $curuser != null ? $curuser->getAllPermissions() : null;
+
         $rolepermission = Role::with('permissions')->get();
+
+        $permissions = Permission::all();
+
+        $users = User::paginate(10, ['*'], 'user');
+        
+        return view('userpermission')->with(compact('userpermissions', 'permissions', 'users', 'curuser', 'rolepermission'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $action = 'edit';
+        
+        $curuser = User::find($id);
+
+        $userroles = $curuser != null ? $curuser->getRoleNames() : null;
+
+        $rolepermission = Role::with('permissions')->get();
+
         $roles = Role::all();
+
         $users = User::paginate(10, ['*'], 'user');
 
         return view('userpermission')->with(compact('userroles', 'roles', 'users', 'curuser', 'action', 'rolepermission'));
     }
 
-    protected function UserRoleUpdate(Request $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
     {
         $roles = $request->input('role');
-        $user = User::find($request->input('id'));
 
-        if ($request->input('id') != 1)
+        $user = User::find($id);
+
+        if ($id != 1)
         {
             $key = $roles ? array_search('Super Admin', $roles) : NULL;
             if ($key)
@@ -66,26 +123,14 @@ class HomeController extends Controller
         return redirect()->route('users.permission.index');
     }
 
-    protected function RolePermissionIndex()
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
-        $roles = Role::with('permissions')->get();
-        return view('rolepermission')->with(compact('roles'));
-    }
-
-    protected function RolePermissionShow(Request $request, $name)
-    {
-        $permissions = Permission::all();
-        $rolepermissions = Role::findByName($name, 'web')->permissions;
-        $roles = Role::with('permissions')->get();
-
-        return view('rolepermission')->with(compact('permissions', 'name', 'roles', 'rolepermissions'))->render();
-    }
-
-    protected function RolePermissionUpdate(Request $request)
-    {
-        $role = Role::findByName($request->input('rolename'), 'web');
-        $role->syncPermissions($request->input('permission'));
-        $request->flash();
-        return redirect()->back();
+        //
     }
 }

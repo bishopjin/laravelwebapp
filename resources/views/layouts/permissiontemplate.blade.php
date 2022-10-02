@@ -6,7 +6,7 @@
 	{{ $title != null ? $title.'\'s role permissions' : '' }}
 </div>
 @isset($permissions)
-	<form method="POST" action="{{ route('roles.permission.update') }}">
+	<form method="POST" action="{{ route('usersrole.update', ['usersrole' => $name]) }}">
 		@csrf
 		@method('PUT')
 
@@ -29,7 +29,6 @@
 	        </div>
 	    @endforeach
 	    <div class="form-group">
-	    	<input type="hidden" name="rolename" value="{{ $rolename }}">
 	    	<input type="submit" class="btn btn-primary" value="Save">
 	    </div>
 	</form>

@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <span>{{ __('Set Permission per Role') }}</span>
-                        <a href="{{ route('users.permission.index') }}" class="text-decoration-none fw-bold">{{ __('Back') }}</a>
+                        <a href="{{ route('userspermission.index') }}" class="text-decoration-none fw-bold">{{ __('Back') }}</a>
                     </div>
                     <div class="card-body">
                         <div class="row justify-content-center">
@@ -17,7 +17,7 @@
                                     @foreach($roles as $role)
                                         <div class="fw-bold ps-4">
                                             <span class="me-4">{{ $role->name }}</span>
-                                            <a href="{{ route('roles.permission.show', ['name' => $role->name]) }}" class="text-decoration-none fw-bold text-primary small">
+                                            <a href="{{ route('usersrole.show', ['usersrole' => $role->name]) }}" class="text-decoration-none fw-bold text-primary small">
                                                 {{ __('Edit Permission') }}
                                             </a>
                                         </div>

@@ -14,7 +14,7 @@
                             </div>
                             @hasrole('Super Admin')
                                 <div class="pt-md-0 pt-1 small d-flex align-items-center justify-content-md-center">
-                                    <a href="{{ route('users.permission.index') }}" class="small text-decoration-none">
+                                    <a href="{{ route('userspermission.index') }}" class="small text-decoration-none">
                                         {{ __('Permission') }}
                                     </a>
                                 </div>
@@ -135,17 +135,17 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['exam student access', 'exam faculty access', 'exam admin access']))
                                 @can('exam admin access')
-                                    <a href="{{ route('online.admin.index') }}" 
+                                    <a href="{{ route('admin.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
                                     </a>
                                 @endcan
                                 @can('exam faculty access')
-                                    <a href="{{ route('online.faculty.index') }}" 
+                                    <a href="{{ route('faculty.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
                                     </a>
                                 @endcan
                                 @can('exam student access')
-                                    <a href="{{ route('online.student.index') }}" 
+                                    <a href="{{ route('student.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">{{ __('Student') }}
                                     </a>
                                 @endcan
@@ -180,13 +180,13 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['payroll admin access', 'payroll employee access']))
                                 @can('payroll admin access')
-                                    <a href="{{ route('payroll.admin.index') }}" 
+                                    <a href="{{ route('admin.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">
                                         {{ __('Admin') }}
                                     </a>
                                 @endcan
                                 @can('payroll employee access')
-                                    <a href="{{ route('payroll.employee.index') }}" 
+                                    <a href="{{ route('employee.index') }}" 
                                         class="btn btn-outline-primary rounded-pill w-100">
                                         {{ __('Employee') }}
                                     </a>
