@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Http\Requests\ChangePassword;
+use App\Http\Requests\ChangePasswordRequest;
 
 class PayrollChangePasswordController extends Controller
 {
@@ -67,11 +67,11 @@ class PayrollChangePasswordController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\ChangePassword  $request
+     * @param  App\Http\Requests\ChangePasswordRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ChangePassword $request, $id)
+    public function update(ChangePasswordRequest $request, $id)
     {
         if ($request->validated()) 
         {

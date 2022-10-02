@@ -98,27 +98,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @isset($orders)
-                                        @foreach ($orders as $order)
-                                            @php
-                                                /* add trailing zero for non-decimal price */
-                                                $price =  $order->shoe->price; 
-                                                $cost = $order->shoe->price * $order->qty;  
-                                            @endphp
-                                            <tr>
-                                                <td class="fw-bolder">{{ $order->order_number }}</td>
-                                                <td>{{ $order->shoe->id }}</td>
-                                                <td>{{ $order->shoe->brand->brand }}</td>
-                                                <td>{{ $order->shoe->size->size }}</td>
-                                                <td>{{ $order->shoe->color->color }}</td>
-                                                <td>{{ $order->shoe->type->type }}</td>
-                                                <td>{{ $order->shoe->category->category }}</td>
-                                                <td>{{ $price }}</td>
-                                                <td>{{ $order->qty }}</td>
-                                                <td>{{ $cost }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @endisset
+                                    @forelse ($orders as $order)
+                                        @php
+                                            /* add trailing zero for non-decimal price */
+                                            $price =  $order->shoe->price; 
+                                            $cost = $order->shoe->price * $order->qty;  
+                                        @endphp
+                                        <tr>
+                                            <td class="fw-bolder">{{ $order->id }}</td>
+                                            <td>{{ $order->shoe->id }}</td>
+                                            <td>{{ $order->shoe->brand->brand }}</td>
+                                            <td>{{ $order->shoe->size->size }}</td>
+                                            <td>{{ $order->shoe->color->color }}</td>
+                                            <td>{{ $order->shoe->type->type }}</td>
+                                            <td>{{ $order->shoe->category->category }}</td>
+                                            <td>{{ $price }}</td>
+                                            <td>{{ $order->qty }}</td>
+                                            <td>{{ $cost }}</td>
+                                        </tr>
+                                    @empty
+                                    @endforelse
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end">
@@ -214,7 +213,9 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert(error)
+                        $(modalHeader).html('Warning').css('color', '#FFFF00');
+                        $(responseContent).html(error);
+                        $(oDModal).modal('show');
                     }
                 });
             }
@@ -239,9 +240,9 @@
                 let qtyVal = $(qty).val();
 
                 $.ajax({
-                    url: '{{ route("inventory.order.store") }}',
+                    url: '{{ route("order.store") }}',
                     type: 'POST',
-                    data: {_token : '{{ csrf_token() }}', shoe_id : itemIdVal, qty : qtyVal},
+                    data: {_token : '{{ csrf_token() }}', inventory_item_shoe_id : itemIdVal, qty : qtyVal},
                     dataType: 'json',
                     Accept: 'application/json',
                     success: function(result, status, xhr){
@@ -264,7 +265,7 @@
                     error: function(xhr, status, error){
                         $(modalHeader).html('Error').css('color', '#F00');
                         $(responseContent).html(error);
-                        $('#errorMsg').html(JSON.stringify(xhr));
+                        //$('#errorMsg').html(JSON.stringify(xhr));
                         $(oDModal).modal('show');
                     }
                 });

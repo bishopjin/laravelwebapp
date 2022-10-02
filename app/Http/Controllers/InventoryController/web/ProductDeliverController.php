@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\InventoryItemShoe;
 use App\Models\InventoryItemReceive;
+use App\Http\Requests\ProductOrderAndDeliverRequest;
 
 class ProductDeliverController extends Controller
 {
@@ -17,57 +17,25 @@ class ProductDeliverController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('inventory.product.receive');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProductOrderAndDeliverRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductOrderAndDeliverRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-                'shoe_id' => 'required|numeric',
-                'qty' => 'required|numeric',
-        ]);
+        if ($request->validated()) {
+            $saveDeliver = $request->user()->inventoryreceive()->create($request->validated());
 
-        if ($validator->fails()) 
-        {
-            return redirect()->route('inventory.deliver.store')->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $saveDeliver = InventoryItemReceive::create([
-                'inventory_item_shoe_id' => $request->input('shoe_id'),
-                'qty' => $request->input('qty'),
-                'user_id' => $request->user()->id,
-            ]);
+            if($saveDeliver->id > 0) {
+                $currentStock = InventoryItemShoe::findOrFail($request->input('inventory_item_shoe_id'));
 
-            if($saveDeliver->id > 0)
-            {
-                $stock = 0;
-
-                $currentStock = InventoryItemShoe::select('in_stock')
-                    ->findOrFail($request->input('shoe_id'));
-
-                $stock = $currentStock->in_stock;
-
-                $newStock = intval($request->input('qty')) + intval($stock);
-
-                $updatedStock = InventoryItemShoe::findOrFail($request->input('shoe_id'))
-                    ->update(['in_stock' => $newStock]);
+                $updatedStock = InventoryItemShoe::findOrFail($request->input('inventory_item_shoe_id'))
+                    ->update(['in_stock' => (intval($request->input('qty')) + intval($currentStock->in_stock))]);
 
                 return response()->json($updatedStock);
             }
@@ -83,39 +51,5 @@ class ProductDeliverController extends Controller
     public function show($id)
     {
         return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

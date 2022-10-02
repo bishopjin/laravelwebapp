@@ -1,69 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\InventoryItemShoe;
 use App\Models\InventoryItemReceive;
+use App\Http\Requests\ProductOrderAndDeliverRequest;
 
 class ApiProductDeliverController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProductOrderAndDeliverRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductOrderAndDeliverRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-                'shoe_id' => 'required|numeric',
-                'qty' => 'required|numeric',
-        ]);
+        if ($request->validated()) {
+            $saveDeliver = $request->user()->inventoryreceive()->create($request->validated());
 
-        if (!$validator->fails()) 
-        {
-            $saveDeliver = InventoryItemReceive::create([
-                'inventory_item_shoe_id' => $request->input('shoe_id'),
-                'qty' => $request->input('qty'),
-                'user_id' => $request->user()->id,
-            ]);
-
-            if($saveDeliver->id > 0)
-            {
-                $stock = 0;
-
-                $currentStock = InventoryItemShoe::select('in_stock')
-                    ->findOrFail($request->input('shoe_id'));
-
-                $stock = $currentStock->in_stock;
-
-                $newStock = intval($request->input('qty')) + intval($stock);
+            if($saveDeliver->id > 0) {
+                $currentStock = InventoryItemShoe::select('in_stock')->findOrFail($request->input('shoe_id'));
 
                 $updatedStock = InventoryItemShoe::findOrFail($request->input('shoe_id'))
-                    ->update(['in_stock' => $newStock]);
+                    ->update(['in_stock' => (intval($request->input('qty')) + intval($currentStock->in_stock))]);
 
                 $return = array('reqStatus' => 1, 'reqResponse' => response()->json($updatedStock));
             }

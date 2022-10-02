@@ -2,23 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InventoryController\DashboardController;
-use App\Http\Controllers\InventoryController\ProductController;
-use App\Http\Controllers\InventoryController\EmployeeController;
-use App\Http\Controllers\OnlineExamController\UserProfileController;
-use App\Http\Controllers\OnlineExamController\AdminController;
-use App\Http\Controllers\OnlineExamController\FacultyController;
-use App\Http\Controllers\OnlineExamController\StudentController;
+use App\Http\Controllers\InventoryController\web\DashboardController;
+use App\Http\Controllers\InventoryController\web\ProductController;
+use App\Http\Controllers\InventoryController\web\ProductDeliverController;
+use App\Http\Controllers\InventoryController\web\ProductOrderController;
+use App\Http\Controllers\InventoryController\web\EmployeeController;
+use App\Http\Controllers\InventoryController\web\EmployeeLogsController;
 
+use App\Http\Controllers\OnlineExamController\web\UserProfileController;
+use App\Http\Controllers\OnlineExamController\web\AdminController;
+use App\Http\Controllers\OnlineExamController\web\FacultyController;
+use App\Http\Controllers\OnlineExamController\web\StudentController;
 use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
 use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
+
 use App\Http\Controllers\PayrollController\web\admin\AdminPayrollDashboardController;
 use App\Http\Controllers\PayrollController\web\employee\EmployeePayrollDashboardController;
 use App\Http\Controllers\PayrollController\web\PayrollChangePasswordController;
-
-use App\Http\Controllers\PayrollController\PayrollEmployeeController;
-use App\Http\Controllers\PayrollController\PayrollAdminController;
-use App\Http\Controllers\PayrollController\PayrollDashboardController;
+use App\Http\Controllers\PayrollController\web\PayrollEmployeeController;
+use App\Http\Controllers\PayrollController\web\PayrollAdminController;
+use App\Http\Controllers\PayrollController\web\PayrollDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,36 +51,22 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	
 	/* Inventory Route */
 	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('inventory')->group(function() {
-		Route::get('/', [DashboardController::class, 'Index'])->name('inventory.dashboard.index');
-		Route::prefix('product')->group(function () {
-			Route::get('/order', [ProductController::class, 'OrderIndex'])->name('inventory.order.index');
-			Route::post('/order', [ProductController::class, 'OrderStore'])->name('inventory.order.store');
-			Route::get('/order/{id}', [ProductController::class, 'OrderGet'])->name('inventory.order.show');
+		Route::get('/', [DashboardController::class, 'index'])->name('inventorydashboard.index');
 
-			Route::view('/deliver', 'inventory.product.receive')->name('inventory.deliver.index');
-			Route::post('/deliver', [ProductController::class, 'DeliverStore'])->name('inventory.deliver.store');
-			Route::get('/deliver/{id}', [ProductController::class, 'DeliverShow'])->name('inventory.deliver.show');
-
-			Route::middleware('permission:inventory add new item')->group(function () {
-				Route::get('/add', [ProductController::class, 'ProductIndex'])->name('inventory.product.index');
-				Route::post('/add', [ProductController::class, 'ProductStore'])->name('inventory.product.store');
-				Route::get('/view/{id}', [ProductController::class, 'ProductShow'])->name('inventory.product.show');
-			});
-		});	
-		
 		Route::prefix('employee')->group(function() {
 			Route::middleware('permission:inventory view user|inventory edit user')->group(function () {
-				Route::get('/logs', [EmployeeController::class, 'Index'])->name('inventory.employee.logs.index');
-				Route::get('/edit', [EmployeeController::class, 'Show'])->name('inventory.employee.edit.index');
-
-				Route::delete('/delete', [EmployeeController::class, 'Delete'])->name('inventory.employee.destroy');
-
-				Route::put('/access/save', [EmployeeController::class, 'Store'])->name('inventory.employee.access.store');
-				Route::get('/access/{id}/edit', [EmployeeController::class, 'Edit'])->name('inventory.employee.access.edit');
+				Route::get('/employeelogs', [EmployeeLogsController::class, 'index'])->name('employeelogs.index');
+				Route::resource('employee', EmployeeController::class);
 			});
 		});
-	});
 
+		Route::prefix('product')->group(function () {
+			Route::resource('deliver', ProductDeliverController::class);
+			Route::resource('order', ProductOrderController::class);
+		});	
+		
+		Route::middleware('permission:inventory add new item')->resource('product', ProductController::class);
+	});
 	/* END */
 	/* Online Exam route */
 	Route::prefix('online-exam')->group(function() {

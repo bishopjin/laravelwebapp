@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\InventoryItemBrand;
 use App\Models\InventoryItemCategory;
 use App\Models\InventoryItemColor;
 use App\Models\InventoryItemSize;
 use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
-use App\Http\Requests\Product;
+use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Arr;
 
 class ProductController extends Controller
 {
@@ -44,18 +44,21 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         if ($request->validated()) {
-            $createRecord = InventoryItemShoe::create($request->validated());
+            $createRecord = InventoryItemShoe::updateOrCreate(
+                Arr::except($request->validated(), ['price']),
+                Arr::only($request->validated(), ['price'])
+            );
 
             if ($createRecord->id > 0) { 
-                return redirect()->route('inventory.product.show', ['id' => $createRecord->id]); 
+                return redirect()->route('product.show', ['product' => $createRecord->id]); 
             } else { 
-                return redirect()->route('inventory.product.store')->withInput(); 
+                return redirect()->route('product.store')->withInput(); 
             }
         }
     }

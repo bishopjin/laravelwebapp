@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\InventoryItemOrder;
 use App\Models\InventoryItemShoe;
+use App\Http\Requests\ProductOrderAndDeliverRequest;
 
 class ApiProductOrderController extends Controller
 {
@@ -22,46 +22,18 @@ class ApiProductOrderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProductOrderAndDeliverRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductOrderAndDeliverRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-                'shoe_id' => 'required|numeric',
-                'qty' => 'required|numeric',
-        ]);
-
-        if (!$validator->fails()) 
-        {
-            if (InventoryItemOrder::exists()){
-                $orderNumber = InventoryItemOrder::select('order_number')->max('order_number') + 1;
-            }
-            else { 
-                $orderNumber = 1000000000; 
-            }
-
-            $itemshoe = InventoryItemShoe::findOrFail($request->input('shoe_id'));
+        if ($request->validated()) {
+            $itemshoe = InventoryItemShoe::findOrFail($request->input('inventory_item_shoe_id'));
             
             if (intval($itemshoe->in_stock) >= intval($request->input('qty'))) {
-                $orderCreated = InventoryItemOrder::create([
-                    'order_number' => $orderNumber,
-                    'inventory_item_shoe_id' => $request->input('shoe_id'),
-                    'qty' => $request->input('qty'),
-                    'order_by_id' => $request->user()->id,
-                ]);
+                $orderCreated = $request->user()->inventoryorder()->create($request->validated());
 
                 if($orderCreated->id > 0){
                     $newstock = intval($itemshoe->in_stock) - intval($request->input('qty'));
@@ -72,13 +44,8 @@ class ApiProductOrderController extends Controller
                 $updateStock = 0;
             }
 
-            $return = array('reqStatus' => 1, 'reqResponse' => response()->json($updateStock));
+            return response()->json($updateStock);
         }
-        else 
-        {
-            $return = array('reqStatus' => 0, 'reqResponse' => response()->json($validator->errors(), 500));
-        }
-        return response()->json($return);
     }
 
     /**
@@ -90,39 +57,5 @@ class ApiProductOrderController extends Controller
     public function show($id)
     {
         return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

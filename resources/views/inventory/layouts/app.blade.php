@@ -39,20 +39,20 @@
                     <div class="navbar-nav me-auto d-md-none d-lg-none d-sm-block">
                         <ul class="list-unstyled fw-bolder">
                             <li class="">
-                                <a href="{{ route('inventory.dashboard.index') }}" class="sidebar-link">{{ __('Inventory') }}</a>
+                                <a href="{{ route('inventorydashboard.index') }}" class="sidebar-link">{{ __('Inventory') }}</a>
                             </li>
                             <li class="">
-                                <a href="{{ route('inventory.deliver.index') }}" class="sidebar-link">{{ __('Add New Stock') }}</a>
+                                <a href="{{ route('deliver.index') }}" class="sidebar-link">{{ __('Add New Stock') }}</a>
                             </li>
                             <li class="">
-                                <a href="{{ route('inventory.order.index') }}" class="sidebar-link">{{ __('Order Item') }}</a>
+                                <a href="{{ route('order.index') }}" class="sidebar-link">{{ __('Order Item') }}</a>
                             </li>
                             @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
                                 <li class="">
-                                    <a href="{{ route('inventory.product.index') }}" class="sidebar-link">{{ __('Add New Product') }}</a>
+                                    <a href="{{ route('product.index') }}" class="sidebar-link">{{ __('Add New Product') }}</a>
                                 </li>
                                 <li class="">
-                                    <a href="{{ route('inventory.employee.logs.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
+                                    <a href="{{ route('employeelogs.index') }}" class="sidebar-link">{{ __('Employee Logs') }}</a>
                                 </li>
                             @endif
                             <li class="d-md-none d-lg-none d-sm-block">
@@ -84,33 +84,33 @@
         <div class="sidebar">
             <ul class="list-unstyled fw-bolder">
                 <li class="">
-                    <a href="{{ route('inventory.dashboard.index') }}" 
-                        class="sidebar-link @if(Route::current()->getName() === 'inventory.dashboard.index') selected-link @endif">
+                    <a href="{{ route('inventorydashboard.index') }}" 
+                        class="sidebar-link @if(Route::current()->getName() === 'inventorydashboard.index') selected-link @endif">
                         {{ __('Inventory') }}
                     </a>
                 </li>
                 <li class="">
-                    <a href="{{ route('inventory.deliver.index') }}" 
-                        class="sidebar-link @if(Route::current()->getName() === 'inventory.deliver.index') selected-link @endif">
+                    <a href="{{ route('deliver.index') }}" 
+                        class="sidebar-link @if(Route::current()->getName() === 'deliver.index') selected-link @endif">
                         {{ __('Add New Stock') }}
                     </a>
                 </li>
                 <li class="">
-                    <a href="{{ route('inventory.order.index') }}" 
-                        class="sidebar-link @if(Route::current()->getName() === 'inventory.order.index') selected-link @endif">
+                    <a href="{{ route('order.index') }}" 
+                        class="sidebar-link @if(Route::current()->getName() === 'order.index') selected-link @endif">
                         {{ __('Order Item') }}
                     </a>
                 </li>
                 @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
                     <li class="">
-                        <a href="{{ route('inventory.product.index') }}" 
-                            class="sidebar-link @if(Route::current()->getName() === 'inventory.product.index' || Route::current()->getName() === 'inventory.product.view') selected-link @endif">
+                        <a href="{{ route('product.index') }}" 
+                            class="sidebar-link @if(Route::current()->getName() === 'product.index' || Route::current()->getName() === 'product.view') selected-link @endif">
                             {{ __('Add New Product') }}
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{ route('inventory.employee.logs.index') }}" 
-                            class="sidebar-link @if(Route::current()->getName() === 'inventory.employee.logs.index' || Route::current()->getName() === 'inventory.employee.edit') selected-link @endif">
+                        <a href="{{ route('employeelogs.index') }}" 
+                            class="sidebar-link @if(Route::current()->getName() === 'employeelogs.index' || Route::current()->getName() === 'employee.edit') selected-link @endif">
                             {{ __('Employee Logs') }}
                         </a>
                     </li>

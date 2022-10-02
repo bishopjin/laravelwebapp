@@ -10,10 +10,9 @@ class InventoryItemOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-    	'order_number', 
     	'inventory_item_shoe_id', 
     	'qty', 
-    	'order_by_id',
+    	'user_id',
     ];
 
     protected $hidden = [
@@ -32,6 +31,6 @@ class InventoryItemOrder extends Model
 
     public function user()
     {
-    	return $this->belongsTo(User::class, 'order_by_id')->withTrashed();
+    	return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 }

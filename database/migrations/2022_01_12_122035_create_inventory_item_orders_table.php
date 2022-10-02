@@ -14,11 +14,10 @@ class CreateInventoryItemOrdersTable extends Migration
     public function up()
     {
         Schema::create('inventory_item_orders', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('order_number');
+            $table->id()->from(1000000000);
             $table->integer('inventory_item_shoe_id');
             $table->integer('qty');
-            $table->integer('order_by_id');
+            $table->integer('user_id');
             $table->integer('prepared_by_id')->nullable();
             $table->integer('released_by_id')->nullable();
             $table->dateTime('prepared_at')->nullable();

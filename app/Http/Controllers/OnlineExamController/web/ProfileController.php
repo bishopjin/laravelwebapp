@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\OnlineCourse;
-use App\Http\Requests\Profile;
+use App\Http\Requests\ProfileRequest;
 
 class ProfileController extends Controller
 {
@@ -70,11 +70,11 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProfileRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Profile $request, $id)
+    public function update(ProfileRequest $request, $id)
     {
         if ($request->validated()) 
             $updated = User::findOrFail($id)->update($request->validated());

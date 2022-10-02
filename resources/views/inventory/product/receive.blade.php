@@ -126,9 +126,13 @@
                 let qtyVal = $(qty).val();
 
                 $.ajax({
-                    url: '{{ route("inventory.deliver.store") }}',
+                    url: '{{ route("deliver.store") }}',
                     type: 'POST',
-                    data: {_token : '{{ csrf_token() }}', shoe_id : itemIdVal, qty : qtyVal},
+                    data: {
+                        _token: '{{ csrf_token() }}', 
+                        inventory_item_shoe_id: itemIdVal, 
+                        qty: qtyVal,
+                    },
                     dataType: 'json',
                     Accept: 'application/json',
                     success: function(result, status, xhr){

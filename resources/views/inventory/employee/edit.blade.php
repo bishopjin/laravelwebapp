@@ -21,52 +21,52 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @isset($user_details)
-                                @foreach($user_details as $user)
-                                    @php
-                                        $active = false;
-                                        $notactive = false;
-                                        if ($user->trashed())
-                                        {   
-                                            $btn_label = 'Enable';
-                                            $notactive = true;
-                                        }
-                                        else 
-                                        {
-                                            $btn_label = 'Disable';
-                                            $active = true;
-                                        }
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">{{ $user->id }}</td>
-                                        <td>{{ $user->full_name }}</td>
-                                        <!-- standalone system -->
-                                        {{-- <td class="text-center">{{ $user->user_type }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('inventory.employee.edit.access', $user->id) }} " class="btn btn-outline-primary">Edit Access Level</a>
-                                        </td> --}}
-                                        <!-- End -->
-                                        <!-- consolidated system  -->
-                                        <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
-                                        <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
-                                        <!-- End -->
-                                        <td class="text-center">
-                                            <form method="POST" action="{{ route('inventory.employee.destroy') }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <input type="hidden" name="id" value="{{ $user->id }}">
-                                                <input type="submit" value="{{ $btn_label }}"
-                                                    @class(['btn', 'btn-outline-danger' => $active, 
-                                                    'btn-outline-success' => $notactive])>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endisset
+                            @forelse($userDetails as $user)
+                                @php
+                                    $active = false;
+                                    $notactive = false;
+                                    if ($user->trashed())
+                                    {   
+                                        $btn_label = 'Enable';
+                                        $notactive = true;
+                                    }
+                                    else 
+                                    {
+                                        $btn_label = 'Disable';
+                                        $active = true;
+                                    }
+                                @endphp
+                                <tr>
+                                    <td class="text-center">{{ $user->id }}</td>
+                                    <td>{{ $user->full_name }}</td>
+                                    <!-- standalone system -->
+                                    {{-- <td class="text-center">{{ $user->user_type }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ route('employee.edit', $user->id) }} " class="btn btn-outline-primary">Edit Access Level</a>
+                                    </td> --}}
+                                    <!-- End -->
+                                    <!-- consolidated system  -->
+                                    <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
+                                    <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
+                                    <!-- End -->
+                                    <td class="text-center">
+                                        <form method="POST" action="{{ route('employee.destroy', ['employee' => $user->id]) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="submit" value="{{ $btn_label }}"
+                                                @class(['fw-bold', 'text-danger' => $active, 
+                                                'text-success' => $notactive])>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                            @endforelse
                         </tbody>
                     </table>
                     <div class="d-flex justify-content-end">
-                        {{ $user_details->links() }}
+                        @isset($userDetails)
+                            {{ $userDetails->links() }}
+                        @endisset
                     </div>
                 </div>
             </div>

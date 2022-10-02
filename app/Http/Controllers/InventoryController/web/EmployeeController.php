@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use App\Http\Requests\EmployeeRequest;
 
 class EmployeeController extends Controller
 {
@@ -17,7 +17,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $userDetails = User::withTrashed()->notadmin()->notself($request->user()->id)->paginate(10);
+        $userDetails = User::withTrashed()->notadmin()->notself(auth()->user()->id)->paginate(10);
         return view('inventory.employee.edit')->with(compact('userDetails'));
     }
 
@@ -34,23 +34,14 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\EmployeeRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmployeeRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => ['required', 'numeric'],
-            'user_role' => ['required'],
-        ]);
- 
-        if ($validator->fails()) {
-            return redirect()->route('inventory.employee.access.edit', $request->input('id'))->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $user = User::findOrFail($request->input('id'));
-            $user->assignRole($request->input('user_role'));
+        if ($request->validated()) {
+            $user = User::findOrFail($request->safe()->only(['id']));
+            $user->assignRole($request->safe()->only(['user_role']));
             
             return redirect()->route('inventory.employee.edit.index');
         }
@@ -104,6 +95,6 @@ class EmployeeController extends Controller
 
         $user->trashed() ? $user->restore() : $user->delete();
         
-        return redirect()->route('inventory.employee.edit.index');
+        return redirect()->route('employee.index');
     }
 }

@@ -64,7 +64,7 @@
                         <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex">
                             @if(Auth::user()->hasAnyPermission(['inventory view user', 'inventory edit user', 'inventory add new item', 'inventory get stock', 'inventory add stock']))
-                                <a href="{{ route('inventory.dashboard.index') }}" 
+                                <a href="{{ route('inventorydashboard.index') }}" 
                                     class="btn btn-outline-primary rounded-pill w-100">
                                     {{ __('Log In') }}
                                 </a>

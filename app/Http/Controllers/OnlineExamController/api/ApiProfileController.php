@@ -4,7 +4,7 @@ namespace App\Http\Controllers\OnlineExamController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Profile;
+use App\Http\Requests\ProfileRequest;
 
 class ApiProfileController extends Controller
 {
@@ -68,11 +68,11 @@ class ApiProfileController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ProfileRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Profile $request, $id)
+    public function update(ProfileRequest $request, $id)
     {
         $return = 0;
 

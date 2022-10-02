@@ -22,32 +22,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @isset($shoe_inventory)
-                                @foreach ($shoe_inventory as $item)
-                                    @php
-                                        /* add trailing zero for non-decimal price */
-                                        if(!str_contains($item->price, '.')) {
-                                            $price =  $item->price.'.00';   
-                                        }
-                                        else { $price = $item->price; }
-                                    @endphp
-                                    <tr>
-                                        <td class="fw-bolder">{{ $item->id }}</td>
-                                        <td>{{ $item->brand->brand }}</td>
-                                        <td>{{ $item->size->size }}</td>
-                                        <td>{{ $item->color->color }}</td>
-                                        <td>{{ $item->type->type }}</td>
-                                        <td>{{ $item->category->category }}</td>
-                                        <td>{{ $price }}</td>
-                                        <td>{{ $item->in_stock }}</td>
-                                    </tr>
-                                @endforeach
-                            @endisset
+                            @forelse ($shoeInventory as $item)
+                                @php
+                                    /* add trailing zero for non-decimal price */
+                                    if(!str_contains($item->price, '.')) {
+                                        $price =  $item->price.'.00';   
+                                    }
+                                    else { $price = $item->price; }
+                                @endphp
+                                <tr>
+                                    <td class="fw-bolder">{{ $item->id }}</td>
+                                    <td>{{ $item->brand->brand }}</td>
+                                    <td>{{ $item->size->size }}</td>
+                                    <td>{{ $item->color->color }}</td>
+                                    <td>{{ $item->type->type }}</td>
+                                    <td>{{ $item->category->category }}</td>
+                                    <td>{{ $price }}</td>
+                                    <td>{{ $item->in_stock }}</td>
+                                </tr>
+                            @empty
+                            @endforelse
                         </tbody>
                     </table>
                     <div class="d-flex justify-content-end">
-                        @isset($shoe_inventory)
-                            {{ $shoe_inventory->links() }}
+                        @isset($shoeInventory)
+                            {{ $shoeInventory->links() }}
                         @endisset
                     </div>
                 </div>

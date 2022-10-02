@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\InventoryController;
+namespace App\Http\Controllers\InventoryController\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use App\Http\Requests\EmployeeRequest;
 
 class ApiEmployeeController extends Controller
 {
@@ -33,12 +33,17 @@ class ApiEmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\EmployeeRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmployeeRequest $request)
     {
-        //
+        if ($request->validated()) {
+            $user = User::findOrFail($request->safe()->only(['id']));
+            $user->assignRole($request->safe()->only(['user_role']));
+            
+            return 1;
+        }
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChangePassword extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Indicates if the validator should stop on the first rule failure.
