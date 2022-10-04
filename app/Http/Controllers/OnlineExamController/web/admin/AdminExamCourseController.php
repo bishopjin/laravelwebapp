@@ -4,10 +4,10 @@ namespace App\Http\Controllers\OnlineExamController\web\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\OnlineCourse;
+use App\Http\Requests\ExamCourseRequest;
 
-class CourseController extends Controller
+class AdminExamCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -40,21 +40,13 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ExamCourseRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ExamCourseRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-                'course' => ['required', 'string', 'unique:online_courses', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('online.course.show')->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $addCourse = OnlineCourse::create(['course' => $request->input('course')]);
+        if ($request->validated()) {
+            $addCourse = OnlineCourse::create($request->validated());
 
             return redirect()->back();
         }
@@ -85,23 +77,14 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\ExamCourseRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ExamCourseRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-                'course' => ['required', 'string', 'unique:online_courses', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('online.course.show')->withErrors($validator)->withInput();
-        }
-        else
-        {
-            $courseEdit = OnlineCourse::findOrFail($request->input('course_id'))
-                ->update(['course' => $request->input('course')]);
+        if ($request->validated()) {
+            $courseEdit = OnlineCourse::findOrFail($id)->update($request->validated());
 
             return redirect()->back();
         }

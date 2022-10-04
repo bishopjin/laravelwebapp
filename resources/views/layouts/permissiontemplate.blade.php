@@ -13,10 +13,8 @@
 	    @foreach($permissions as $permission)
     		@php
     			$match = false;
-    			foreach($rolepermissions as $roleprm)
-    			{
-    				if ($roleprm->id == $permission->id)
-    				{
+    			foreach($rolepermissions as $roleprm) {
+    				if ($roleprm->id == $permission->id) {
     					$match = true;
     					break;
     				}
@@ -29,7 +27,7 @@
 	        </div>
 	    @endforeach
 	    <div class="form-group">
-	    	<input type="submit" class="btn btn-primary" value="Save">
+	    	<input type="submit" class="btn btn-primary text-light" value="Save">
 	    </div>
 	</form>
 @endisset

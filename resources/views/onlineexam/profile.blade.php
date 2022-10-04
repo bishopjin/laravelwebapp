@@ -7,13 +7,13 @@
             <div class="card">
                 <div class="card-header bg-primary text-light">{{ __('Edit Profile') }}</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('online.profile.update') }}">
+                    <form method="POST" action="{{ route('profile.user.update', ['profile' => $profile, 'user' => $userDetails->id]) }}">
                         @csrf
                         @method('PATCH')
                         <div class="row mb-3 justify-content-center">
                             <div class="col-md-10">
                                 <label for="firstname" class="">{{ __('First Name') }}</label>
-                                <input id="firstname" type="text" class="form-control @error('firstname') is-invalid @enderror" name="firstname" value="{{ $user_details->firstname }}" required autofocus>
+                                <input id="firstname" type="text" class="form-control @error('firstname') is-invalid @enderror" name="firstname" value="{{ $userDetails->firstname }}" required autofocus>
 
                                 @error('firstname')
                                     <span class="invalid-feedback" role="alert">
@@ -26,14 +26,14 @@
                         <div class="row mb-3 justify-content-center">
                             <div class="col-md-10">
                                 <label for="middlename" class="">{{ __('Middle Name') }}</label>
-                                <input id="middlename" type="text" class="form-control" name="middlename" value="{{ $user_details->middlename }}">
+                                <input id="middlename" type="text" class="form-control" name="middlename" value="{{ $userDetails->middlename }}">
                             </div>
                         </div>
 
                         <div class="row mb-3 justify-content-center">
                             <div class="col-md-10">
                                 <label for="lastname" class="">{{ __('Last Name') }}</label>
-                                <input id="lastname" type="text" class="form-control @error('lastname') is-invalid @enderror" name="lastname" value="{{ $user_details->lastname }}" required>
+                                <input id="lastname" type="text" class="form-control @error('lastname') is-invalid @enderror" name="lastname" value="{{ $userDetails->lastname }}" required>
 
                                 @error('lastname')
                                     <span class="invalid-feedback" role="alert">
@@ -43,28 +43,28 @@
                             </div>
                         </div>
 
-                        @can('exam_student_access')
+                        @if($profile == 'student')
                             <div class="row mb-3 justify-content-center">
                                 <div class="col-md-10">
                                     <label for="course">{{ __('Course') }}</label>
-                                    <select class="form-select" name="course" id="course">
+                                    <select class="form-select" name="online_course_id" id="course">
                                         @foreach($courses as $course)
-                                            <option value="$course->id" @if(Auth::user()->course_id === $course->id) selected @endif>{{ $course->course }}</option>
+                                            <option value="{{ $course->id }}" @if(Auth::user()->online_course_id === $course->id) selected @endif>{{ $course->course }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                        @endcan
+                        @endif
 
                         <div class="row mb-3 justify-content-center">
                             <div class="col-md-10">
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
-                                        <label for="dateofbirth" class="">{{ __('Date of Birth') }}</label>
-                                        <input id="dateofbirth" type="date" class="form-control @error('dateofbirth') is-invalid @enderror" 
-                                            name="dateofbirth" value="{{ date('Y-m-d', strtotime($user_details->DOB)) }}" required/>
+                                        <label for="DOB" class="">{{ __('Date of Birth') }}</label>
+                                        <input id="DOB" type="date" class="form-control @error('DOB') is-invalid @enderror" 
+                                            name="DOB" value="{{ date('Y-m-d', strtotime($userDetails->DOB)) }}" required/>
 
-                                        @error('dateofbirth')
+                                        @error('DOB')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -75,14 +75,14 @@
                                         <div class="row">
                                             <div class="col-6 d-flex align-items-center justify-content-md-around">
                                                 <label class="">Male</label>&nbsp;
-                                                <input id="male" type="radio" class="" name="gender" value="1" @if($user_details->gender_id === 1) checked @endif>
+                                                <input id="male" type="radio" class="" name="gender_id" value="1" @if($userDetails->gender_id === 1) checked @endif>
                                             </div>
                                             <div class="col-6 d-flex align-items-center justify-content-md-around">
                                                 <label class="">Female</label>&nbsp;
-                                                <input id="female" type="radio" name="gender" value="2" @if($user_details->gender_id === 2) checked @endif>
+                                                <input id="female" type="radio" name="gender_id" value="2" @if($userDetails->gender_id === 2) checked @endif>
                                             </div>
                                         </div>
-                                        @error('gender')
+                                        @error('gender_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -95,7 +95,7 @@
                         <div class="row mb-3 justify-content-center">
                             <div class="col-md-10">
                                 <label for="email" class="">{{ __('Email Address') }}</label>
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $user_details->email }}">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $userDetails->email }}">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">

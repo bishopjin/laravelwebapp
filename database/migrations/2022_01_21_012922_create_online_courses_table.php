@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OnlineCourse;
 
 class CreateOnlineCoursesTable extends Migration
 {
@@ -17,12 +17,12 @@ class CreateOnlineCoursesTable extends Migration
         Schema::create('online_courses', function (Blueprint $table) {
             $table->id();
             $table->string('course');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('online_courses')->insert([
-            ['course' => 'N/A'],
+        OnlineCourse::create([
+            'course' => 'N/A'
         ]);
     }
 

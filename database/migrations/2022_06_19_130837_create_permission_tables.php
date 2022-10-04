@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class CreatePermissionTables extends Migration
 {
@@ -36,25 +38,27 @@ class CreatePermissionTables extends Migration
             $table->unique(['name', 'guard_name']);
         });
 
-        DB::table('permissions')->insert([
-            ['name' => 'inventory view user', 'guard_name' => 'web'],
-            ['name' => 'inventory edit user', 'guard_name' => 'web'],
-            ['name' => 'inventory add new item', 'guard_name' => 'web'],
-            ['name' => 'inventory get stock', 'guard_name' => 'web'],
-            ['name' => 'inventory add stock', 'guard_name' => 'web'],
-            ['name' => 'menu add item', 'guard_name' => 'web'],
-            ['name' => 'menu edit item', 'guard_name' => 'web'],
-            ['name' => 'menu view order list', 'guard_name' => 'web'],
-            ['name' => 'menu view user list', 'guard_name' => 'web'],
-            ['name' => 'menu create orders', 'guard_name' => 'web'],
-            ['name' => 'menu view order history', 'guard_name' => 'web'],
-            ['name' => 'menu view coupon list', 'guard_name' => 'web'],
-            ['name' => 'exam student access', 'guard_name' => 'web'],
-            ['name' => 'exam faculty access', 'guard_name' => 'web'],
-            ['name' => 'exam admin access', 'guard_name' => 'web'],
-            ['name' => 'payroll admin access', 'guard_name' => 'web'],
-            ['name' => 'payroll employee access', 'guard_name' => 'web'],
-        ]);
+        Permission::upsert(
+            [
+                ['name' => 'inventory view user', 'guard_name' => 'web'],
+                ['name' => 'inventory edit user', 'guard_name' => 'web'],
+                ['name' => 'inventory add new item', 'guard_name' => 'web'],
+                ['name' => 'inventory get stock', 'guard_name' => 'web'],
+                ['name' => 'inventory add stock', 'guard_name' => 'web'],
+                ['name' => 'menu add item', 'guard_name' => 'web'],
+                ['name' => 'menu edit item', 'guard_name' => 'web'],
+                ['name' => 'menu view order list', 'guard_name' => 'web'],
+                ['name' => 'menu view user list', 'guard_name' => 'web'],
+                ['name' => 'menu create orders', 'guard_name' => 'web'],
+                ['name' => 'menu view order history', 'guard_name' => 'web'],
+                ['name' => 'menu view coupon list', 'guard_name' => 'web'],
+                ['name' => 'exam student access', 'guard_name' => 'web'],
+                ['name' => 'exam faculty access', 'guard_name' => 'web'],
+                ['name' => 'exam admin access', 'guard_name' => 'web'],
+                ['name' => 'payroll admin access', 'guard_name' => 'web'],
+                ['name' => 'payroll employee access', 'guard_name' => 'web'],
+            ], ['name'], ['guard_name']
+        );
 
         Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
             $table->bigIncrements('id');
@@ -73,17 +77,19 @@ class CreatePermissionTables extends Migration
             }
         });
 
-        DB::table('roles')->insert([
-            ['name' => 'Super Admin', 'guard_name' => 'web'],
-            ['name' => 'Admin', 'guard_name' => 'web'],
-            ['name' => 'NoneAdmin', 'guard_name' => 'web'],
-            ['name' => 'Customer', 'guard_name' => 'web'],
-            ['name' => 'Student', 'guard_name' => 'web'],
-            ['name' => 'Faculty', 'guard_name' => 'web'],
-            ['name' => 'Employee', 'guard_name' => 'web'],
-            ['name' => 'Cashier', 'guard_name' => 'web'],
-        ]);
-
+        Role::upsert(
+            [
+                ['name' => 'Super Admin', 'guard_name' => 'web'],
+                ['name' => 'Admin', 'guard_name' => 'web'],
+                ['name' => 'NoneAdmin', 'guard_name' => 'web'],
+                ['name' => 'Customer', 'guard_name' => 'web'],
+                ['name' => 'Student', 'guard_name' => 'web'],
+                ['name' => 'Faculty', 'guard_name' => 'web'],
+                ['name' => 'Employee', 'guard_name' => 'web'],
+                ['name' => 'Cashier', 'guard_name' => 'web'],
+            ], ['name'], ['guard_name']
+        );
+        
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
             $table->unsignedBigInteger(PermissionRegistrar::$pivotPermission);
 
@@ -151,6 +157,18 @@ class CreatePermissionTables extends Migration
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
+
+        /* Initial role, no permission */
+        DB::table('model_has_roles')->insert([
+            ['role_id' => 1, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 2, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 3, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 4, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 5, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 6, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 7, 'model_type' => 'App\Models\User', 'model_id' => 1],
+            ['role_id' => 8, 'model_type' => 'App\Models\User', 'model_id' => 1],
+        ]);
     }
 
     /**

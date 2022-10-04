@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderBeverage;
 
 class CreateOrderBeveragesTable extends Migration
 {
@@ -19,18 +19,20 @@ class CreateOrderBeveragesTable extends Migration
             $table->integer('order_beverage_name_id');
             $table->integer('order_beverage_size_id');
             $table->float('price');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('order_beverages')->insert([
-            ['order_beverage_name_id' => 1, 'order_beverage_size_id' => 1, 'price' => 30.0],
-            ['order_beverage_name_id' => 1, 'order_beverage_size_id' => 2, 'price' => 45.0],
-            ['order_beverage_name_id' => 2, 'order_beverage_size_id' => 1, 'price' => 30.0],
-            ['order_beverage_name_id' => 2, 'order_beverage_size_id' => 2, 'price' => 45.0],
-            ['order_beverage_name_id' => 3, 'order_beverage_size_id' => 1, 'price' => 50.0],
-            ['order_beverage_name_id' => 3, 'order_beverage_size_id' => 2, 'price' => 65.0],
-        ]);
+        OrderBeverage::upsert(
+            [
+                ['order_beverage_name_id' => 1, 'order_beverage_size_id' => 1, 'price' => 30.0],
+                ['order_beverage_name_id' => 1, 'order_beverage_size_id' => 2, 'price' => 45.0],
+                ['order_beverage_name_id' => 2, 'order_beverage_size_id' => 1, 'price' => 30.0],
+                ['order_beverage_name_id' => 2, 'order_beverage_size_id' => 2, 'price' => 45.0],
+                ['order_beverage_name_id' => 3, 'order_beverage_size_id' => 1, 'price' => 50.0],
+                ['order_beverage_name_id' => 3, 'order_beverage_size_id' => 2, 'price' => 65.0],
+            ], [], []
+        );
     }
 
     /**

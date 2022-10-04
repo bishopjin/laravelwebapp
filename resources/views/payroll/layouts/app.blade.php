@@ -36,9 +36,9 @@
                     <!-- mobile Navbar -->
                     <div class="navbar-nav me-auto d-md-none d-lg-none d-sm-block">
                         <ul class="list-unstyled">
-                            @if(Auth::user()->can('payroll admin access') AND str_contains(url()->current(), 'payroll/admin'))
+                            @if(Auth::user()->can('payroll admin access') AND str_contains(url()->current(), 'payroll/payrolladmin'))
                                 <li class="">
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.admin.index') }}">
+                                    <a class="payroll-mobile-link" href="{{ route('payrolladmin.index') }}">
                                         {{ __('Dashboard') }}
                                     </a>
                                 </li>
@@ -65,7 +65,7 @@
                                 </li>
                             @elseif(Auth::user()->can('payroll employee access'))
                                 <li class="">
-                                    <a class="payroll-mobile-link" href="{{ route('payroll.employee.index') }}">
+                                    <a class="payroll-mobile-link" href="{{ route('payrollemployee.index') }}">
                                         {{ __('Dashboard') }}
                                     </a>
                                 </li>
@@ -94,9 +94,9 @@
 
                     <!-- Left Side Of Navbar -->
                     <!-- employee -->
-                    @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/employee')) 
+                    @if(Auth::user()->can('payroll employee access') AND str_contains(url()->current(), 'payroll/payrollemployee')) 
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="{{ route('payroll.employee.index') }}">
+                            href="{{ route('payrollemployee.index') }}">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">
@@ -134,7 +134,7 @@
                     <!-- admin -->
                     @elseif(Auth::user()->can('payroll admin access'))
                         <a class="navbar-nav text-decoration-none d-none d-md-block d-lg-block text-dark pe-2" 
-                            href="{{ route('payroll.admin.index') }}">
+                            href="{{ route('payrolladmin.index') }}">
                             {{ ('Dashboard') }}
                         </a>
                         <ul class="navbar-nav d-none d-md-block d-lg-block">

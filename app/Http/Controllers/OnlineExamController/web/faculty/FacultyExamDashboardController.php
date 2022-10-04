@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\OnlineExam;
 use App\Models\OnlineExamination;
 
-class DashboardController extends Controller
+class FacultyExamDashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -54,6 +54,7 @@ class DashboardController extends Controller
     public function show($id)
     {
         $examResult = OnlineExamination::with(['student', 'onlineexam'])->where('user_id', $id)->get();
+        
         return view('onlineexam.faculty.examDetails')->with(compact('examResult'));
     }
 

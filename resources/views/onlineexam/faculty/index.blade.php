@@ -1,4 +1,4 @@
-@extends('onlineexam.layouts.app')
+ @extends('onlineexam.layouts.app')
 
 @section('onlinecontent')
 <div class="container">
@@ -12,12 +12,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.subject.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('subjectexam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.exam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('exam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -36,24 +36,23 @@
                                     <thead>
                                         <tr>
                                             <th>{{ __('Student Name') }}</th>
-                                            <th>{{ __('Gender') }}</th>
                                             <th>{{ __('Course') }}</th>
+                                            <th>{{ __('Gender') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @isset($student_list)
-                                            @foreach($student_list as $student)
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{ route('online.faculty.student.score.show', $student->user_id) }}" class="text-decoration-none fw-bold">
-                                                            {{ $student->student->full_name }}
-                                                        </a>
-                                                    </td>
-                                                    <td>{{ $student->student->onlinecourse->course }}</td>
-                                                    <td>{{ $student->student->gender->gender }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endisset
+                                        @forelse($studentList as $student)
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ route('facultyexam.show', $student->user_id) }}" class="text-decoration-none fw-bold">
+                                                        {{ $student->student->full_name }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ $student->student->onlinecourse->course }}</td>
+                                                <td>{{ $student->student->gender->gender }}</td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
                                     </tbody>
                                 </table>
                                 <div class="d-flex justify-content-end">
@@ -78,20 +77,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @isset($exam_list)
-                                            @foreach($exam_list as $exam)
-                                                <tr>
-                                                    <td>{{ $exam->exam_code }}</td>
-                                                    <td>{{ $exam->onlinesubject->subject }}</td>
-                                                    <td>{{ $exam->timer }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endisset
+                                        @forelse($examList as $exam)
+                                            <tr>
+                                                <td>{{ $exam->exam_code }}</td>
+                                                <td>{{ $exam->onlinesubject->subject }}</td>
+                                                <td>{{ $exam->timer }}</td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
                                     </tbody>
                                 </table>
                                 <div class="d-flex justify-content-end">
-                                    @isset($exam_list)
-                                        {{ $exam_list->links() }}
+                                    @isset($examList)
+                                        {{ $examList->links() }}
                                     @endisset
                                 </div>
                             </div>

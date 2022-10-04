@@ -7,7 +7,7 @@
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('online.student.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
+                        <a href="{{ route('studentexam.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -53,10 +53,10 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-11">
                                     <label class="fw-bold pb-2">{{ __('Subject: ') }}{{ $exams[0]->subject }}</label>
-                                    <form method="POST" action="{{ route('online.student.exam.store') }}" id="examForm">
+                                    <form method="POST" action="{{ route('studentexam.store') }}" id="examForm">
                                         @csrf
-                                        <input type="hidden" name="facultyID" value="{{ $exams[0]->user_id }}">
-                                        <input type="hidden" name="exams_id" value="{{ $exams[0]->id }}">
+                                        <input type="hidden" name="faculty_id" value="{{ $exams[0]->user_id }}">
+                                        <input type="hidden" name="online_exam_id" value="{{ $exams[0]->id }}">
                                         @isset($questions)
                                             @php 
                                                 $qNum = 0;
@@ -75,7 +75,7 @@
                                                         $selNum++; 
                                                     @endphp
                                                     <div class="form-check ps-5">
-                                                        <input class="form-check-input" type="radio" name="{{ $question->id }}" value="{{ $selection->selection }}" id="{{ $question->id }}{{ $selNum }}">
+                                                        <input class="form-check-input" type="radio" name="answer[{{ $question->id }}]" value="{{ $selection->selection }}" id="{{ $question->id }}{{ $selNum }}">
                                                         <label class="form-check-label" for="{{ $question->id }}{{ $selNum }}">
                                                             {{ $selection->selection }}
                                                         </label>

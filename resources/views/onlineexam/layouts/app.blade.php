@@ -14,6 +14,8 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #E64A19;">
     <noscript>
@@ -32,15 +34,15 @@
                     @php
                         if(Auth::user()->hasRole('Admin'))
                         {
-                            $route_name = 'online.admin.index';
+                            $route_name = 'adminexam.index';
                         }
                         elseif(Auth::user()->hasRole('Faculty'))
                         {
-                            $route_name = 'online.faculty.index';
+                            $route_name = 'facultyexam.index';
                         }
                         else 
                         { 
-                            $route_name = 'online.student.index';
+                            $route_name = 'studentexam.index';
                         }
                     @endphp
                     <a class="navbar-brand me-4" href="{{ route($route_name) }}">
@@ -56,11 +58,11 @@
                         @if(Auth::user()->hasRole('Admin'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.admin.index') # @else {{ route('online.admin.index') }} @endif">
+                                    href="@if(Route::current()->getName() === 'adminexam.index') # @else {{ route('adminexam.index') }} @endif">
                                     {{ __('Dashboard') }}
                                 </a>
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.course.show') # @else {{ route('online.course.show') }} @endif">
+                                    href="@if(Route::current()->getName() === 'online.course.show') # @else {{ route('courseexam.index') }} @endif">
                                     {{ __('Courses') }}
                                 </a>
                             </div>
@@ -68,7 +70,7 @@
                         @if(Auth::user()->hasRole('Student'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.student.index') # @else {{ route('online.student.index') }} @endif">
+                                    href="@if(Route::current()->getName() === 'studentexam.index') # @else {{ route('studentexam.index') }} @endif">
                                     {{ __('Exam Result') }}
                                 </a>
                             </div>
@@ -76,11 +78,11 @@
                         @if(Auth::user()->hasRole('Faculty'))
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.faculty.index') # @else {{ route('online.faculty.index') }} @endif">
+                                    href="@if(Route::current()->getName() === 'facultyexam.index') # @else {{ route('facultyexam.index') }} @endif">
                                     {{ __('Student List') }}
                                 </a>
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.exam.index') # @else {{ route('online.exam.index') }} @endif">
+                                    href="@if(Route::current()->getName() === 'exam.index') # @else {{ route('exam.index') }} @endif">
                                     {{ __('Examination List') }}
                                 </a>
                             </div>
@@ -98,9 +100,26 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('online.profile.edit', Auth::user()->id) }}">
-                                        <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
-                                    </a>
+                                    
+                                    @switch(Route::current()->getName())
+                                        @case('adminexam.index')
+                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'admin', 'user' => Auth::user()->id]) }}">
+                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            </a>
+                                            @break
+                                     
+                                        @case('facultyexam.index')
+                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'faculty', 'user' => Auth::user()->id]) }}">
+                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            </a>
+                                            @break
+                                     
+                                        @default
+                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'student', 'user' => Auth::user()->id]) }}">
+                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            </a>
+                                    @endswitch
+
                                     <a class="dropdown-item" href="/">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
                                     </a>
@@ -116,7 +135,5 @@
             </main>
         @endguest
     </div>
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}"></script>
 </body>
 </html>

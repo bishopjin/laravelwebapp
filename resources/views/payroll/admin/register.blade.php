@@ -7,7 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Payroll Registration') }}</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.user.store') }}" class="px-4">
+						<form method="POST" action="{{ route('payrolladmin.store') }}" class="px-4">
 							@csrf
 
 							@php
@@ -32,7 +32,7 @@
 
 							<div class="form-group pb-2">
 								<label for="firstname">{{ __('First Name') }}</label>
-								<input type="text" name="firstname" class="form-control @error('firstname') is-invalid @enderror" 
+								<input type="text" class="form-control @error('firstname') is-invalid @enderror" 
 									id="firstname" value="{{ $firstname ?? old('firstname') }}" {{ $firstname ? 'readonly' : '' }} >
 								@error('firstname')
                                     <span class="invalid-feedback" role="alert">
@@ -43,13 +43,13 @@
 
 							<div class="form-group pb-2">
 								<label for="middlename">{{ __('Middle Name') }}</label>
-								<input type="text" name="middlename" class="form-control" id="middlename" 
+								<input type="text" class="form-control" id="middlename" 
 									value="{{ $middlename ?? old('middlename') }}" {{ $middlename ? 'readonly' : '' }} >
 							</div>
 
 							<div class="form-group pb-2">
 								<label for="lastname">{{ __('Last Name') }}</label>
-								<input type="text" name="lastname" class="form-control @error('lastname') is-invalid @enderror" 
+								<input type="text" class="form-control @error('lastname') is-invalid @enderror" 
 									id="lastname" value="{{ $lastname ?? old('lastname') }}" {{ $lastname ? 'readonly' : '' }} >
 								@error('lastname')
                                     <span class="invalid-feedback" role="alert">
@@ -60,7 +60,7 @@
 
 							<div class="form-group pb-2">
 								<label for="salarygrade">{{ __('Salary Grade') }}</label>
-								<select class="form-select" name="salarygrade" id="salarygrade">
+								<select class="form-select" name="payroll_salary_grade_id" id="salarygrade">
 									@isset($salary_grade)
 										@foreach($salary_grade as $grade)
 											<option value="{{ $grade->id }}" {{ $salary_grade_id == $grade->id ? 'selected' : '' }}>
@@ -82,7 +82,7 @@
 							</div>
 							<div class="form-group pb-2">
 								<label for="workschedule">{{ __('Work Schedule') }}</label>
-								<select class="form-select" name="workschedule" id="workschedule">
+								<select class="form-select" name="payroll_work_schedule_id" id="workschedule">
 									@isset($workSchedule)
 										@foreach($workSchedule as $schedule)
 											@php
@@ -102,9 +102,9 @@
                                     <div class="row">
                                         <div class="col px-5">
                                             <label class="">{{ __('Male') }}</label>&nbsp;
-                                            <input id="male" type="radio" class="" name="gender" value="1" checked>&nbsp; &nbsp; &nbsp;
+                                            <input id="male" type="radio" class="" value="1" checked>&nbsp; &nbsp; &nbsp;
                                             <label class="">{{ __('Female') }}</label>&nbsp;
-                                            <input id="female" type="radio" name="gender" value="2">
+                                            <input id="female" type="radio" value="2">
                                         </div>
                                     </div>
                                     @error('gender')
@@ -115,7 +115,7 @@
 								</div>
 								<div class="form-group pb-2">
 									<label for="email">{{ __('Email') }}</label>
-									<input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
+									<input type="email" class="form-control @error('email') is-invalid @enderror" 
 									id="email" value="{{ old('email') }}" required>
 									@error('email')
 	                                    <span class="invalid-feedback" role="alert">
@@ -125,7 +125,7 @@
 								</div>
 								<div class="form-group pb-2">
 									<label for="username">{{ __('UserName') }}</label>
-									<input type="text" name="username" class="form-control @error('username') is-invalid @enderror" 
+									<input type="text" class="form-control @error('username') is-invalid @enderror" 
 										id="username" value="{{ old('username') }}" required>
 									@error('username')
 	                                    <span class="invalid-feedback" role="alert">
@@ -135,16 +135,16 @@
 								</div>
 								<div class="form-group pb-2">
 									<label for="DOB">{{ __('Birth Date') }}</label>
-									<input type="date" name="DOB" class="form-control" id="DOB" value="{{ date('Y-m-d') }}">
+									<input type="date" class="form-control" id="DOB" value="{{ date('Y-m-d') }}">
 								</div>
 							@endif
 							@if(\Session::has('message'))
 								<div class="fw-bold">{{ \Session::get('message') }}</div>
 							@endif
 							
-							<input type="hidden" name="id" value="{{ $userid }}">
+							<input type="hidden" name="user_id" value="{{ $userid }}">
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
+								<a href="{{ route('payrolladmin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
 								<input type="submit" value="Save" class="btn btn-outline-primary">
 							</div>
 						</form>

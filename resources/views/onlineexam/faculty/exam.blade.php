@@ -7,12 +7,12 @@
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('online.faculty.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
+                        <a href="{{ route('facultyexam.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.subject.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('subjectexam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
@@ -74,13 +74,13 @@
                                             {{ __('Selection - Choices for the question above it.') }}
                                         </p>
                                         <hr>
-                                        <form method="POST" action="{{ route('online.exam.store') }}">
+                                        <form method="POST" action="{{ route('exam.store') }}">
                                             @csrf
                                             <div class="form-group pb-4">
                                                 <div class="row">
                                                     <div class="col-md-8 d-grid gap-2">
                                                         <label>Subjects</label>
-                                                        <select class="form-select" name="subject" id="subjectSel">
+                                                        <select class="form-select" name="online_subject_id" id="subjectSel">
                                                             @isset($subjects)
                                                                 @foreach($subjects as $subject)
                                                                     <option value="{{ $subject->id }}">{{ $subject->subject }}</option>
@@ -90,7 +90,7 @@
                                                     </div>
                                                     <div class="col-md-4 d-grid gap-2">
                                                         <label>{{ __('Timer(in minutes)') }}</label>
-                                                        <input type="number" name="examTimer" class="form-control" required="">
+                                                        <input type="number" name="timer" class="form-control" required="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,13 +118,12 @@
                                     </span>
                                 </div>
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('online.exam.show') }}">
-                                        @csrf
+                                    <form method="GET" id="examCodeForm">
                                         <div class="form-group">
                                             <label for="exam_code">Examination Code</label>
                                             <div class="d-flex flex-column flex-md-row">
-                                                <input type="text" name="exam_code" id="exam_code" class="form-control me-2" value="@isset($exam_code) {{ $exam_code }} @endisset">
-                                                <input type="submit" value="View" class="btn btn-outline-success px-md-4 d-none" id="submitBtn">
+                                                <input type="text" name="exam_code" id="exam_code" class="form-control me-2" value="@isset($examCode) {{ $examCode }} @endisset">
+                                                <input type="button" value="View" class="btn btn-outline-success px-md-4 d-none" id="submitBtn">
                                             </div>
                                         </div>
                                     </form>
@@ -230,9 +229,14 @@
         $(exam_code).on('keyup', function () {
              $(this).val() != '' ? $(submitBtn).removeClass('d-none').show() : $(submitBtn).hide();
         });
+
+        $(submitBtn).on('click', function() {
+            $('#examCodeForm').attr('action', '/online-exam/exam/' + $(examcode).val()).submit();
+        });
+
         $(createFormBtn).on('click', function(){
             /* change the url */
-            window.history.pushState(' ', `{{ ('Laravel Web App v2.0') }}`, '{{ URL::to("/online-exam/faculty/examination") }}');
+            //window.history.pushState(' ', `{{ ('Laravel Web App v2.0') }}`, '{{ URL::to("/online-exam/exam/examination") }}');
             let formValid = true;
             $(nswarning).html('');
             $(nqwarning).html('');
@@ -253,15 +257,15 @@
                 for (var i = 0; i < parseInt($(numberofquestion).val()); i++) {
                     $(questionContainer).append(`<div class="form-group d-grid gap-2">
                                                     <label>Exam Question ${i + 1}</label>
-                                                    <input type="text" name="question_${i}" class="form-control" required/>
+                                                    <input type="text" name="question[]" class="form-control" required/>
                                                     <label>Correct answer for question ${i + 1}</label>
-                                                    <input type="text" name="answer_${i}" class="form-control" reuired/>
+                                                    <input type="text" name="answer[]" class="form-control" reuired/>
                                                     <div class="form-group ps-3" id="selectionContainer_${i}">
                                                     </div>  
                                                 </div><hr class="bg-dark"/>`);
                     for (var j = 0; j < parseInt($(numberofselection).val()); j++) {
                         $('#selectionContainer_' + i).append(`<label>Selection ${j + 1} for question ${i + 1}</label>
-                            <input type="text" name="selection_${i}_${j}" class="form-control" required/>`);
+                            <input type="text" name="selection[${i}][${j}]" class="form-control" required/>`);
                     }
                 }
             }
@@ -284,9 +288,9 @@
             }
             else {
                 $.ajax({
-                    url: '{{ route("online.exam.update") }}',
+                    url: '/online-exam/exam/' + eleId,
                     type: 'POST',
-                    data: {id : eleId, key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}', '_method': 'PATCH',},
+                    data: {key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}', '_method': 'PATCH',},
                     dataType: 'json',
                     Accept: 'application/json',
                     success: function(result, status, xhr){

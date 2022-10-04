@@ -7,7 +7,7 @@
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('online.admin.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('adminexam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
-                            <form method="POST" action="{{ route('online.course.store') }}">
+                            <form method="POST" action="{{ route('courseexam.store') }}">
                                 @csrf
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col">
@@ -63,24 +63,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @isset($course_list)
-                                            @foreach($course_list as $course)
-                                                @php
-                                                    $courseID = 'course'.$course->id;
-                                                @endphp
-                                                <tr>
-                                                    <td id="{{ $courseID }}">{{ $course->course }}</td>
-                                                    <td>
-                                                        <a href="javascript:void(0)" class="btn btn-outline-success editCourse" id="{{ $course->id }}">{{ __('Edit') }}</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endisset
+                                        @forelse($courseList as $course)
+                                            @php
+                                                $courseID = 'course'.$course->id;
+                                            @endphp
+                                            <tr>
+                                                <td id="{{ $courseID }}">{{ $course->course }}</td>
+                                                <td>
+                                                    <a href="javascript:void(0)" class="btn btn-outline-success editCourse" id="{{ $course->id }}">{{ __('Edit') }}</a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
                                     </tbody>
                                 </table>
                                 <div class="d-flex justify-content-end">
-                                    @isset($course_list)
-                                        {{ $course_list->links() }}
+                                    @isset($courseList)
+                                        {{ $courseList->links() }}
                                     @endisset
                                 </div>
                             </div>
@@ -108,12 +107,11 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('online.course.update') }}" class="p-md-4">
+                    <form method="POST" action="" class="p-md-4" id="modalForm">
                         @csrf
                         @method('PUT')
                         <div class="form-group mb-3">
                             <input type="text" name="course" id="coursename" class="form-control" autocomplete="off">
-                            <input type="hidden" name="course_id" id="editID">
                         </div>
                         <div class="form-group">
                             <div class="d-flex justify-content-end">
@@ -139,7 +137,7 @@
 
         $('.editCourse').on('click', function() {
             $(modal).show();
-            $('#editID').val(this.id);
+            $('#modalForm').attr("action", "/online-exam/courseexam/" + this.id);
             $('#coursename').val($('#course' + this.id).html());
         });
     });

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderCoupon;
 
 class CreateOrderCouponsTable extends Migration
 {
@@ -18,12 +18,13 @@ class CreateOrderCouponsTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->float('discount');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('order_coupons')->insert([
-            ['code' => 'GO2018', 'discount' => 0.1],
+        OrderCoupon::create([
+            'code' => 'GO2018', 
+            'discount' => 0.1
         ]);
     }
 

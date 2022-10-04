@@ -16,7 +16,8 @@ class CreateOnlineSubjectsTable extends Migration
         Schema::create('online_subjects', function (Blueprint $table) {
             $table->id();
             $table->string('subject');
-            $table->integer('users_profile_id');
+            $table->integer('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

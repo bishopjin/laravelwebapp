@@ -27,13 +27,13 @@
                                             <td>{{ \Hash::check('12345678', $user->password) ? 'Yes' : 'No' }}</td>
                                             <td>
                                                 <span class="d-flex gap-2 fw-bold">
-                                                    <a href="{{ route('userspermission.edit', ['userspermission' => $user->id]) }}" class="text-decoration-none text-info">{{ __('View') }}</a>&#124;
-                                                    <a href="{{ route('userspermission.edit', ['userspermission' => $user->id]) }}" class="text-decoration-none text-primary">{{ __('Edit') }}</a>
+                                                    <a href="{{ route('usersrole.show', $user->id) }}" class="text-decoration-none text-info">{{ __('View') }}</a>&#124;
+                                                    <a href="{{ route('userspermission.edit', $user->id) }}" class="text-decoration-none text-primary">{{ __('Edit') }}</a>
                                                 </span>
                                             </td>
                                             <td>
                                                 <span class="d-flex gap-2 fw-bold">
-                                                    <a href="{{ route('userspermission.show', ['userspermission' => $user->id]) }}" class="text-decoration-none text-info">{{ __('View') }}</a>
+                                                    <a href="{{ route('userspermission.show', $user->id) }}" class="text-decoration-none text-info">{{ __('View') }}</a>
                                                 </span>
                                             </td>
                                         </tr>
@@ -92,18 +92,16 @@
                         @isset($curuser)
                             @isset($roles)
                                 <div class="fw-bold pb-2">{{ __('User\'s Role(s)') }}</div>
-                                @if($action == 'edit')
-                                    <form method="POST" action="{{ route('userspermission.update', ['userspermission' => $curuser->id]) }}">
+                                @if(isset($action))
+                                    <form method="POST" action="{{ route('userspermission.update', $curuser->id) }}">
                                         @csrf
                                         @method('PUT')
                                         @foreach($roles as $role)
                                             @if($userroles->count() > 0)
                                                 @php
                                                     $user_role = null;
-                                                    foreach($userroles as $userrole) 
-                                                    {
-                                                        if ($userrole == $role->name) 
-                                                        {
+                                                    foreach($userroles as $userrole) {
+                                                        if ($userrole == $role->name) {
                                                             $user_role = $userrole;
                                                             break;
                                                         }
@@ -141,17 +139,15 @@
                                             @endif
                                         @endforeach
                                         <div class="form-group px-4">
-                                            <input type="submit" value="Save" class="btn btn-primary">
+                                            <input type="submit" value="Save" class="btn btn-primary text-light">
                                         </div>
                                     </form>
                                 @else
-                                    @if($userroles->count() > 0)
-                                        @foreach($userroles as $userrole)
-                                            <div class="fw-bold px-4 t">{{ __('- ') }} {{ $userrole }}</div>
-                                        @endforeach
-                                    @else
+                                    @forelse($userroles->roles as $role)
+                                        <div class="fw-bold px-4 t">{{ __('- ') }} {{ $role->name }}</div>
+                                    @empty
                                         <div class="fw-bold px-4 text-danger">{{ __('User\'s has no role(s)') }}</div>
-                                    @endif
+                                    @endforelse
                                 @endif
                             @endisset
                             

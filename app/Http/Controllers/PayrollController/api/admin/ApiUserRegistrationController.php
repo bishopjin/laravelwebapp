@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\OnlineExamController\web\faculty;
+namespace App\Http\Controllers\PayrollController\api\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\OnlineSubject;
-use App\Http\Requests\ExamSubjectRequest;
 
-class SubjectController extends Controller
+class ApiUserRegistrationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +14,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subjectList = OnlineSubject::select('subject')->paginate(10);
-
-        return view('onlineexam.faculty.subject')->with(compact('subjectList'));
+        //
     }
 
     /**
@@ -34,16 +30,12 @@ class SubjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\ExamSubjectRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ExamSubjectRequest $request)
+    public function store(Request $request)
     {
-        if ($request->validated()) {
-            $subjectAdd = $request->user()->onlinesubject()->create($request->validated());
-            
-            return redirect()->back();
-        }
+        //
     }
 
     /**

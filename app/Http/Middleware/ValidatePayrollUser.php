@@ -18,12 +18,9 @@ class ValidatePayrollUser
     public function handle(Request $request, Closure $next)
     {
         $dtr = PayrollEmployee::with('workschedule')->where('user_id', $request->user()->id)->get();
-        if($dtr->count() > 0)
-        {
+        if($dtr->count() > 0) {
             return $next($request);
-        }
-        else
-        {
+        } else {
             return redirect()->route('notregister.index');
         }
     }

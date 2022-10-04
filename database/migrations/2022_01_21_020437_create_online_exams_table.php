@@ -20,6 +20,7 @@ class CreateOnlineExamsTable extends Migration
             $table->integer('online_subject_id');
             $table->integer('timer');
             $table->timestamps();
+            $table->index('exam_code');
         });
     }
 

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 class CreateUsersTable extends Migration
 {
@@ -28,6 +29,19 @@ class CreateUsersTable extends Migration
             $table->softDeletes(); 
             $table->timestamps();
         });
+
+        User::create([
+            'username' => 'admin',
+            'firstname' => 'John',
+            'middlename' => 'Smith',
+            'lastname' => 'Wick',
+            'email' => 'john@mail.com',
+            'password' => '$2y$10$a6a8RxxpTgoIYMeA8Frr9OQsPNMY.3r708jlOHkPKTxrfjA2ncsay', 
+            'gender_id' => 1,
+            'online_course_id' => 1,
+            'DOB' => date('Y-m-d', strtotime('1990-12-01')),
+            'created_at' => now()
+        ]);
     }
 
     /**

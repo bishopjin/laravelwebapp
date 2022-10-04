@@ -15,9 +15,14 @@ class CreatePayrollSalaryGradesTable extends Migration
     {
         Schema::create('payroll_salary_grades', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->boolean('area');
-            $table->timestamp();
+            $table->string('salary_grade')->unique();
+            $table->boolean('night_diff_applied');
+            $table->boolean('overtime_applied');
+            $table->boolean('cola_applied');
+            $table->boolean('ecola_applied');
+            $table->boolean('meal_allowance_applied');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

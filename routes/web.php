@@ -10,10 +10,14 @@ use App\Http\Controllers\InventoryController\web\ProductOrderController;
 use App\Http\Controllers\InventoryController\web\EmployeeController;
 use App\Http\Controllers\InventoryController\web\EmployeeLogsController;
 
-use App\Http\Controllers\OnlineExamController\web\UserProfileController;
-use App\Http\Controllers\OnlineExamController\web\AdminController;
-use App\Http\Controllers\OnlineExamController\web\FacultyController;
-use App\Http\Controllers\OnlineExamController\web\StudentController;
+use App\Http\Controllers\OnlineExamController\web\ProfileController;
+use App\Http\Controllers\OnlineExamController\web\admin\AdminExamDashboardController;
+use App\Http\Controllers\OnlineExamController\web\admin\AdminExamCourseController;
+use App\Http\Controllers\OnlineExamController\web\faculty\FacultyExamDashboardController;
+use App\Http\Controllers\OnlineExamController\web\faculty\ExamController;
+use App\Http\Controllers\OnlineExamController\web\faculty\SubjectController;
+use App\Http\Controllers\OnlineExamController\web\student\StudentExamDashboardController;
+
 use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
 use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
 
@@ -38,11 +42,13 @@ Auth::routes();
 Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::view('/', 'home')->name('index');
 
+	/* User's Role and Permission route */
 	Route::middleware('role:Super Admin')->group(function () {
 		Route::resource('userspermission', UsersPermissionController::class);
 		Route::resource('usersrole', UsersRoleController::class);
 	});
-	
+	/* End */
+
 	/* Inventory Route */
 	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('inventory')->group(function() {
 		Route::get('/', [DashboardController::class, 'index'])->name('inventorydashboard.index');
@@ -62,24 +68,28 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		Route::middleware('permission:inventory add new item')->resource('product', ProductController::class);
 	});
 	/* END */
+
 	/* Online Exam route */
 	Route::prefix('online-exam')->group(function() {
 		Route::middleware('permission:exam admin access')->group(function () {
-			Route::resource('admin', AdminController::class);
+			Route::resource('adminexam', AdminExamDashboardController::class);
+			Route::resource('courseexam', AdminExamCourseController::class);
 		});
 
 		Route::middleware('permission:exam faculty access')->group(function () {
-			Route::resource('faculty', FacultyController::class);
+			Route::resource('facultyexam', FacultyExamDashboardController::class);
+			Route::resource('exam', ExamController::class);
+			Route::resource('subjectexam', SubjectController::class);
 		});
 
 		Route::middleware('permission:exam student access')->group(function () {
-			Route::resource('student', StudentController::class);
+			Route::resource('studentexam', StudentExamDashboardController::class);
 		});
 
-		Route::patch('profile/update', [UserProfileController::class, 'Update'])->name('online.profile.update');
-		Route::get('profile/{id}/edit', [UserProfileController::class, 'Show'])->name('online.profile.edit');
+		Route::resource('profile.user', ProfileController::class);
 	});
 	/* END */
+
 	/* Online Menu route */
 	Route::prefix('menu-ordering')->group(function() {
 		/* Customer route */
@@ -92,18 +102,21 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		});
 	});
 	/* END */
+
 	/* Payroll route */
 	Route::prefix('payroll')->group(function() {
 		Route::view('/notregister', 'payroll.notregister')->name('notregister.index');
 
-		Route::middleware('validatepayrolluser')->group(function () {
-			/* Admin */
-			Route::middleware('permission:payroll admin access')->group(function() {
-				Route::resource('admin', AdminPayrollDashboardController::class);
-			});
-			/* Employee */
-			Route::middleware('permission:payroll employee access')->group(function () {
-				Route::resource('employee', EmployeePayrollDashboardController::class);
+		/* Admin */
+		Route::middleware('permission:payroll admin access')->group(function() {
+			Route::resource('payrolladmin', AdminPayrollDashboardController::class);
+		});
+
+		/* Employee */
+		Route::middleware('permission:payroll employee access')->group(function () {
+			/* Check if user is registered in payroll system */
+			Route::middleware('validatepayrolluser')->group(function () {
+				Route::resource('payrollemployee', EmployeePayrollDashboardController::class);
 			});
 		});
 		Route::resource('changepassword', PayrollChangePasswordController::class);

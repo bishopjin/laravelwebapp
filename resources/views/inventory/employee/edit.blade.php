@@ -50,7 +50,7 @@
                                     <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
                                     <!-- End -->
                                     <td class="text-center">
-                                        <form method="POST" action="{{ route('employee.destroy', ['employee' => $user->id]) }}">
+                                        <form method="POST" action="{{ route('employee.destroy', $user->id) }}">
                                             @csrf
                                             @method('DELETE')
                                             <input type="submit" value="{{ $btn_label }}"

@@ -12,7 +12,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.course.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('courseexam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Course') }}
                         </a>
                     </li>
@@ -44,10 +44,9 @@
                                                 <td>{{ $user->onlinecourse->course }}</td>
                                                 <td>{{ __('For standalone system only') }}</td>
                                                 <td>
-                                                    <form method="POST" action="{{ route('online.user.destroy') }}">
+                                                    <form method="POST" action="{{ route('adminexam.destroy', ['adminexam' => $user->id]) }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <input type="hidden" name="id" value="{{ $user->id }}">
                                                         <input type="submit" value="@if($user->trashed()) Enable Account @else Disable Account @endif" 
                                                             class="btn @if($user->trashed()) btn-outline-success @else btn-outline-danger @endif">
                                                     </form>
@@ -123,12 +122,11 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('online.subject.update') }}" class="p-md-4">
+                    <form method="POST" class="p-md-4" id="modalForm">
                         @csrf
                         @method('PUT')
                         <div class="form-group mb-3">
                             <input type="text" name="subject" id="subjectname" class="form-control" autocomplete="off">
-                            <input type="hidden" name="subject_id" id="editID">
                         </div>
                         <div class="form-group">
                             <div class="d-flex justify-content-end">
@@ -154,7 +152,7 @@
 
         $('.editSubject').on('click', function() {
             $(modal).show();
-            $('#editID').val(this.id);
+            $('#modalForm').attr("action", "/online-exam/adminexam/" + this.id);
             $('#subjectname').val($('#subject' + this.id).html());
         });
     });

@@ -26,7 +26,7 @@
 	</table>
 	<div class="d-flex justify-content-end">
 		@isset($tableData)
-        	{{ $tableData->links() }}
-        @endisset
+       {{ $tableData->links() }}
+    @endisset
 	</div>
 </div>

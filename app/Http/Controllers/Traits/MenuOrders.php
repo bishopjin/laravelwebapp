@@ -10,8 +10,7 @@ trait MenuOrders
 {
 	public function GetAllOrder($currentPage, $taxes) : LengthAwarePaginator
     {
-        if (OrderOrder::exists()) 
-        {
+        if (OrderOrder::exists()) {
             $result = [];
             $page = 1;
             $perPage = 10;
@@ -25,10 +24,8 @@ trait MenuOrders
             
             $orderCount = count($ordersall);
 
-            if ($taxes->count() > 0) 
-            {
-                foreach ($taxes as $value) 
-                {
+            if ($taxes->count() > 0) {
+                foreach ($taxes as $value) {
                     $tax += $value->percentage;
                 }
             }
@@ -36,8 +33,7 @@ trait MenuOrders
             foreach ($ordersall as $order) {
                 $count++;
                  
-                if ($curOrderNo != 0 && $curOrderNo != intval($order->order_number)) 
-                {   
+                if ($curOrderNo != 0 && $curOrderNo != intval($order->order_number)) {   
                     array_push($result, array(
                         'OrderNumber' => $curOrderNo,
                         'Tax' => $tax,
@@ -47,25 +43,19 @@ trait MenuOrders
                     $subTotal = 0;
                     $subTotal += intval($order->item_price) * intval($order->item_qty);
                     $curOrderNo = intval($order->order_number);
-                }
-                else 
-                {
+                } else {
                     $curOrderNo = intval($order->order_number);
                     $subTotal += intval($order->item_price) * intval($order->item_qty);
                 }
 
-                if ($order->order_coupon_id > 0) 
-                {   
+                if ($order->order_coupon_id > 0) {   
                     $orderCoupon = OrderCoupon::find(intval($order->order_coupon_id));
                     $discount = $orderCoupon->discount;
-                }
-                else 
-                {
+                } else {
                     $discount = 0;
                 }
 
-                if ($count == $orderCount)
-                {
+                if ($count == $orderCount) {
                     array_push($result, array(
                         'OrderNumber' => $curOrderNo,
                         'Tax' => $tax,
@@ -84,8 +74,7 @@ trait MenuOrders
                 $currentPage,
                 ['path' => url()->current()]
             );
-        }
-        else { 
+        } else { 
             $pagination = collect(new OrderOrder);
         }
 
@@ -99,5 +88,3 @@ trait MenuOrders
         return $userprofile;
     }
 }
-
-?>

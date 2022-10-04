@@ -33,9 +33,9 @@ class ProfileRequest extends FormRequest
         return [
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'dateofbirth' => ['required', 'date'],
-            'gender' => ['required', 'numeric', 'max:1'],
+            'online_course_id' => ['numeric'],
+            'DOB' => ['required', 'date'],
+            'gender_id' => ['required', 'numeric', 'max:1'],
         ];
     }
 }

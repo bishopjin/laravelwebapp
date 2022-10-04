@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderBeverageName;
 
 class CreateOrderBeverageNamesTable extends Migration
 {
@@ -17,15 +17,17 @@ class CreateOrderBeverageNamesTable extends Migration
         Schema::create('order_beverage_names', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('order_beverage_names')->insert([
-            ['name' => 'Coke'],
-            ['name' => 'Sprite'],
-            ['name' => 'Tea'],
-        ]);
+        OrderBeverageName::upsert(
+            [
+                ['name' => 'Coke'],
+                ['name' => 'Sprite'],
+                ['name' => 'Tea'],
+            ], ['name'], []
+        );
     }
 
     /**

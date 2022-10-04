@@ -18,7 +18,7 @@ class UsersPermissionController extends Controller
     {
         $users = User::paginate(10, ['*'], 'user');
 
-        $rolepermission = Role::with('permissions')->get();
+        $rolepermission = Role::with('permissions')->get();// dd(User::with('roles')->find(1));
         
         return view('userpermission')->with(compact('users', 'rolepermission'));
     }
@@ -120,7 +120,7 @@ class UsersPermissionController extends Controller
 
         $addrls = $user->syncRoles($roles);
 
-        return redirect()->route('users.permission.index');
+        return redirect()->route('userspermission.index');
     }
 
     /**

@@ -7,7 +7,7 @@
             <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('online.faculty.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
+                        <a href="{{ route('facultyexam.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -17,7 +17,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('online.exam.show') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('exam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -32,7 +32,7 @@
                             <div class="card border-warning">
                                 <div class="card-header border-bottom border-warning">{{ __('New Subject') }}</div>
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('online.subject.store') }}">
+                                    <form method="POST" action="{{ route('subjectexam.store') }}">
                                         @csrf
                                         <div class="form-group d-grid gap-2">
                                             <label class="">{{ __('Subject') }}</label>
@@ -56,8 +56,8 @@
                                 $header = ['Subject'];
                                 $dataKey = ['subject'];
                             @endphp
-                            @isset($subject_list)
-                                <x-datatable :data="$subject_list" 
+                            @isset($subjectList)
+                                <x-datatable :data="$subjectList" 
                                     :title="$title" 
                                     :header="$header" 
                                     :tData="$dataKey">

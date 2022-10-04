@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderTax;
 
 class CreateOrderTaxesTable extends Migration
 {
@@ -18,12 +18,12 @@ class CreateOrderTaxesTable extends Migration
             $table->id();
             $table->string('tax');
             $table->float('percentage');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('order_taxes')->insert([
-            ['tax' => 'VAT', 'percentage' => 0.12],
+        OrderTax::create([
+            'tax' => 'VAT', 'percentage' => 0.12,
         ]);
     }
 

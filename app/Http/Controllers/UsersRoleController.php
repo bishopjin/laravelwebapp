@@ -48,15 +48,19 @@ class UsersRoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($name)
+    public function show($id)
     {
-        $permissions = Permission::all();
+        $curuser = User::find($id);
 
-        $rolepermissions = Role::findByName($name, 'web')->permissions;
+        $userroles = User::with('roles')->find($id);
 
-        $roles = Role::with('permissions')->get();
+        $rolepermission = Role::with('permissions')->get();
 
-        return view('rolepermission')->with(compact('permissions', 'name', 'roles', 'rolepermissions'))->render();
+        $roles = Role::all();
+
+        $users = User::paginate(10, ['*'], 'user');
+
+        return view('userpermission')->with(compact('userroles', 'roles', 'users', 'curuser', 'rolepermission'));
     }
 
     /**
@@ -65,9 +69,15 @@ class UsersRoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($name)
     {
-        
+        $permissions = Permission::all();
+
+        $rolepermissions = Role::findByName($name, 'web')->permissions;
+
+        $roles = Role::with('permissions')->get();
+
+        return view('rolepermission')->with(compact('permissions', 'name', 'roles', 'rolepermissions'))->render();
     }
 
     /**

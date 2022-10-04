@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\PayrollCutOff;
 
 class CreatePayrollCutOffsTable extends Migration
 {
@@ -17,14 +17,16 @@ class CreatePayrollCutOffsTable extends Migration
         Schema::create('payroll_cut_offs', function (Blueprint $table) {
             $table->id();
             $table->string('cut_off');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('payroll_cut_offs')->insert([
-            ['cut_off' => '1 to 15'],
-            ['cut_off' => '16 to 30'],
-        ]);
+        PayrollCutOff::upsert(
+            [
+                ['cut_off' => '1 to 15'],
+                ['cut_off' => '16 to 30'],
+            ], ['cut_off'], []
+        );
     }
 
     /**

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderComboMeal;
 
 class CreateOrderComboMealsTable extends Migration
 {
@@ -18,15 +18,17 @@ class CreateOrderComboMealsTable extends Migration
             $table->id()->from(30001);
             $table->string('name')->unique();
             $table->float('price');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
 
-        DB::table('order_combo_meals')->insert([
-            ['name' => 'Chicken Combo', 'price' => 105.0],
-            ['name' => 'Pork Combo', 'price' => 155.0],
-            ['name' => 'Fish Combo', 'price' => 125.0],
-        ]);
+        OrderComboMeal::upsert(
+            [
+                ['name' => 'Chicken Combo', 'price' => 105.0],
+                ['name' => 'Pork Combo', 'price' => 155.0],
+                ['name' => 'Fish Combo', 'price' => 125.0],
+            ], ['name'], ['price']
+        );
     }
 
     /**

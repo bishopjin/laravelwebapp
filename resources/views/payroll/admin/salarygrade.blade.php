@@ -7,7 +7,7 @@
 				<div class="card shadow">
 					<div class="card-header">{{ __('Salary Grade') }}</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.salarygrade.store') }}" class="px-5">
+						<form method="POST" action="{{ route('salarygrade.store') }}" class="px-5">
 							@csrf
 
 							@php
@@ -43,31 +43,31 @@
 							</div>
 
 							<div class="form-group pb-3">
-								<input type="checkbox" name="isnightdiff" id="nightdiff" value="1" class="form-check-input"
+								<input type="checkbox" name="night_diff_applied" id="nightdiff" value="1" class="form-check-input"
 									 	{{ $nghtdffppld == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="nightdiff">{{ __('Night Differentials') }}</label>
 							</div>
 
 							<div class="form-group pb-3">
-								<input type="checkbox" name="isovertime" id="isovertime" value="1" class="form-check-input"
+								<input type="checkbox" name="overtime_applied" id="isovertime" value="1" class="form-check-input"
 										{{ $vrtmppld == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="isovertime">{{ __('Overtime') }}</label>
 							</div>
 
 							<div class="form-group pb-3">
-								<input type="checkbox" name="iscola" id="iscola" value="1" class="form-check-input"
+								<input type="checkbox" name="cola_applied" id="iscola" value="1" class="form-check-input"
 										{{ $clppld == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="iscola">{{ __('Cost of living allowance') }}</label>
 							</div>
 
 							<div class="form-group pb-3">
-								<input type="checkbox" name="isecola" id="isecola" value="1" class="form-check-input"
+								<input type="checkbox" name="ecola_applied" id="isecola" value="1" class="form-check-input"
 										{{ $eclppld == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="isecola">{{ __('Emergency Cost of living allowance') }}</label>
 							</div>
 
 							<div class="form-group pb-3">
-								<input type="checkbox" name="ismeal" id="ismeal" value="1" class="form-check-input"
+								<input type="checkbox" name="meal_allowance_applied" id="ismeal" value="1" class="form-check-input"
 										{{ $mlllwncppld == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="ismeal">{{ __('Meal Allowance') }}</label>
 							</div>

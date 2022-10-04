@@ -44,7 +44,7 @@
         <hr>
         <div class="row justify-content-center py-2">
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100" id="project_1">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-database" aria-hidden="true"></i>&nbsp;
                         {{ __('Inventory System') }}
@@ -61,15 +61,13 @@
                     </div>
 
                     <div class="card-footer">
-                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
                         <div class="d-flex">
                             @if(Auth::user()->hasAnyPermission(['inventory view user', 'inventory edit user', 'inventory add new item', 'inventory get stock', 'inventory add stock']))
-                                <a href="{{ route('inventorydashboard.index') }}" 
-                                    class="btn btn-outline-primary rounded-pill w-100">
+                                <a href="{{ route('inventorydashboard.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
                                     {{ __('Log In') }}
                                 </a>
                             @else
-                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                                <div class="fw-bold w-100 text-center py-2">{{ __('No Access') }}</div>
                             @endif
                         </div>
                     </div>
@@ -77,7 +75,7 @@
             </div>
             <!--  -->
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100" id="project_2">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-cutlery" aria-hidden="true"></i>&nbsp;
                         {{ __('Menu Ordering System') }}
@@ -96,14 +94,12 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
                                 @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
-                                    <a href="menu-ordering/admin"
-                                        class="btn btn-outline-primary w-100 rounded-pill">
-                                        {{ __('Maintenance') }}
+                                    <a href="menu-ordering/admin" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Admin') }}
                                     </a>
                                 @endif
                                 @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
-                                    <a href="menu-ordering/customer"
-                                        class="btn btn-outline-primary w-100 rounded-pill">
+                                    <a href="menu-ordering/customer" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
                                         {{ __('Customer') }}
                                     </a>
                                 @endif
@@ -116,7 +112,7 @@
             </div>
             <!--  -->
             <div class="col-md-4  pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100" id="project_3">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
                         {{ __('Online Examination System') }}
@@ -135,18 +131,18 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['exam student access', 'exam faculty access', 'exam admin access']))
                                 @can('exam admin access')
-                                    <a href="{{ route('admin.index') }}" 
-                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Admin') }}
+                                    <a href="{{ route('adminexam.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Admin') }}
                                     </a>
                                 @endcan
                                 @can('exam faculty access')
-                                    <a href="{{ route('faculty.index') }}" 
-                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Faculty') }}
+                                    <a href="{{ route('facultyexam.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Faculty') }}
                                     </a>
                                 @endcan
                                 @can('exam student access')
-                                    <a href="{{ route('student.index') }}" 
-                                        class="btn btn-outline-primary rounded-pill w-100">{{ __('Student') }}
+                                    <a href="{{ route('studentexam.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Student') }}
                                     </a>
                                 @endcan
                             @else
@@ -160,7 +156,7 @@
         <!-- next row -->
         <div class="row justify-content-center py-2">
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100" id="project_4">
+                <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
                         <i class="fa fa-dollar"></i>&nbsp;
                         {{ __('Payroll System') }}
@@ -180,14 +176,12 @@
                         <div class="d-flex gap-2 flex-md-row flex-column">
                             @if(Auth::user()->hasAnyPermission(['payroll admin access', 'payroll employee access']))
                                 @can('payroll admin access')
-                                    <a href="{{ route('admin.index') }}" 
-                                        class="btn btn-outline-primary rounded-pill w-100">
+                                    <a href="{{ route('payrolladmin.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
                                         {{ __('Admin') }}
                                     </a>
                                 @endcan
                                 @can('payroll employee access')
-                                    <a href="{{ route('employee.index') }}" 
-                                        class="btn btn-outline-primary rounded-pill w-100">
+                                    <a href="{{ route('payrollemployee.index') }}" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
                                         {{ __('Employee') }}
                                     </a>
                                 @endcan
@@ -210,18 +204,9 @@
         <div class="row">
             <div class="col d-flex justify-content-md-between flex-md-row flex-column gap-2">
                 <span>&copy;&nbsp;{{ __('genesedan') }}&nbsp;{{ date('Y') }}</span>
-                <span>{{ __('Last Updated : 07-13-2022') }}</span>
+                <span>{{ __('Last Updated : October 5, 2022') }}</span>
             </div>
         </div>   
-        <div class="row py-2 py-md-3">
-            <div class="col-md-11">
-                <span class="small">{{ __('Hosted : ') }} 
-                    <a href="https://www.infinityfree.net/">{{ __('infinityfree.net') }}</a>
-                </span> 
-                <br>
-                <span class="small">{{ __('SSL Certificate : ZeroSSL (Free)') }}</span>
-            </div>
-        </div>
     </div>
 
     <div class="modal pt-2 pt-md-5 fade" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true" id="aModal" tabindex="-1">

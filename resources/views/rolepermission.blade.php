@@ -17,7 +17,7 @@
                                     @foreach($roles as $role)
                                         <div class="fw-bold ps-4">
                                             <span class="me-4">{{ $role->name }}</span>
-                                            <a href="{{ route('usersrole.show', ['usersrole' => $role->name]) }}" class="text-decoration-none fw-bold text-primary small">
+                                            <a href="{{ route('usersrole.edit', $role->name) }}" class="text-decoration-none fw-bold text-primary small">
                                                 {{ __('Edit Permission') }}
                                             </a>
                                         </div>

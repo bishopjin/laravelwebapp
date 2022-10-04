@@ -4,11 +4,11 @@ namespace App\Http\Controllers\OnlineExamController\web\faculty;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\OnlineExam; 
 use App\Models\OnlineExamQuestion;
 use App\Models\OnlineExamSelection;
 use App\Models\OnlineSubject;
+use App\Http\Requests\ExamQuestionRequest;
 
 class ExamController extends Controller
 {
@@ -36,131 +36,93 @@ class ExamController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ExamQuestionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ExamQuestionRequest $request)
     {
-        $data = $request->all();
-        $qId = 0;
-        $subjects = null;
-        $examCodeId = 0;
-        $examCreated = false;
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
+        //dd($request->validated());
+        if ($request->validated()) {
+            $subjects = null;
+            $examCodeId = 0;
+            $examCreated = false;
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
 
-        $subjects = OnlineSubject::findOrFail($request->input('subject'));
-        
-        if ($subjects)
-        {
-            $randomChar = '';
+            $subjects = OnlineSubject::findOrFail($request->input('online_subject_id'));
+            
+            if ($subjects) {
+                $randomChar = '';
 
-            /* generate code */
-            for ($i = 0; $i < 15; $i++) 
-            {
-                $randomChar .= $characters[rand(0, $charactersLength - 1)];
+                /* generate code */
+                for ($i = 0; $i < 15; $i++) {
+                    $randomChar .= $characters[rand(0, $charactersLength - 1)];
+                }
+
+                $genExamCode = $subjects->subject.'-'.$randomChar;
+
+                $validated = $request->safe()
+                    ->merge(array('exam_code' => $genExamCode, 'user_id' => $request->user()->id))
+                    ->except(['question', 'answer', 'selection']);
+
+                $examCode = OnlineExam::create($validated);
+
+                $examCodeId = $examCode->id;
             }
+            
+            if ($examCodeId > 0) {
+                foreach ($request->input('question') as $keyQ => $valueQ) {
+                    $examCreated = false; 
 
-            $genExamCode = $subjects->subject.'-'.$randomChar;
-
-            $examCode = OnlineExam::create([
-                'exam_code' => $genExamCode,
-                'timer' => $request->input('examTimer'),
-                'user_id' => $request->user()->id,
-                'online_subject_id' => $request->input('subject'),
-            ]);
-
-            $examCodeId = $examCode->id;
-        }
-        
-        if ($examCodeId > 0)
-        {
-            foreach ($data as $key => $value) 
-            {
-                if (str_contains($key, 'question')) 
-                {
+                    /* Save the exam and correct answer */
                     $question = OnlineExamQuestion::create([
                         'online_exam_id' => $examCodeId,
-                        'question' => $value,
+                        'question' => $valueQ,
+                        'key_to_correct' => $request->input('answer')[$keyQ]
                     ]);
 
-                    if ($question->id > 0) 
-                    {
-                        $qId = $question->id;
-                        $examCreated = true;
-                    }
-                    else 
-                    { 
-                        $examCreated = false; 
-                        break; 
-                    }
-                }
-                elseif (str_contains($key, 'answer')) 
-                {
-                    $answer = OnlineExamQuestion::findOrFail($qId)
-                        ->update(['key_to_correct' => $value]);
+                    if ($question->id > 0) {
+                        foreach ($request->input('selection')[$keyQ] as $keyS => $valueS) {
+                            /* Save the exam selection */
+                            $selection = OnlineExamSelection::create([
+                                'online_exam_question_id' => $question->id,
+                                'selection' => $valueS,
+                            ]);
 
-                    if ($answer > 0) 
-                    { 
-                        $examCreated = true; 
-                    }
-                    else 
-                    { 
-                        $examCreated = false; 
-                        break; 
-                    }
-                }
-                elseif (str_contains($key, 'selection')) 
-                {
-                    $selection = OnlineExamSelection::create([
-                        'online_exam_question_id' => $qId,
-                        'selection' => $value,
-                    ]);
-
-                    if ($selection->id > 0)
-                    { 
-                        $examCreated = true; 
-                    }
-                    else
-                    { 
-                        $examCreated = false; 
-                        break; 
+                            $examCreated = $selection->id > 0 ? true : false;
+                        }
                     }
                 }
             }
-        }
-    
-        if ($examCreated) 
-        {
-            $examStatus = 'Examination created successfully.';
-        }
-        else
-        { 
-            $examStatus = 'Failed to create examination.'; 
-        }
+        
+            $examStatus = $examCreated ? 'Examination created successfully.' : 'Failed to create examination.';
 
-        return redirect()->back()->with('examStatus', $examStatus);
+            return redirect()->back()->with('examStatus', $examStatus);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $code
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($code)
     {
         $subjects = OnlineSubject::select('id', 'subject')->get();
 
-        $exams = OnlineExam::where([['exam_code', '=',  $id], ['user_id', '=',auth()->user()->id]])->get();
+        $exams = OnlineExam::where([
+            ['exam_code', '=',  $code], 
+            ['user_id', '=', auth()->user()->id]
+        ])->get();
             
         if ($exams->count() > 0) {
             $examQuestions = OnlineExamQuestion::where('online_exam_id', $exams[0]->id)->get();
 
-            return view('onlineexam.faculty.exam')->with(compact('exams', 'examQuestions', 'id', 'subjects'));
-        }
-        else {
-            return view('onlineexam.faculty.exam')->with(compact('exams', 'id', 'subjects'));
+            return view('onlineexam.faculty.exam')->with(compact('exams', 'examQuestions', 'code', 'subjects'));
+        
+        } else {
+            return view('onlineexam.faculty.exam')->with(compact('exams', 'code', 'subjects'));
         }
     }
 

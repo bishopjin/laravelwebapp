@@ -50,10 +50,7 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        $courses = OnlineCourse::get();
-        $userDetails = User::findOrFail($id);
-        
-        return view('onlineexam.profile')->with(compact('userDetails', 'courses'));
+        //
     }
 
     /**
@@ -62,9 +59,13 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($profile, $id)
     {
-        //
+        $courses = OnlineCourse::get();
+
+        $userDetails = User::findOrFail($id);
+        
+        return view('onlineexam.profile')->with(compact('userDetails', 'courses', 'profile'));
     }
 
     /**
@@ -74,28 +75,27 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProfileRequest $request, $id)
+    public function update(ProfileRequest $request, $profile, $id)
     {
-        if ($request->validated()) 
+        if ($request->validated()) {
             $updated = User::findOrFail($id)->update($request->validated());
 
-            if ($updated > 0)
-            {   
-                /*if($request->user()->can('exam admin access')) 
-                {
-                    $route_name = 'online.admin.index';
+            if ($updated > 0) {   
+                switch ($profile) {
+                    case 'admin':
+                        $route_name = 'adminexam.index';
+                        break;
+                    
+                    case 'faculty':
+                        $route_name = 'facultyexam.index';
+                        break;
+
+                    default:
+                        $route_name = 'studentexam.index'; 
+                        break;
                 }
-                elseif($request->user()->can('exam faculty access'))
-                {
-                    $route_name = 'online.faculty.index';
-                }
-                else
-                {
-                    $route_name = 'online.student.index'; 
-                }
-                return redirect()->route($route_name);*/
-                
-                return redirect()->back();
+
+                return redirect()->route($route_name);
             }
         }
     }
