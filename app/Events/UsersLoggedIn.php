@@ -14,14 +14,18 @@ class UsersLoggedIn
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
+    public $process;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user, $process)
     {
-        //
+        $this->user = $user;
+        $this->process = $process;
     }
 
     /**

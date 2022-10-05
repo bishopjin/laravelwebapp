@@ -15,7 +15,7 @@ class EmployeeLogsController extends Controller
      */
     public function index()
     {
-        $employeeLog = InventoryEmployeeLog::with('user')->paginate(10);
+        $employeeLog = InventoryEmployeeLog::with('user')->latest()->paginate(10);
         return view('inventory.employee.index')->with(compact('employeeLog'));
     }
 }

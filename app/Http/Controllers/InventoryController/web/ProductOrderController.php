@@ -17,7 +17,9 @@ class ProductOrderController extends Controller
      */
     public function index()
     {
-        $orders = InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])->paginate(10);
+        $orders = InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+            ->latest()->paginate(10);
+            
         return view('inventory.product.order')->with(compact('orders'));
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -60,6 +61,12 @@ class User extends Authenticatable
     protected function getFullNameAttribute()
     {
         return "{$this->lastname}, {$this->firstname} {$this->middlename}";
+    }
+
+    /* Laravel 8 mutators */
+    protected function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 
     /* Local Scope */

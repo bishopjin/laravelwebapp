@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use App\Models\InventoryEmployeeLog;
+use App\Events\UsersLoggedIn;
 
 trait AuthenticatesUsers
 {
@@ -141,10 +141,7 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        InventoryEmployeeLog::create([
-            'user_id' => $user->id,
-            'time_in' => date('Y-m-d h:i:s'),
-        ]); 
+        event(new UsersLoggedIn($user, 'login'));
     }
 
     /**
@@ -180,13 +177,7 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-        InventoryEmployeeLog::where('user_id', $request->user()->id)
-            ->whereNull('time_out')
-            ->where('time_in', 'like', date('Y-m-d').'%')
-            ->update([
-                'time_out' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
-            ]);
+        event(new UsersLoggedIn($request->user(), 'logout'));
 
         $this->guard()->logout();
 

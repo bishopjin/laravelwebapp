@@ -25,7 +25,7 @@ class StudentExamDashboardController extends Controller
 
         $course = $user->onlinecourse->course;
 
-        $examResult = OnlineExamination::with(['onlineexam'])->where('user_id', auth()->user()->id)->get();
+        $examResult = OnlineExamination::with(['onlineexam'])->where('user_id', auth()->user()->id)->latest()->get();
 
         $subjects = OnlineExam::with('onlinesubject')->get();
         

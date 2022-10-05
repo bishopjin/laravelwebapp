@@ -15,7 +15,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $shoeInventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->paginate(10, ['*'], 'inventory');
+        $shoeInventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->latest()->paginate(10, ['*'], 'inventory');
         return view('inventory.dashboard')->with(compact('shoeInventory'));
     }
 }

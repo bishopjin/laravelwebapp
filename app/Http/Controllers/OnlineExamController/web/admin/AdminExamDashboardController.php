@@ -17,9 +17,10 @@ class AdminExamDashboardController extends Controller
      */
     public function index()
     {
-        $subjects = OnlineSubject::with('user')->paginate(10, ['*'], 'subject');
+        $subjects = OnlineSubject::with('user')->latest()->paginate(10, ['*'], 'subject');
         
-        $users = User::withTrashed()->with(['gender', 'onlinecourse'])->notadmin()->notself(auth()->user()->id)->paginate(10, ['*'], 'users');
+        $users = User::withTrashed()->with(['gender', 'onlinecourse'])->notadmin()
+            ->notself(auth()->user()->id)->latest()->paginate(10, ['*'], 'users');
         
         return view('onlineexam.admin.index')->with(compact('users', 'subjects'));
     }

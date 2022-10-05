@@ -74,43 +74,6 @@
                 </div>
             </div>
             <!--  -->
-            <div class="col-md-4 pb-md-0 pb-3 d-flex">
-                <div class="card shadow w-100">
-                    <h4 class="card-header d-flex align-items-baseline">
-                        <i class="fa fa-cutlery" aria-hidden="true"></i>&nbsp;
-                        {{ __('Menu Ordering System') }}
-                    </h4>   
-                    
-                    <div class="card-body">
-                        <span class="fw-bold">{{ __('Menu Ordering Feature:') }}</span> <br>
-                        &nbsp; {{ __('- Create order') }} <br>
-                        &nbsp; {{ __('- Discount and tax applied to the order') }} <br>
-                        &nbsp; {{ __('- Order history') }} <br>
-                        &nbsp; {{ __('- Maintenance page for adding/modifying product, tax and discount.') }}
-                    </div>
-
-                    <div class="card-footer">
-                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
-                        <div class="d-flex gap-2 flex-md-row flex-column">
-                            @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
-                                @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
-                                    <a href="menu-ordering/admin" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
-                                        {{ __('Admin') }}
-                                    </a>
-                                @endif
-                                @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
-                                    <a href="menu-ordering/customer" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
-                                        {{ __('Customer') }}
-                                    </a>
-                                @endif
-                            @else
-                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--  -->
             <div class="col-md-4  pb-md-0 pb-3 d-flex">
                 <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
@@ -152,9 +115,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- next row -->
-        <div class="row justify-content-center py-2">
+            <!--  -->
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
                 <div class="card shadow w-100">
                     <h4 class="card-header d-flex align-items-baseline">
@@ -192,6 +153,48 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <!-- next row -->
+        <div class="row justify-content-center py-2">
+            <!--  -->
+            <div class="col-md-4 pb-md-0 pb-3 d-flex">
+                <div class="card shadow w-100">
+                    <h4 class="card-header d-flex align-items-baseline">
+                        <i class="fa fa-cutlery" aria-hidden="true"></i>&nbsp;
+                        {{ __('Menu Ordering System') }}
+                    </h4>   
+                    
+                    <div class="card-body">
+                        <span class="fw-bold">{{ __('Menu Ordering Feature:') }}</span> <br>
+                        &nbsp; {{ __('- Create order') }} <br>
+                        &nbsp; {{ __('- Discount and tax applied to the order') }} <br>
+                        &nbsp; {{ __('- Order history') }} <br>
+                        &nbsp; {{ __('- Maintenance page for adding/modifying product, tax and discount.') }}
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="fw-bold pb-2">{{ __('Log In as:') }}</div>
+                        <div class="d-flex gap-2 flex-md-row flex-column">
+                            @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
+                                @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
+                                    <a href="menu-ordering/admin" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Admin') }}
+                                    </a>
+                                @endif
+                                @if(Auth::user()->hasAnyPermission(['menu create orders', 'menu view order history', 'menu view coupon list']))
+                                    <a href="menu-ordering/customer" class="btn btn-outline-primary fw-bold rounded border-0 w-100">
+                                        {{ __('Customer') }}
+                                    </a>
+                                @endif
+                            @else
+                                <div class="fw-bold w-100 text-center pb-2">{{ __('No Access') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+            
             <div class="col-md-4 pb-md-0 pb-3 d-flex">
 
             </div>
