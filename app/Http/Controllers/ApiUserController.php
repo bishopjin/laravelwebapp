@@ -58,7 +58,7 @@ class ApiUserController extends Controller
                 );
 
                 event(new UsersLoggedIn($user, 'login'));
-                
+
             } else {
                 $response = array(
                     'role' => [], 
@@ -71,4 +71,12 @@ class ApiUserController extends Controller
         return response()->json($response);
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        event(new UsersLoggedIn($request->user(), 'logout'));
+
+        return response()->json(['message' => 'User\'s Logged out.']);
+    }
 }

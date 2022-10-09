@@ -20,7 +20,9 @@
 <body style="background-color: #E64A19;">
     <noscript>
         <div class="fw-bold h4 d-flex justify-content-center pt-3">
-            <span class="text-light p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+            <span class="text-light p-4 border rounded shadow">
+                {{ __('This web app requires javascript, dont block javascript from your web browser.') }}
+            </span>
         </div>
     </noscript>
     <div id="">
@@ -45,11 +47,18 @@
                             $route_name = 'studentexam.index';
                         }
                     @endphp
-                    <a class="navbar-brand me-4" href="{{ route($route_name) }}">
+                    <a class="navbar-brand me-4" 
+                        href="{{ route($route_name) }}">
                         {{ __('Online Examination - Laravel') }}
                     </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <button class="navbar-toggler" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" 
+                        aria-expanded="false" 
+                        aria-label="{{ __('Toggle navigation') }}">
+
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
@@ -88,40 +97,75 @@
                             </div>
                         @endif
                         <div class="d-block d-md-none mt-1 bg-primary">
-                            <a class="dropdown-item" href="/">
-                                <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
+                            <a class="dropdown-item" 
+                                href="/">
+
+                                <i class="fa fa-sign-out" 
+                                    aria-hidden="true">
+                                </i>
+                                &nbsp; {{ __('Home') }}
                             </a>
                         </div>
                         <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ms-auto d-none d-md-block">
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i> &nbsp; {{ Auth::user()->username }}
+                                <a id="navbarDropdown" 
+                                    class="nav-link dropdown-toggle d-flex align-items-center" 
+                                    href="#" 
+                                    role="button" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-haspopup="true" 
+                                    aria-expanded="false" 
+                                    v-pre>
+
+                                    <i class="fa fa-user-circle-o fa-2x" 
+                                        aria-hidden="true">
+                                    </i> 
+                                    &nbsp; {{ Auth::user()->username }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu-right mt-1 border-0 bg-primary" 
+                                    aria-labelledby="navbarDropdown">
                                     
                                     @switch(Route::current()->getName())
                                         @case('adminexam.index')
-                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'admin', 'user' => Auth::user()->id]) }}">
-                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            <a class="dropdown-item" 
+                                                href="{{ route('profile.user.edit', ['profile' => 'admin', 'user' => Auth::user()->id]) }}">
+                                                <i class="fa fa-cog" 
+                                                    aria-hidden="true">
+                                                </i>
+                                                &nbsp; {{ __('Profile') }}
                                             </a>
                                             @break
                                      
                                         @case('facultyexam.index')
-                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'faculty', 'user' => Auth::user()->id]) }}">
-                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            <a class="dropdown-item" 
+                                                href="{{ route('profile.user.edit', ['profile' => 'faculty', 'user' => Auth::user()->id]) }}">
+                                                
+                                                <i class="fa fa-cog" 
+                                                    aria-hidden="true">
+                                                </i>
+                                                &nbsp; {{ __('Profile') }}
                                             </a>
                                             @break
                                      
                                         @default
-                                            <a class="dropdown-item" href="{{ route('profile.user.edit', ['profile' => 'student', 'user' => Auth::user()->id]) }}">
-                                                <i class="fa fa-cog" aria-hidden="true"></i> &nbsp; {{ __('Profile') }}
+                                            <a class="dropdown-item" 
+                                                href="{{ route('profile.user.edit', ['profile' => 'student', 'user' => Auth::user()->id]) }}">
+                                            
+                                                <i class="fa fa-cog" 
+                                                    aria-hidden="true">
+                                                </i> 
+                                                &nbsp; {{ __('Profile') }}
                                             </a>
                                     @endswitch
 
-                                    <a class="dropdown-item" href="/">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; {{ __('Home') }}
+                                    <a class="dropdown-item" 
+                                        href="/">
+                                        <i class="fa fa-sign-out" 
+                                            aria-hidden="true">
+                                        </i>
+                                        &nbsp; {{ __('Home') }}
                                     </a>
                                 </div>
                             </li>

@@ -22,11 +22,16 @@ use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
 use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
 
 use App\Http\Controllers\PayrollController\web\admin\AdminPayrollDashboardController;
+use App\Http\Controllers\PayrollController\web\admin\ScheduleController;
+use App\Http\Controllers\PayrollController\web\admin\CutOffController;
+use App\Http\Controllers\PayrollController\web\admin\AttendanceCorrectionController;
+use App\Http\Controllers\PayrollController\web\admin\HolidayController;
+use App\Http\Controllers\PayrollController\web\admin\SalaryAdditionController;
+use App\Http\Controllers\PayrollController\web\admin\SalaryDeductionController;
+use App\Http\Controllers\PayrollController\web\admin\SalaryGradeController;
+use App\Http\Controllers\PayrollController\web\admin\UserRegistrationController;
+
 use App\Http\Controllers\PayrollController\web\employee\EmployeePayrollDashboardController;
-use App\Http\Controllers\PayrollController\web\PayrollChangePasswordController;
-use App\Http\Controllers\PayrollController\web\PayrollEmployeeController;
-use App\Http\Controllers\PayrollController\web\PayrollAdminController;
-use App\Http\Controllers\PayrollController\web\PayrollDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -110,6 +115,14 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		/* Admin */
 		Route::middleware('permission:payroll admin access')->group(function() {
 			Route::resource('payrolladmin', AdminPayrollDashboardController::class);
+			Route::resource('payrollschedule', ScheduleController::class);
+			Route::resource('cutoff', CutOffController::class);
+			Route::resource('attendancecorrection', AttendanceCorrectionController::class);
+			Route::resource('holiday', HolidayController::class);
+			Route::resource('salaryaddition', SalaryAdditionController::class);
+			Route::resource('salarydeduction', SalaryDeductionController::class);
+			Route::resource('salarygrade', SalaryGradeController::class);
+			Route::resource('register', UserRegistrationController::class);
 		});
 
 		/* Employee */

@@ -6,9 +6,14 @@
         <div class="col">
             <div class="card">
                 <div class="card-header fw-bolder d-flex flex-row justify-content-between align-items-center">
-                    <span>{{ __('Employee Log') }}</span>
                     <span>
-                        <a href="{{ route('employee.index') }}" class="btn btn-outline-success px-3 fw-bolder">{{ __('Edit User') }}</a>
+                        {{ __('Employee Log') }}
+                    </span>
+                    <span>
+                        <a href="{{ route('employee.index') }}" 
+                            class="btn btn-outline-success px-3 fw-bolder">
+                            {{ __('Edit User') }}
+                        </a>
                     </span>
                 </div>
 
@@ -16,12 +21,24 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>UID</th>
-                                <th>Employee Name</th>
-                                <th>Time In</th>
-                                <th>Login Date</th>
-                                <th>Time Out</th>
-                                <th>Logout Date</th>
+                                <th>
+                                    {{ __('UID') }}
+                                </th>
+                                <th>
+                                    {{ __('Employee Name') }}
+                                </th>
+                                <th>
+                                    {{ __('Time In') }}
+                                </th>
+                                <th>
+                                    {{ __('Login Date') }}
+                                </th>
+                                <th>
+                                    {{ __('Time Out') }}
+                                </th>
+                                <th>
+                                    {{ __('Logout Date') }}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,12 +50,24 @@
                                     else { $date_out = explode(' ', $item->time_out); }
                                 @endphp
                                 <tr>
-                                    <td class="fw-bolder">{{ $item->user_id }}</td>
-                                    <td>{{ $item->user->full_name }}</td>
-                                    <td>{{ $date_in[1] }}</td>
-                                    <td>{{ $date_in[0] }}</td>
-                                    <td>{{ $date_out[1] }}</td>
-                                    <td>{{ $date_out[0] }}</td>
+                                    <td class="fw-bolder">
+                                        {{ $item->user_id }}
+                                    </td>
+                                    <td>
+                                        {{ $item->user->full_name }}
+                                    </td>
+                                    <td>
+                                        {{ $date_in[1] }}
+                                    </td>
+                                    <td>
+                                        {{ $date_in[0] }}
+                                    </td>
+                                    <td>
+                                        {{ $date_out[1] }}
+                                    </td>
+                                    <td>
+                                        {{ $date_out[0] }}
+                                    </td>
                                 </tr>
                             @empty
                             @endforelse

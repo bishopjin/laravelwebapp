@@ -10,14 +10,25 @@
                 </div>
 
                 <div class="card-body table-responsive">
-                    <table class="table" id="datatable">
+                    <table class="table" 
+                        id="datatable">
                         <thead>
                             <tr class="small">
-                                <th class="text-center">User ID</th>
-                                <th class="text-center">Users</th>
-                                <th class="text-center">Access Type</th>
-                                <th class="text-center">Change Access Type</th>
-                                <th class="text-center">Change Account Status</th>
+                                <th class="text-center">
+                                    {{ __('User ID') }}
+                                </th>
+                                <th class="text-center">
+                                    {{ __('Users') }}
+                                </th>
+                                <th class="text-center">
+                                    {{ __('Access Type') }}
+                                </th>
+                                <th class="text-center">
+                                    {{ __('Change Access Type') }}
+                                </th>
+                                <th class="text-center">
+                                    {{ __('Change Account Status') }}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,37 +36,55 @@
                                 @php
                                     $active = false;
                                     $notactive = false;
-                                    if ($user->trashed())
-                                    {   
+                                    if ($user->trashed()) {   
                                         $btn_label = 'Enable';
                                         $notactive = true;
-                                    }
-                                    else 
-                                    {
+
+                                    } else {
                                         $btn_label = 'Disable';
                                         $active = true;
                                     }
                                 @endphp
+
                                 <tr>
-                                    <td class="text-center">{{ $user->id }}</td>
-                                    <td>{{ $user->full_name }}</td>
-                                    <!-- standalone system -->
-                                    {{-- <td class="text-center">{{ $user->user_type }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('employee.edit', $user->id) }} " class="btn btn-outline-primary">Edit Access Level</a>
+                                        {{ $user->id }}
+                                    </td>
+                                    <td>
+                                        {{ $user->full_name }}
+                                    </td>
+                                    <!-- standalone system -->
+                                    {{-- <td class="text-center">
+                                        {{ $user->user_type }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ route('employee.edit', $user->id) }}" 
+                                            class="btn btn-outline-primary">
+                                            {{ __('Edit Access Level') }}
+                                        </a>
                                     </td> --}}
                                     <!-- End -->
                                     <!-- consolidated system  -->
-                                    <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
-                                    <td class="text-center text-danger">{{ __('For standalone system only') }}</td>
+                                    <td class="text-center text-danger">
+                                        {{ __('For standalone system only') }}
+                                    </td>
+                                    <td class="text-center text-danger">
+                                        {{ __('For standalone system only') }}
+                                    </td>
                                     <!-- End -->
                                     <td class="text-center">
-                                        <form method="POST" action="{{ route('employee.destroy', $user->id) }}">
+                                        <form method="POST" 
+                                            action="{{ route('employee.destroy', $user->id) }}">
+                                            
                                             @csrf
                                             @method('DELETE')
-                                            <input type="submit" value="{{ $btn_label }}"
-                                                @class(['fw-bold', 'text-danger' => $active, 
-                                                'text-success' => $notactive])>
+
+                                            <input type="submit" 
+                                                value="{{ $btn_label }}"
+                                                @class([
+                                                    'fw-bold', 'text-danger' => $active, 
+                                                    'text-success' => $notactive,
+                                                ])>
                                         </form>
                                     </td>
                                 </tr>

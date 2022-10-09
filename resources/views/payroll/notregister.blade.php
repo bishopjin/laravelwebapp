@@ -21,7 +21,9 @@
 <body style="background-color: #C8C8C8;">
     <noscript>
         <div class="fw-bold h4 d-flex justify-content-center pt-3">
-            <span class="text-danger p-4 border rounded shadow">{{ __('This web app requires javascript, dont block javascript from your web browser.') }}</span>
+            <span class="text-danger p-4 border rounded shadow">
+                {{ __('This web app requires javascript, dont block javascript from your web browser.') }}
+            </span>
         </div>
     </noscript>
    	<div class="container">
@@ -33,8 +35,13 @@
 							{{ __('User is not registered in the payroll.') }}
 						</div>
 						<div class="text-center">
-							<div>{{ __('Ask admin user to register your account in the payroll system.') }}</div>
-							<a href="{{ route('index') }}" class="text-decoration-none fw-bold pt-3">{{ __('Home') }}</a>
+							<div>
+                                {{ __('Ask admin user to register your account in the payroll system.') }}
+                            </div>
+							<a href="{{ route('index') }}" 
+                                class="text-decoration-none fw-bold pt-3">
+                                {{ __('Home') }}
+                            </a>
 						</div>
 					</div>
 				</div>

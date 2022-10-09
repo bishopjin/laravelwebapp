@@ -5,60 +5,108 @@
 		<div class="row justify-content-center">
 			<div class="col-md-6">
 				<div class="card shadow">
-					<div class="card-header">{{ __('Holiday') }}</div>
+					<div class="card-header">
+						{{ __('Holiday') }}
+					</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payroll.admin.cutoff.update') }}">
+						<form method="POST" 
+							action="{{ route('cutoff.update', 0) }}">
+
 							@csrf
 							@method('PUT')
+
 							@php
 								$fco = explode('to', $cutOff[0]->cut_off);
 								$sco = explode('to', $cutOff[1]->cut_off);
 							@endphp
 
 							<div class="form-group pb-2">
-								<label>{{ __('First Cut-off Period/Date') }}</label><br>
+								<label>
+									{{ __('First Cut-off Period/Date') }}
+								</label>
+								<br>
 								<div class="row">
 									<div class="col-6">
-										<label for="cutoff1">{{ __('Start') }}</label>
+										<label for="cutoff1">
+											{{ __('Start') }}
+										</label>
 									</div>
 									<div class="col-6">
-										<label for="cutoff2">{{ __('End') }}</label>
+										<label for="cutoff2">
+											{{ __('End') }}
+										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-6">
-										<select class="form-select" name="sfco" id="cutoff1">
+										<select class="form-select" 
+											name="sfco" 
+											id="cutoff1">
+
 										</select>
 									</div>
 									<div class="col-6">
-										<input type="text" name="efco" value="{{ trim($fco[1]) }}" class="form-control" id="cutoff2" readonly>
+										<input type="text" 
+											name="efco" 
+											value="{{ trim($fco[1]) }}" 
+											class="form-control" 
+											id="cutoff2" 
+											readonly>
+
 									</div>
 								</div>
-								<label class="pt-3">{{ __('Second Cut-off Period/Date') }}</label><br>
+								<label class="pt-3">
+									{{ __('Second Cut-off Period/Date') }}
+								</label>
+								<br>
 								<div class="row">
 									<div class="col-6">
-										<label for="cutoff11">{{ __('Start') }}</label>
+										<label for="cutoff11">
+											{{ __('Start') }}
+										</label>
 									</div>
 									<div class="col-6">
-										<label for="cutoff22">{{ __('End') }}</label>
+										<label for="cutoff22">
+											{{ __('End') }}
+										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-6">
-										<input type="text" name="ssco" value="{{ trim($sco[0]) }}" class="form-control" id="cutoff11" readonly>
+										<input type="text" 
+											name="ssco" 
+											value="{{ trim($sco[0]) }}" 
+											class="form-control" 
+											id="cutoff11" 
+											readonly>
+
 									</div>
 									<div class="col-6">
-										<input type="text" name="esco" value="{{ trim($sco[1]) }}" class="form-control" id="cutoff22" readonly>
+										<input type="text" 
+											name="esco" 
+											value="{{ trim($sco[1]) }}" 
+											class="form-control" 
+											id="cutoff22" 
+											readonly>
+
 									</div>
 								</div>
 							</div>
 
 							@if(\Session::has('message'))
-								<div class="fw-bold">{{ \Session::get('message') }}</div>
+								<div class="fw-bold">
+									{{ \Session::get('message') }}
+								</div>
 							@endif
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payroll.admin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
-								<input type="submit" value="Update" class="btn btn-outline-primary">
+								<a href="{{ route('payrolladmin.index') }}" 
+									class="btn btn-outline-success">
+									{{ __('Back') }}
+								</a>
+								<input type="submit" 
+									value="Update" 
+									class="btn btn-outline-primary">
+
 							</div>
 						</form>
 					</div>
@@ -97,12 +145,13 @@
 				$('#cutoff11').val(parseInt($('#cutoff2').val()) + 1);
 				if ((parseInt($('#cutoff11').val()) + 14) > number_of_days) {
 					startval = (parseInt($('#cutoff11').val()) + 14) - number_of_days;
-				}
-				else {
+
+				} else {
 					startval = parseInt($('#cutoff11').val()) + 14;
 				}
 				$('#cutoff22').val(startval);
 			});
+			
 			/* get the number of days per month */
 			function daysInMonth (month, year) {
 			    return new Date(year, month, 0).getDate();

@@ -26,7 +26,7 @@ class SalaryGradeController extends Controller
      */
     public function create()
     {
-        //
+        return view('payroll.admin.salarygrade');
     }
 
     /**

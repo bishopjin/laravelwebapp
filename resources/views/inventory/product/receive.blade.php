@@ -5,57 +5,107 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header fw-bolder">{{ __('Receive Item') }}</div>
+                <div class="card-header fw-bolder">
+                    {{ __('Receive Item') }}
+                </div>
 
                 <div class="card-body">
-                    <form method="" action="" class="px-md-5" id="deliverForm">
+                    <form class="px-md-5" 
+                        id="deliverForm">
                         <div class="form-group pb-3">
                             <div class="row g-1">
                                 <div class="col-9">
-                                    <label>Product ID</label>
-                                    <input type="text" class="form-control" id="itemID" required>
+                                    <label>
+                                        {{ __('Product ID') }}
+                                    </label>
+                                    <input type="text" 
+                                        class="form-control" 
+                                        id="itemID" 
+                                        required>
                                 </div>
                                 <div class="col-3 d-flex align-items-end">
-                                    <a href="javascript:void(0);" class="btn btn-outline-success w-100" id="searchBtn">Search</a>
+                                    <button type="button" 
+                                        class="btn btn-outline-success w-100" 
+                                        id="searchBtn">
+                                        {{ __('Search') }}
+                                    </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <span id="errorMsg" class="text-danger fw-bolder"></span>
-                                    <span id="successMsg" class="fw-bolder"></span>
+                                    <span id="errorMsg" 
+                                        class="text-danger fw-bolder">
+                                    </span>
+                                    <span id="successMsg" 
+                                        class="fw-bolder">
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group py-3">
-                            <label>Brand</label>
-                            <input type="text" class="form-control" id="BID" readonly="">
+                            <label>
+                                {{ __('Brand') }}
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="BID" 
+                                readonly>
                         </div>
 
                         <div class="form-group pb-3">
-                            <label>Size</label>
-                            <input type="text" id="SID" class="form-control" readonly="">
+                            <label>
+                                {{ __('Size') }}
+                            </label>
+                            <input type="text" 
+                                id="SID" 
+                                class="form-control" 
+                                readonly>
                         </div>
 
                         <div class="form-group pb-3">
-                            <label>Color</label>
-                            <input type="text" id="CID" class="form-control" readonly="">
+                            <label>
+                                {{ __('Color') }}
+                            </label>
+                            <input type="text" 
+                                id="CID" 
+                                class="form-control" 
+                                readonly>
                         </div>
                         <div class="form-group pb-3">
-                            <label>Type</label>
-                            <input type="text" id="TID" class="form-control" readonly="">
+                            <label>
+                                {{ __('Type') }}
+                            </label>
+                            <input type="text" 
+                                id="TID" 
+                                class="form-control" 
+                                readonly>
                         </div>
                         <div class="form-group pb-3">
-                            <label>Category</label>
-                            <input type="text" id="CatID" class="form-control" readonly="">
+                            <label>
+                                {{ __('Category') }}
+                            </label>
+                            <input type="text" 
+                                id="CatID" 
+                                class="form-control" 
+                                readonly>
                         </div>
 
                         <div class="form-group pb-3">
-                            <label>Quantity</label>
-                            <input type="number" id="qty" class="form-control" required="">
+                            <label>
+                                {{ __('Quantity') }}
+                            </label>
+                            <input type="number" 
+                                id="qty" 
+                                class="form-control" 
+                                required>
                         </div>
                         <div class="form-group d-flex justify-content-center py-2">
-                            <a href="javascript:void(0);" class="btn btn-outline-primary px-5" id="saveOrderBtn">Save</a>
+                            <button type="button" 
+                                class="btn btn-outline-primary px-5" 
+                                id="saveOrderBtn">
+                                {{ __('Save') }}
+                            </button>
                         </div>
                     </form>
                 </div>

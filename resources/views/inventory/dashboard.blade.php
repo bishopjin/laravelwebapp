@@ -5,40 +5,67 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="card">
-                <div class="card-header fw-bolder">{{ __('Inventory') }}</div>
+                <div class="card-header fw-bolder">
+                    {{ __('Inventory') }}
+                </div>
 
                 <div class="card-body table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Product ID</th>
-                                <th>Brand</th>
-                                <th>Size</th>
-                                <th>Color</th>
-                                <th>Type</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>In Stock</th>
+                                <th>
+                                    {{ __('Product ID') }}
+                                </th>
+                                <th>
+                                    {{ __('Brand') }}
+                                </th>
+                                <th>
+                                    {{ __('Size') }}
+                                </th>
+                                <th>
+                                    {{ __('Color') }}
+                                </th>
+                                <th>
+                                    {{ __('Type') }}
+                                </th>
+                                <th>
+                                    {{ __('Category') }}
+                                </th>
+                                <th>
+                                    {{ __('Price') }}
+                                </th>
+                                <th>
+                                    {{ __('In Stock') }}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($shoeInventory as $item)
-                                @php
-                                    /* add trailing zero for non-decimal price */
-                                    if(!str_contains($item->price, '.')) {
-                                        $price =  $item->price.'.00';   
-                                    }
-                                    else { $price = $item->price; }
-                                @endphp
                                 <tr>
-                                    <td class="fw-bolder">{{ $item->id }}</td>
-                                    <td>{{ $item->brand->brand }}</td>
-                                    <td>{{ $item->size->size }}</td>
-                                    <td>{{ $item->color->color }}</td>
-                                    <td>{{ $item->type->type }}</td>
-                                    <td>{{ $item->category->category }}</td>
-                                    <td>{{ $price }}</td>
-                                    <td>{{ $item->in_stock }}</td>
+                                    <td class="fw-bolder">
+                                        {{ $item->id }}
+                                    </td>
+                                    <td>
+                                        {{ $item->brand->brand }}
+                                    </td>
+                                    <td>
+                                        {{ $item->size->size }}
+                                    </td>
+                                    <td>
+                                        {{ $item->color->color }}
+                                    </td>
+                                    <td>
+                                        {{ $item->type->type }}
+                                    </td>
+                                    <td>
+                                        {{ $item->category->category }}
+                                    </td>
+                                    <td>
+                                        {{ $item->price }}
+                                    </td>
+                                    <td>
+                                        {{ $item->in_stock }}
+                                    </td>
                                 </tr>
                             @empty
                             @endforelse

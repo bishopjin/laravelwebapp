@@ -26,7 +26,7 @@ class HolidayController extends Controller
      */
     public function create()
     {
-        //
+        return view('payroll.admin.holiday');
     }
 
     /**

@@ -5,74 +5,146 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="card">
-                <div class="card-header fw-bolder">{{ __('Order Item') }}</div>
+                <div class="card-header fw-bolder">
+                    {{ __('Order Item') }}
+                </div>
 
                 <div class="card-body">
-                    <form method="" action="" class="p-3 border rounded mb-3 mb-md-4">
+                    <form class="p-3 border rounded mb-3 mb-md-4">
                         <div class="form-group d-flex flex-row justify-content-between">
-                            <span class="h4">Search Item</span><span class="text-danger fw-bolder" id="errorMsg"></span>
+                            <span class="h4">
+                                {{ __('Search Item') }}
+                            </span>
+                            <span class="text-danger fw-bolder" 
+                                id="errorMsg">
+                            </span>
                         </div>
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-5">
-                                    <label>Staff ID</label>
-                                    <input type="text" value="{{ auth()->user()->id }}" class="form-control" readonly=""> 
+                                    <label>
+                                        {{ __('Staff ID') }}
+                                    </label>
+                                    <input type="text" 
+                                        value="{{ auth()->user()->id }}" 
+                                        class="form-control" 
+                                        readonly> 
                                 </div>
                                 <div class="col-md-5">
-                                    <label>Product ID</label>
-                                    <input type="number" class="form-control @error('item_id') is-invalid @enderror" id="itemID">
+                                    <label>
+                                        {{ __('Product ID') }}
+                                    </label>
+                                    <input type="number" 
+                                        class="form-control @error('item_id') is-invalid @enderror" 
+                                        id="itemID">
                                 </div>
                                 <div class="col-md-2 d-flex align-items-end justify-content-center pt-3">
-                                    <button type="button" class="btn btn-outline-success w-100" id="searchBtn">Search</button>
+                                    <button type="button" 
+                                        class="btn btn-outline-success w-100" 
+                                        id="searchBtn">
+                                        {{ __('Search') }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <form method="" action="" class="p-3 border rounded mb-3 mb-md-4" id="orderForm">
+                    <form class="p-3 border rounded mb-3 mb-md-4" 
+                        id="orderForm">
                         <div class="form-group pb-2 d-flex justify-content-between">
-                            <span class="h4">Order Details</span> <span id="outOfstockErr" class="text-danger fw-bolder"></span>
+                            <span class="h4">
+                                {{ __('Order Details') }}
+                            </span> 
+                            <span id="outOfstockErr" 
+                                class="text-danger fw-bolder">
+                            </span>
                         </div>
                         <div class="form-group pb-3">
                             <div class="row pb-3">
                                 <div class="col-md-4">
-                                    <label>Brand</label>
-                                    <input type="text" id="BID" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Brand') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="BID" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Size</label>
-                                    <input type="text" id="SID" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Size') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="SID" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Color</label>
-                                    <input type="text" id="CID" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Color') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="CID" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                             </div>
                             <div class="row pb-3">
                                 <div class="col-md-4">
-                                    <label>Type</label>
-                                    <input type="text" id="TID" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Type') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="TID" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Category</label>
-                                    <input type="text" id="CatID" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Category') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="CatID" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Price</label>
-                                    <input type="text" id="price" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('Price') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="price" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>In Stock</label>
-                                    <input type="text" id="stock" class="form-control" readonly="">
+                                    <label>
+                                        {{ __('In Stock') }}
+                                    </label>
+                                    <input type="text" 
+                                        id="stock" 
+                                        class="form-control" 
+                                        readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Quantity</label>
-                                    <input type="number" id="qty" name="qty" class="form-control" required="">
-                                    <input type="hidden" id="item_id">
+                                    <label>
+                                        {{ __('Quantity') }}
+                                    </label>
+                                    <input type="number" 
+                                        id="qty" 
+                                        name="qty" 
+                                        class="form-control" 
+                                        required>
+                                    <input type="hidden" 
+                                        id="item_id">
                                 </div>
                                 <div class="col-md-4 d-flex align-items-end pt-3">
-                                    <a href="javascript:void(0);" class="btn btn-outline-primary w-100" id="saveOrderBtn">Save</a>
+                                    <button type="button" 
+                                        class="btn btn-outline-primary w-100" 
+                                        id="saveOrderBtn">
+                                        {{ __('Save') }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -80,41 +152,77 @@
 
                     <!--  -->
                     <div class="border rounded p-3">
-                        <div class="h4 pb-3">Order Summary</div>
+                        <div class="h4 pb-3">
+                            {{ __('Order Summary') }}
+                        </div>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Order Number</th>
-                                        <th>Item ID</th>
-                                        <th>Brand</th>
-                                        <th>Size</th>
-                                        <th>Color</th>
-                                        <th>Type</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total Cost</th>
+                                        <th>
+                                            {{ __('Order Number') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Item ID') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Brand') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Size') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Color') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Type') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Category') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Price') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Quantity') }}
+                                        </th>
+                                        <th>
+                                            {{ __('Total Cost') }}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($orders as $order)
-                                        @php
-                                            /* add trailing zero for non-decimal price */
-                                            $price =  $order->shoe->price; 
-                                            $cost = $order->shoe->price * $order->qty;  
-                                        @endphp
                                         <tr>
-                                            <td class="fw-bolder">{{ $order->id }}</td>
-                                            <td>{{ $order->shoe->id }}</td>
-                                            <td>{{ $order->shoe->brand->brand }}</td>
-                                            <td>{{ $order->shoe->size->size }}</td>
-                                            <td>{{ $order->shoe->color->color }}</td>
-                                            <td>{{ $order->shoe->type->type }}</td>
-                                            <td>{{ $order->shoe->category->category }}</td>
-                                            <td>{{ $price }}</td>
-                                            <td>{{ $order->qty }}</td>
-                                            <td>{{ $cost }}</td>
+                                            <td class="fw-bolder">
+                                                {{ $order->id }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->id }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->brand->brand }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->size->size }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->color->color }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->type->type }}</td>
+                                            <td>
+                                                {{ $order->shoe->category->category }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->price }}
+                                            </td>
+                                            <td>
+                                                {{ $order->qty }}
+                                            </td>
+                                            <td>
+                                                {{ $order->shoe->price * $order->qty }}
+                                            </td>
                                         </tr>
                                     @empty
                                     @endforelse
@@ -134,17 +242,28 @@
     <x-footer/>
 </div>
 <!-- modal -->
-<div class="modal pt-md-5 pt-3 fade" role="dialog" aria-labelledby="oDModal" aria-hidden="true" id="oDModal" tabindex="-1">
+<div class="modal pt-md-5 pt-3 fade" 
+    role="dialog" a
+    ria-labelledby="oDModal" 
+    aria-hidden="true" 
+    id="oDModal" 
+    tabindex="-1">
+
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between align-items-center">
-                <span id="modalHeader" class="h5"></span>
-                <button class="btn btn-outline-success" data-bs-dismiss="modal">
+                <span id="modalHeader" 
+                    class="h5">
+                </span>
+                <button class="btn btn-outline-success" 
+                    data-bs-dismiss="modal">
                     {{ __('Close') }}
                 </button>
             </div>
             <div class="modal-body">
-                <div class="h4" id="responseContent"></div>
+                <div class="h4" 
+                    id="responseContent">
+                </div>
             </div>
         </div>
     </div>
@@ -166,6 +285,7 @@
         });
 
         $(qty).prop('disabled', true);
+        
         $(saveOrderBtn).hide();
 
         /* Search item */

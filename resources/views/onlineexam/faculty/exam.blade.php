@@ -4,20 +4,25 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
-            <div class="navbar d-none d-md-block" style="margin-bottom : -15px;">
+            <div class="navbar d-none d-md-block" 
+                style="margin-bottom : -15px;">
+
                 <ul class="navbar-nav d-flex flex-row gap-1 border-0">
                     <li class="nav-item">
-                        <a href="{{ route('facultyexam.index') }}" class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
+                        <a href="{{ route('facultyexam.index') }}" 
+                            class="nav-link border border-bottom-0 rounded py-3 text-light px-5">
                             {{ __('Dashboard') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('subjectexam.index') }}" class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
+                        <a href="{{ route('subjectexam.index') }}" 
+                            class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Subject') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link border border-bottom-0 text-light bg-primary rounded py-3 px-5">
+                        <a href="#" 
+                            class="nav-link border border-bottom-0 text-light bg-primary rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
                     </li>
@@ -32,29 +37,50 @@
                             {{-- Generate form --}}
                             <div id="examSettings">
                                 <div class="card border border-warning">
-                                    <div class="card-header border-bottom border-warning">{{ __('Create Examination Form') }}</div>
+                                    <div class="card-header border-bottom border-warning">
+                                        {{ __('Create Examination Form') }}
+                                    </div>
                                     <div class="card-body m-md-2">
                                         <p class="small fw-bold">
-                                            <span>{{ __('Instruction:') }}</span><br>
-                                            {{ __('Provide the needed information, all field are required.') }}<br>
-                                            {{ __('Number of Question - examination total number of question') }}<br>
+                                            <span>
+                                                {{ __('Instruction:') }}
+                                            </span>
+                                            <br>
+                                            {{ __('Provide the needed information, all field are required.') }}
+                                            <br>
+                                            {{ __('Number of Question - examination total number of question') }}
+                                            <br>
                                             {{ __('Number of selection per question - the choices for each question.') }}
                                         </p>
                                         <hr>
                                         <div class="form-group d-grid gap-2 pb-3">
-                                            <label>{{ __('Number of Question') }}</label>
-                                            <input type="number" id="numberofquestion" class="form-control">    
-                                            <span id="nqwarning" class="text-danger small fw-bold"></span>
+                                            <label>
+                                                {{ __('Number of Question') }}
+                                            </label>
+                                            <input type="number" 
+                                                id="numberofquestion" 
+                                                class="form-control">    
+                                            <span id="nqwarning" 
+                                                class="text-danger small fw-bold">
+                                            </span>
                                         </div>
                                         <div class="form-group d-grid gap-2">
-                                            <label>{{ __('Number of selection per question') }}</label>
-                                            <input type="number" id="numberofselection" class="form-control">
-                                            <span id="nswarning" class="text-danger small fw-bold"></span>
+                                            <label>
+                                                {{ __('Number of selection per question') }}
+                                            </label>
+                                            <input type="number" 
+                                                id="numberofselection" 
+                                                class="form-control">
+                                            <span id="nswarning" 
+                                                class="text-danger small fw-bold">
+                                            </span>
                                         </div>
                                         <div class="form-group pt-3 d-flex justify-content-end">
-                                            <a href="javascript:void(0);" class="btn btn-outline-primary" id="createFormBtn">
+                                            <button type="button" 
+                                                class="btn btn-outline-primary" 
+                                                id="createFormBtn">
                                                 {{ __('Create') }}
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -63,43 +89,71 @@
                             {{-- Generated form --}}
                             <div id="examGeneratedForm">
                                 <div class="card border-warning">
-                                    <div class="card-header border-bottom border-warning">{{ __('New Examination') }}</div>
+                                    <div class="card-header border-bottom border-warning">
+                                        {{ __('New Examination') }}
+                                    </div>
                                     <div class="card-body">
                                         <p class="small fw-bold">
-                                            <span class="fs-5">Instruction:</span><br/>
-                                            {{ __('Select a subject to generate examination code then provide all the needed information. All field are required.') }}<br/><br>
-                                            {{ __('Examination Code - Access code for the student to take the exam.') }}<br>
-                                            {{ __('Exam Question - Question that are need to answer by the student.') }} <br/>
-                                            {{ __('Correct answer - Correct answer for the question of the same number.') }} <br/>
+                                            <span class="fs-5">
+                                                {{ __('Instruction:') }}
+                                            </span>
+                                            <br/>
+                                            {{ __('Select a subject to generate examination code then provide all the needed information. All field are required.') }}
+                                            <br/><br>
+                                            {{ __('Examination Code - Access code for the student to take the exam.') }}
+                                            <br>
+                                            {{ __('Exam Question - Question that are need to answer by the student.') }} 
+                                            <br/>
+                                            {{ __('Correct answer - Correct answer for the question of the same number.') }} 
+                                            <br/>
                                             {{ __('Selection - Choices for the question above it.') }}
                                         </p>
                                         <hr>
-                                        <form method="POST" action="{{ route('exam.store') }}">
+                                        <form method="POST" 
+                                            action="{{ route('exam.store') }}">
+
                                             @csrf
                                             <div class="form-group pb-4">
                                                 <div class="row">
                                                     <div class="col-md-8 d-grid gap-2">
-                                                        <label>Subjects</label>
-                                                        <select class="form-select" name="online_subject_id" id="subjectSel">
-                                                            @isset($subjects)
-                                                                @foreach($subjects as $subject)
-                                                                    <option value="{{ $subject->id }}">{{ $subject->subject }}</option>
-                                                                @endforeach
-                                                            @endisset
+                                                        <label>
+                                                            {{ __('Subjects') }}
+                                                        </label>
+                                                        <select class="form-select" 
+                                                            name="online_subject_id" 
+                                                            id="subjectSel">
+
+                                                            @forelse($subjects as $subject)
+                                                                <option value="{{ $subject->id }}">
+                                                                    {{ $subject->subject }}
+                                                                </option>
+                                                            @empty
+                                                                <option></option>
+                                                            @endforelse
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-grid gap-2">
-                                                        <label>{{ __('Timer(in minutes)') }}</label>
-                                                        <input type="number" name="timer" class="form-control" required="">
+                                                        <label>
+                                                            {{ __('Timer(in minutes)') }}
+                                                        </label>
+                                                        <input type="number" 
+                                                            name="timer" 
+                                                            class="form-control" 
+                                                            required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div id="questionContainer"></div> 
                                             <div class="form-group pt-3 d-flex justify-content-between">
-                                                <a href="javascript:void(0);" class="btn btn-outline-success px-5" id="resetFormBtn">
+                                                <button type="button" 
+                                                    class="btn btn-outline-success px-5" 
+                                                    id="resetFormBtn">
                                                     {{ __('Reset') }}
-                                                </a>
-                                                <input type="submit" value="{{ __('Save') }}" class="btn btn-outline-primary px-5">
+                                                </button>
+
+                                                <input type="submit" 
+                                                    value="Save" 
+                                                    class="btn btn-outline-primary px-5">
                                             </div>
                                         </form>
                                     </div>
@@ -110,7 +164,9 @@
                         <div class="col-md-7">
                             <div class="card border-warning">
                                 <div class="card-header d-flex justify-content-between border-bottom border-warning">
-                                    <span>{{ __('Exam Preview') }}</span>
+                                    <span>
+                                        {{ __('Exam Preview') }}
+                                    </span>
                                     <span>
                                         @if(\Session::has('exam_status'))
                                             {{ session('exam_status') }}
@@ -118,20 +174,34 @@
                                     </span>
                                 </div>
                                 <div class="card-body">
-                                    <form method="GET" id="examCodeForm">
+                                    <form method="GET" 
+                                        id="examCodeForm">
                                         <div class="form-group">
-                                            <label for="exam_code">Examination Code</label>
+                                            <label for="exam_code">
+                                                {{ __('Examination Code') }}
+                                            </label>
                                             <div class="d-flex flex-column flex-md-row">
-                                                <input type="text" name="exam_code" id="exam_code" class="form-control me-2" value="@isset($examCode) {{ $examCode }} @endisset">
-                                                <input type="button" value="View" class="btn btn-outline-success px-md-4 d-none" id="submitBtn">
+                                                <input type="text" 
+                                                    name="exam_code" 
+                                                    id="exam_code" 
+                                                    class="form-control me-2" 
+                                                    value="@isset($examCode) {{ $examCode }} @endisset">
+
+                                                <input type="button" 
+                                                    value="View" 
+                                                    class="btn btn-outline-success px-md-4 d-none" 
+                                                    id="submitBtn">
                                             </div>
                                         </div>
                                     </form>
 
                                     @isset($examQuestions)
-                                        <div class="fw-bold pt-2">{{ __('Note:') }}</div>
+                                        <div class="fw-bold pt-2">
+                                            {{ __('Note:') }}
+                                        </div>
                                         <p class="small fw-bold">
-                                            {{ __('To change the correct answer, change the value of the correct answer field below each question and click update.') }}<br>
+                                            {{ __('To change the correct answer, change the value of the correct answer field below each question and click update.') }}
+                                            <br>
                                             {{ __('"Correct Answer" must be the same as any of the selection, it is case sensitive for letter.') }}
                                         </p>
                                     @endisset
@@ -155,16 +225,29 @@
                                                     $newAnswerId = 'answer_'.$question->id;
                                                 @endphp
 
-                                                <div class="fw-bold">{{ $qNum }}. {{ $question->question }}</div>
+                                                <div class="fw-bold">
+                                                    {{ $qNum }}. {{ $question->question }}
+                                                </div>
 
                                                 {{-- key answer --}}
-                                                <form method="" action="" class="pt-1 pb-3 ps-4">
+                                                <form class="pt-1 pb-3 ps-4">
                                                     @csrf
                                                     <div class="form-group">
-                                                        <label>{{ __('Correct Answer') }}</label>
+                                                        <label>
+                                                            {{ __('Correct Answer') }}
+                                                        </label>
                                                         <div class="d-flex flex-row gap-2">
-                                                            <input type="text" value="{{ $question->key_to_correct }}" class="form-control corAns" id="{{ $newAnswerId }}" required="">
-                                                            <a href="javascript:void(0)" class="btn btn-outline-success updateAnswer" id="{{ $question->id }}">Update</a>
+                                                            <input type="text" 
+                                                                value="{{ $question->key_to_correct }}" 
+                                                                class="form-control corAns" 
+                                                                id="{{ $newAnswerId }}" 
+                                                                required>
+
+                                                            <button type="button" 
+                                                                class="btn btn-outline-success updateAnswer" 
+                                                                id="{{ $question->id }}">
+                                                                {{ __('Update') }}
+                                                            </button>
                                                         </div>
                                                     </div>  
                                                 </form>
@@ -172,7 +255,9 @@
                                         @endisset
                                     @endisset
                                 </div>
-                                <div class="card-footer border-top border-warning">{{ __('End of Examination Form') }}</div>
+                                <div class="card-footer border-top border-warning">
+                                    {{ __('End of Examination Form') }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -192,13 +277,21 @@
         <div class="modal-dialog-centered">
             <div class="modal-content border border-warning">
                 <div class="modal-header border-bottom border-warning p-2">
-                    <span class="text-success fw-bold fs-5">{{ __('Success') }}</span>
+                    <span class="text-success fw-bold fs-5">
+                        {{ __('Success') }}
+                    </span>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-center py-2 fs-4 fw-bold">{{ __('Update successfully') }}</div>
+                    <div class="d-flex justify-content-center py-2 fs-4 fw-bold">
+                        {{ __('Update successfully') }}
+                    </div>
                 </div>
                 <div class="modal-footer border-top border-warning d-flex justify-content-center py-2">
-                    <a href="javascript:void(0);" id="closeDialog" class="btn btn-outline-success px-4">Ok</a>
+                    <button type="button" 
+                        id="closeDialog" 
+                        class="btn btn-outline-success px-4">
+                        {{ __('Ok') }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -235,8 +328,6 @@
         });
 
         $(createFormBtn).on('click', function(){
-            /* change the url */
-            //window.history.pushState(' ', `{{ ('Laravel Web App v2.0') }}`, '{{ URL::to("/online-exam/exam/examination") }}');
             let formValid = true;
             $(nswarning).html('');
             $(nqwarning).html('');
@@ -256,16 +347,34 @@
 
                 for (var i = 0; i < parseInt($(numberofquestion).val()); i++) {
                     $(questionContainer).append(`<div class="form-group d-grid gap-2">
-                                                    <label>Exam Question ${i + 1}</label>
-                                                    <input type="text" name="question[]" class="form-control" required/>
-                                                    <label>Correct answer for question ${i + 1}</label>
-                                                    <input type="text" name="answer[]" class="form-control" reuired/>
-                                                    <div class="form-group ps-3" id="selectionContainer_${i}">
+                                                    <label>
+                                                        Exam Question ${i + 1}
+                                                    </label>
+                                                    <input type="text" 
+                                                        name="question[]" 
+                                                        class="form-control" 
+                                                        required/>
+                                                    <label>
+                                                        Correct answer for question ${i + 1}
+                                                    </label>
+                                                    <input type="text" 
+                                                        name="answer[]" 
+                                                        class="form-control" 
+                                                        required/>
+                                                    <div class="form-group ps-3" 
+                                                        id="selectionContainer_${i}">
                                                     </div>  
-                                                </div><hr class="bg-dark"/>`);
+                                                </div>
+                                                <hr class="bg-dark"/>`);
+
                     for (var j = 0; j < parseInt($(numberofselection).val()); j++) {
-                        $('#selectionContainer_' + i).append(`<label>Selection ${j + 1} for question ${i + 1}</label>
-                            <input type="text" name="selection[${i}][${j}]" class="form-control" required/>`);
+                        $('#selectionContainer_' + i).append(`<label>
+                                Selection ${j + 1} for question ${i + 1}
+                            </label>
+                            <input type="text" 
+                                name="selection[${i}][${j}]" 
+                                class="form-control" 
+                                required/>`);
                     }
                 }
             }
@@ -290,7 +399,11 @@
                 $.ajax({
                     url: '/online-exam/exam/' + eleId,
                     type: 'POST',
-                    data: {key_to_correct : $(ans).val(), _token : '{{ csrf_token() }}', '_method': 'PATCH',},
+                    data: {
+                        key_to_correct: $(ans).val(), 
+                        _token: '{{ csrf_token() }}', 
+                        _method: 'PATCH'
+                    },
                     dataType: 'json',
                     Accept: 'application/json',
                     success: function(result, status, xhr){

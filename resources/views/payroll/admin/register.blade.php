@@ -5,9 +5,13 @@
 		<div class="row justify-content-center">
 			<div class="col-md-6">
 				<div class="card shadow">
-					<div class="card-header">{{ __('Payroll Registration') }}</div>
+					<div class="card-header">
+						{{ __('Payroll Registration') }}
+					</div>
 					<div class="card-body">
-						<form method="POST" action="{{ route('payrolladmin.store') }}" class="px-4">
+						<form method="POST" 
+							action="{{ route('payrolladmin.store') }}" class="px-4">
+
 							@csrf
 
 							@php
@@ -31,121 +35,238 @@
 							@endphp
 
 							<div class="form-group pb-2">
-								<label for="firstname">{{ __('First Name') }}</label>
-								<input type="text" class="form-control @error('firstname') is-invalid @enderror" 
-									id="firstname" value="{{ $firstname ?? old('firstname') }}" {{ $firstname ? 'readonly' : '' }} >
+								<label for="firstname">
+									{{ __('First Name') }}
+								</label>
+								<input type="text" 
+									class="form-control @error('firstname') is-invalid @enderror" 
+									id="firstname" 
+									value="{{ $firstname ?? old('firstname') }}" 
+									{{ $firstname ? 'readonly' : '' }}>
+
 								@error('firstname')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                  <span class="invalid-feedback" 
+                  	role="alert">
+
+                     <strong>
+                     	{{ $message }}
+                     </strong>
+                  </span>
+                @enderror
 							</div>
 
 							<div class="form-group pb-2">
-								<label for="middlename">{{ __('Middle Name') }}</label>
-								<input type="text" class="form-control" id="middlename" 
-									value="{{ $middlename ?? old('middlename') }}" {{ $middlename ? 'readonly' : '' }} >
+								<label for="middlename">
+									{{ __('Middle Name') }}
+								</label>
+								<input type="text" 
+									class="form-control" 
+									id="middlename" 
+									value="{{ $middlename ?? old('middlename') }}" 
+									{{ $middlename ? 'readonly' : '' }}>
+
 							</div>
 
 							<div class="form-group pb-2">
-								<label for="lastname">{{ __('Last Name') }}</label>
-								<input type="text" class="form-control @error('lastname') is-invalid @enderror" 
-									id="lastname" value="{{ $lastname ?? old('lastname') }}" {{ $lastname ? 'readonly' : '' }} >
+								<label for="lastname">
+									{{ __('Last Name') }}
+								</label>
+								<input type="text" 
+									class="form-control @error('lastname') is-invalid @enderror" 
+									id="lastname" 
+									value="{{ $lastname ?? old('lastname') }}" 
+									{{ $lastname ? 'readonly' : '' }}>
+
 								@error('lastname')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                  <span class="invalid-feedback" 
+                  	role="alert">
+
+                     <strong>
+                     	{{ $message }}
+                     </strong>
+                  </span>
+                @enderror
 							</div>
 
 							<div class="form-group pb-2">
-								<label for="salarygrade">{{ __('Salary Grade') }}</label>
-								<select class="form-select" name="payroll_salary_grade_id" id="salarygrade">
-									@isset($salary_grade)
-										@foreach($salary_grade as $grade)
-											<option value="{{ $grade->id }}" {{ $salary_grade_id == $grade->id ? 'selected' : '' }}>
-												{{ $grade->salary_grade }}
-											</option>
-										@endforeach
-									@endisset
+								<label for="salarygrade">
+									{{ __('Salary Grade') }}
+								</label>
+								<select class="form-select" 
+									name="payroll_salary_grade_id" 
+									id="salarygrade">
+
+									@forelse($salaryGrade as $grade)
+										<option value="{{ $grade->id }}" {{ $salary_grade_id == $grade->id ? 'selected' : '' }}>
+											{{ $grade->salary_grade }}
+										</option>
+									@empty
+										<option></option>
+									@endforelse
 								</select>
 							</div>
+
 							<div class="form-group pb-2">
-								<label for="salary_rate">{{ __('Salary Rate') }}</label>
-								<input type="number" name="salary_rate" id="salary_rate" value="{{ $salary_rate ?? old('salary_rate') }}"
+								<label for="salary_rate">
+									{{ __('Salary Rate') }}
+								</label>
+								<input type="number" 
+									name="salary_rate" 
+									id="salary_rate" 
+									value="{{ $salary_rate ?? old('salary_rate') }}"
 									class="form-control @error('salary_rate') is-invalid @enderror">
+
 								@error('salary_rate')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                  <span class="invalid-feedback" 
+                  	role="alert">
+
+                  	<strong>
+                  		{{ $message }}
+                  	</strong>
+                  </span>
+                @enderror
 							</div>
+
 							<div class="form-group pb-2">
-								<label for="workschedule">{{ __('Work Schedule') }}</label>
-								<select class="form-select" name="payroll_work_schedule_id" id="workschedule">
-									@isset($workSchedule)
-										@foreach($workSchedule as $schedule)
-											@php
-												$sched = explode('-', $schedule->schedule); 
-											@endphp
-											<option value="{{ $schedule->id }}" {{ $work_sched_id == $schedule->id ? 'selected' : '' }}>
-												{{ $schedule->name }} &nbsp; 
-												{{ date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) }}
-											</option>
-										@endforeach
-									@endisset
+								<label for="workschedule">
+									{{ __('Work Schedule') }}
+								</label>
+								<select class="form-select" 
+									name="payroll_work_schedule_id" 
+									id="workschedule">
+
+									@forelse($workSchedule as $schedule)
+										@php
+											$sched = explode('-', $schedule->schedule); 
+										@endphp
+
+										<option value="{{ $schedule->id }}" {{ $work_sched_id == $schedule->id ? 'selected' : '' }}>
+											{{ $schedule->name }} 
+											&nbsp; 
+											{{ date('h:i a', strtotime(trim($sched[0]))).__(' - ').date('h:i a', strtotime(trim($sched[1]))) }}
+										</option>
+									@empty
+										<option></option>
+									@endforelse
 								</select>
 							</div>
+
 							@if(!isset($details))
 								<div class="form-group pb-2">
-									<label class="pb-md-1">{{ __('Gender') }}</label>
-                                    <div class="row">
-                                        <div class="col px-5">
-                                            <label class="">{{ __('Male') }}</label>&nbsp;
-                                            <input id="male" type="radio" class="" value="1" checked>&nbsp; &nbsp; &nbsp;
-                                            <label class="">{{ __('Female') }}</label>&nbsp;
-                                            <input id="female" type="radio" value="2">
-                                        </div>
-                                    </div>
-                                    @error('gender')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+									<label class="pb-md-1">
+										{{ __('Gender') }}
+									</label>
+                  <div class="row">
+                      <div class="col px-5">
+                          <label>
+                          	{{ __('Male') }}
+                          </label>
+                          &nbsp;
+
+                          <input id="male" 
+                          	type="radio" 
+                          	value="1" 
+                          	checked>
+                          	&nbsp; 
+                          	&nbsp; 
+                          	&nbsp;
+
+                          <label>
+                          	{{ __('Female') }}
+                          </label>
+                          &nbsp;
+
+                          <input id="female" 
+                          	type="radio" 
+                          	value="2">
+
+                      </div>
+                  </div>
+                  @error('gender')
+                    <span class="invalid-feedback" 
+                    	role="alert">
+
+                      <strong>
+                      	{{ $message }}
+                      </strong>
+                    </span>
+                  @enderror
 								</div>
+
 								<div class="form-group pb-2">
-									<label for="email">{{ __('Email') }}</label>
-									<input type="email" class="form-control @error('email') is-invalid @enderror" 
-									id="email" value="{{ old('email') }}" required>
+									<label for="email">
+										{{ __('Email') }}
+									</label>
+									<input type="email" 
+										class="form-control @error('email') is-invalid @enderror" 
+										id="email" 
+										value="{{ old('email') }}" 
+										required>
+
 									@error('email')
-	                                    <span class="invalid-feedback" role="alert">
-	                                        <strong>{{ $message }}</strong>
-	                                    </span>
-	                                @enderror
+                    <span class="invalid-feedback" 
+                    	role="alert">
+
+                    	<strong>
+                    		{{ $message }}
+                    	</strong>
+                    </span>
+                  @enderror
 								</div>
+
 								<div class="form-group pb-2">
-									<label for="username">{{ __('UserName') }}</label>
-									<input type="text" class="form-control @error('username') is-invalid @enderror" 
-										id="username" value="{{ old('username') }}" required>
+									<label for="username">
+										{{ __('UserName') }}
+									</label>
+
+									<input type="text" 
+										class="form-control @error('username') is-invalid @enderror" 
+										id="username" 
+										value="{{ old('username') }}" 
+										required>
+
 									@error('username')
-	                                    <span class="invalid-feedback" role="alert">
-	                                        <strong>{{ $message }}</strong>
-	                                    </span>
-	                                @enderror
+                    <span class="invalid-feedback" 
+                    	role="alert">
+
+                      <strong>
+                      	{{ $message }}
+                      </strong>
+                    </span>
+	                @enderror
 								</div>
+
 								<div class="form-group pb-2">
-									<label for="DOB">{{ __('Birth Date') }}</label>
-									<input type="date" class="form-control" id="DOB" value="{{ date('Y-m-d') }}">
+									<label for="DOB">
+										{{ __('Birth Date') }}
+									</label>
+									<input type="date" 
+										class="form-control" 
+										id="DOB" 
+										value="{{ date('Y-m-d') }}">
+
 								</div>
 							@endif
+
 							@if(\Session::has('message'))
-								<div class="fw-bold">{{ \Session::get('message') }}</div>
+								<div class="fw-bold">
+									{{ \Session::get('message') }}
+								</div>
 							@endif
 							
-							<input type="hidden" name="user_id" value="{{ $userid }}">
+							<input type="hidden" 
+								name="user_id" 
+								value="{{ $userid }}">
+
 							<div class="form-group d-flex justify-content-between py-3">
-								<a href="{{ route('payrolladmin.index') }}" class="btn btn-outline-success">{{ __('Back') }}</a>
-								<input type="submit" value="Save" class="btn btn-outline-primary">
+								<a href="{{ route('payrolladmin.index') }}" 
+									class="btn btn-outline-success">
+									{{ __('Back') }}
+								</a>
+								<input type="submit" 
+									value="Save" 
+									class="btn btn-outline-primary">
+									
 							</div>
 						</form>
 					</div>
@@ -153,6 +274,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="container">
 		<x-footerexam :color="'text-dark'"/>
 	</div>

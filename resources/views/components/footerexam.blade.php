@@ -4,7 +4,8 @@
     		&copy; {{ date('Y') }} &nbsp;
         	<a href="{{ url('https://www.genesedan.com/') }}" 
 	        	class="{{ $color ?? $font_color }}" 
-	        	target="__blank">Gene Sedan
+	        	target="__blank">
+	        	{{ __('Gene Sedan') }}
 	        </a>
     	</div>
     </div>

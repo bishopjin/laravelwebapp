@@ -6,7 +6,9 @@
 	{{ $title != null ? $title.'\'s role permissions' : '' }}
 </div>
 @isset($permissions)
-	<form method="POST" action="{{ route('usersrole.update', ['usersrole' => $name]) }}">
+	<form method="POST" 
+		action="{{ route('usersrole.update', ['usersrole' => $name]) }}">
+
 		@csrf
 		@method('PUT')
 
@@ -21,13 +23,23 @@
     			}
     		@endphp
 	        <div class="form-group pb-2">
-	            <input type="checkbox" name="permission[]" id="{{ $permission->name }}" value="{{ $permission->name }}" 
-	            	class="form-check-input" {{ $match ? 'checked' : '' }}>
-	            <label class="form-check-label" for="{{ $permission->name }}">{{ $permission->name }}</label>
+	            <input type="checkbox" 
+	            	name="permission[]" 
+	            	id="{{ $permission->name }}" 
+	            	value="{{ $permission->name }}" 
+	            	class="form-check-input" 
+	            	{{ $match ? 'checked' : '' }}>
+
+	            <label class="form-check-label" 
+	            	for="{{ $permission->name }}">
+	            	{{ $permission->name }}
+	            </label>
 	        </div>
 	    @endforeach
 	    <div class="form-group">
-	    	<input type="submit" class="btn btn-primary text-light" value="Save">
+	    	<input type="submit" 
+	    		class="btn btn-primary text-light" 
+	    		value="Save">
 	    </div>
 	</form>
 @endisset

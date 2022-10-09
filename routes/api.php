@@ -17,7 +17,6 @@ use App\Http\Controllers\InventoryController\EmployeeController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Route::apiResource('', );
 /* REST API login */
 Route::post('/login', [ApiUserController::class, 'login'])->name('login');
 
@@ -32,10 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
 		return auth('sanctum')->user()->id;
 	});
 
-	Route::post('/logout', function (Request $request) {
-		$request->user()->currentAccessToken()->delete();
-		return response()->json(['message' => 'User\'s Logged out.']);
-	});
+	Route::post('/logout', [ApiUserController::class, 'logout'])->name('logout');
+
+	//Route::apiResource('', );
 	/* inventory route */
 	Route::middleware('permission:inventory add stock|inventory get stock|inventory add new item')->prefix('/inventory')->group(function() {
 		Route::post('/addStock/store', [ProductController::class, 'DeliverStore']);

@@ -23,16 +23,6 @@ class ApiExamController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -162,17 +152,6 @@ class ApiExamController extends Controller
             $return = array('exams' => $exams, 'examCode' => $id, 'subjects' => $subjects);
         }
         return response()->json($return);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
