@@ -22,8 +22,8 @@ class AttendanceCorrectionController extends Controller
     {
         $attendances = PayrollAttendanceRequest::with(['employee', 'attendance'])
             ->where([
-                ['approver_id', auth()->user()->id],
-                ['status', 0],
+                ['approver_id', '=', auth()->user()->id],
+                ['status', '=', 0],
             ])->paginate(10);
 
         return view('payroll.admin.attendancerequest')->with(compact('attendances'));

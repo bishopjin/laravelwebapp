@@ -9,6 +9,7 @@ use App\Models\OnlineExamQuestion;
 use App\Models\OnlineExamSelection;
 use App\Models\OnlineSubject;
 use App\Http\Requests\ExamQuestionRequest;
+use Illuminate\Support\Str;
 
 class ExamController extends Controller
 {
@@ -46,18 +47,11 @@ class ExamController extends Controller
             $subjects = null;
             $examCodeId = 0;
             $examCreated = false;
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $charactersLength = strlen($characters);
 
             $subjects = OnlineSubject::findOrFail($request->input('online_subject_id'));
             
             if ($subjects) {
-                $randomChar = '';
-
-                /* generate code */
-                for ($i = 0; $i < 15; $i++) {
-                    $randomChar .= $characters[rand(0, $charactersLength - 1)];
-                }
+                $randomChar = Str::random(15);
 
                 $genExamCode = $subjects->subject.'-'.$randomChar;
 
@@ -66,26 +60,23 @@ class ExamController extends Controller
                     ->except(['question', 'answer', 'selection']);
 
                 $examCode = OnlineExam::create($validated);
-
-                $examCodeId = $examCode->id;
             }
-            
-            if ($examCodeId > 0) {
+        
+            if ($examCode->id > 0) {
                 foreach ($request->input('question') as $keyQ => $valueQ) {
                     $examCreated = false; 
 
                     /* Save the exam and correct answer */
                     $question = OnlineExamQuestion::create([
-                        'online_exam_id' => $examCodeId,
                         'question' => $valueQ,
-                        'key_to_correct' => $request->input('answer')[$keyQ]
+                        'key_to_correct' => $request->input('answer')[$keyQ],
+                        'online_exam_id' => $examCode->id
                     ]);
-
+                    
                     if ($question->id > 0) {
                         foreach ($request->input('selection')[$keyQ] as $keyS => $valueS) {
                             /* Save the exam selection */
-                            $selection = OnlineExamSelection::create([
-                                'online_exam_question_id' => $question->id,
+                            $selection = $question->examselection()->create([
                                 'selection' => $valueS,
                             ]);
 
