@@ -17,7 +17,11 @@ class AdminExamCourseController extends Controller
     public function index()
     {
         if (OnlineCourse::exists()) {
-            $courseList = OnlineCourse::where('id', '>', 1)->select('id', 'course')->paginate(10);
+            $courseList = OnlineCourse::where('id', '>', 1)
+                ->select('id', 'course')
+                ->latest()
+                ->paginate(10)
+                ->onEachSide(1);
 
             return view('onlineexam.admin.course')->with(compact('courseList'));
         }
@@ -71,7 +75,11 @@ class AdminExamCourseController extends Controller
      */
     public function edit($id)
     {
-        return OnlineCourse::findOrFail($id);
+        $course = OnlineCourse::findOrFail($id)->only(['id', 'course']);
+
+        $type = 'course';
+
+        return view('onlineexam.edit')->with(compact('course', 'type'));  
     }
 
     /**
@@ -86,7 +94,7 @@ class AdminExamCourseController extends Controller
         if ($request->validated()) {
             $courseEdit = OnlineCourse::findOrFail($id)->update($request->validated());
 
-            return redirect()->back();
+            return redirect()->route('courseexam.index');
         }
     }
 

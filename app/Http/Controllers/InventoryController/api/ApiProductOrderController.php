@@ -17,8 +17,11 @@ class ApiProductOrderController extends Controller
      */
     public function index()
     {
-        return InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
-                ->paginate(10, ['*'], 'order');
+        return auth()->user()->inventoryorder()
+            ->with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+            ->latest()
+            ->paginate(10, ['*'], 'order')
+            ->onEachSide(1);
     }
 
     /**
@@ -30,13 +33,13 @@ class ApiProductOrderController extends Controller
     public function store(ProductOrderAndDeliverRequest $request)
     {
         if ($request->validated()) {
-            $itemshoe = InventoryItemShoe::findOrFail($request->input('inventory_item_shoe_id'));
+            $itemshoe = InventoryItemShoe::findOrFail($request->inventory_item_shoe_id);
             
-            if (intval($itemshoe->in_stock) >= intval($request->input('qty'))) {
+            if (intval($itemshoe->in_stock) >= intval($request->qty)) {
                 $orderCreated = $request->user()->inventoryorder()->create($request->validated());
 
                 if($orderCreated->id > 0){
-                    $newstock = intval($itemshoe->in_stock) - intval($request->input('qty'));
+                    $newstock = intval($itemshoe->in_stock) - intval($request->qty);
                     $updateStock = $itemshoe->update(['in_stock' => $newstock]); 
                 }
             }

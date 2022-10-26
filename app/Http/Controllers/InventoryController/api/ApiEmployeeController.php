@@ -17,7 +17,11 @@ class ApiEmployeeController extends Controller
      */
     public function index()
     {
-        return User::withTrashed()->notadmin()->notself($request->user()->id)->paginate(10, ['*'], 'edituser');
+        return User::withTrashed()
+            ->notadmin()
+            ->notself(auth()->user()->id)
+            ->latest()
+            ->paginate(10, ['*'], 'edituser');
     }
 
     /**
@@ -30,6 +34,7 @@ class ApiEmployeeController extends Controller
     {
         if ($request->validated()) {
             $user = User::findOrFail($request->safe()->only(['id']));
+
             $user->assignRole($request->safe()->only(['user_role']));
             
             return 1;

@@ -14,8 +14,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #E64A19;">
     <noscript>
@@ -25,7 +23,7 @@
             </span>
         </div>
     </noscript>
-    <div id="">
+    <div id="customApp">
         @guest
             <main class="py-4 min-vh-100 d-flex align-items-center">
                 @yield('onlinecontent')
@@ -64,35 +62,41 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- mobile -->
-                        @if(Auth::user()->hasRole('Admin'))
+                        @can('exam admin access')
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'adminexam.index') # @else {{ route('adminexam.index') }} @endif">
                                     {{ __('Dashboard') }}
                                 </a>
                                 <a class="dropdown-item" 
-                                    href="@if(Route::current()->getName() === 'online.course.show') # @else {{ route('courseexam.index') }} @endif">
+                                    href="@if(Route::current()->getName() === 'courseexam.index') # @else {{ route('courseexam.index') }} @endif">
                                     {{ __('Courses') }}
                                 </a>
                             </div>
-                        @endif
-                        @if(Auth::user()->hasRole('Student'))
+                        @endcan
+
+                        @can('exam student access')
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'studentexam.index') # @else {{ route('studentexam.index') }} @endif">
-                                    {{ __('Exam Result') }}
+                                    {{ __('Dashboard') }}
                                 </a>
                             </div>
-                        @endif
-                        @if(Auth::user()->hasRole('Faculty'))
+                        @endcan
+
+                        @can('exam faculty access')
                             <div class="d-block d-md-none mt-1 bg-primary">
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'facultyexam.index') # @else {{ route('facultyexam.index') }} @endif">
-                                    {{ __('Student List') }}
+                                    {{ __('Dashboard') }}
+                                </a>
+                                 <a class="dropdown-item" 
+                                    href="@if(Route::current()->getName() === 'subjectexam.index') # @else {{ route('subjectexam.index') }} @endif">
+                                    {{ __('Subject') }}
                                 </a>
                                 <a class="dropdown-item" 
                                     href="@if(Route::current()->getName() === 'exam.index') # @else {{ route('exam.index') }} @endif">
-                                    {{ __('Examination List') }}
+                                    {{ __('Examination') }}
                                 </a>
                             </div>
                         @endif
@@ -179,5 +183,8 @@
             </main>
         @endguest
     </div>
+
+    <!-- Scripts -->
+    <script src="{{ mix('/customjs/customjs.js') }}"></script>
 </body>
 </html>

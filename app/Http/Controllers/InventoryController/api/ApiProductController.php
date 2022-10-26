@@ -61,7 +61,9 @@ class ApiProductController extends Controller
      */
     public function show($id)
     {
-        return InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
+        $inventory = InventoryItemShoe::with(['brand', 'size', 'color', 'type', 'category'])->findOrFail($id);
+        
+        return response()->json($inventory); 
     }
 
     /**

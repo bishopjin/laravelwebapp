@@ -16,10 +16,18 @@ class FacultyExamDashboardController extends Controller
      */
     public function index()
     {
-        $examList = OnlineExam::with('onlinesubject')->where('user_id', auth()->user()->id)->latest()->paginate(10, ['*'], 'exams');
+        $examList = OnlineExam::with('onlinesubject')
+            ->where('user_id', auth()->user()->id)
+            ->latest()
+            ->paginate(10, ['*'], 'exams')
+            ->onEachSide(1);
 
         $studentList = OnlineExamination::with(['student.onlinecourse', 'student.gender'])
-                        ->where('faculty_id', auth()->user()->id)->groupBy('user_id')->latest()->paginate(10, ['*'], 'list'); 
+            ->where('faculty_id', auth()->user()->id)
+            ->groupBy('user_id')
+            ->latest()
+            ->paginate(10, ['*'], 'list')
+            ->onEachSide(1); 
         
         return view('onlineexam.faculty.index')->with(compact('examList', 'studentList'));
     }

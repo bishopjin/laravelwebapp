@@ -55,18 +55,24 @@ class DTRController extends Controller
             }
         }
 
-        $tardiness = Carbon::parse(trim($wsArr[0]))->diffInMinutes(Carbon::parse($request->input('timein')), false);
-
-        $created = PayrollAttendance::create([
-            'user_id' => $request->user()->id,
-            'payroll_cut_off_id' => $id,
-            'payroll_holiday_id' => $holiday[0]->id ?? 0,
-            'payroll_work_schedule_id' => $employee->payroll_work_schedule_id,
-            'time_in' => $request->input('timein'),
-            'tardiness' => $tardiness,
+        $validated = $request->validate([
+            'timein' => ['required']
         ]);
 
-        return redirect()->back();
+        if ($validated) {
+            $tardiness = Carbon::parse(trim($wsArr[0]))->diffInMinutes(Carbon::parse($validated->timein), false);
+
+            $created = PayrollAttendance::create([
+                'user_id' => $request->user()->id,
+                'payroll_cut_off_id' => $id,
+                'payroll_holiday_id' => $holiday[0]->id ?? 0,
+                'payroll_work_schedule_id' => $employee->payroll_work_schedule_id,
+                'time_in' => $validated->timein,
+                'tardiness' => $tardiness,
+            ]);
+
+            return redirect()->back();
+        }
     }
 
     /**
@@ -77,14 +83,24 @@ class DTRController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $startDT = new Carbon($request->input('strDt')).'00:00:00';
-        $endDT = new Carbon($request->input('endDt').'23:59:00');
+        $validated = $request->validate([
+            'strDt' => ['required'],
+            'endDt' => ['required']
+        ]);
 
-        $attendance = PayrollAttendance::with(['workschedule', 'holiday'])->where('user_id', $request->user()->id)
+        if ($validated) {
+            $startDT = new Carbon($validated->strDt.'00:00:00');
+            $endDT = new Carbon($validated->endDt.'23:59:00');
+
+            $attendance = PayrollAttendance::with(['workschedule', 'holiday'])
+                ->where('user_id', $request->user()->id)
                 ->whereBetween('created_at', [$startDT, $endDT])
-                ->orderBy('created_at', 'desc')->take(31)->get();
+                ->orderBy('created_at', 'desc')
+                ->take(31)
+                ->get();
 
-        return view('payroll.employee.attendance')->with(compact('attendance'));
+            return view('payroll.employee.attendance')->with(compact('attendance'));
+        }
     }
 
     /**
@@ -106,6 +122,7 @@ class DTRController extends Controller
 
         } else if ($request->input('lunchin')) {
             $break_in = (Carbon::parse($attendance->time_out_break)->diffInMinutes(Carbon::parse($request->input('lunchin')), true));
+
             $attendance->update([
                 'time_in_break' => $request->input('lunchin'),
                 'tardiness' => (($break_in - 60) > 0 ? ($break_in - 60) : 0) + $attendance->tardiness,
@@ -120,6 +137,7 @@ class DTRController extends Controller
             $schedMH = (Carbon::parse(trim($wsArr[1]))->diffInMinutes(Carbon::parse(trim($wsArr[0]))) - 60);
             /* total manhour */
             $hstart = (Carbon::parse($attendance->time_out_break)->diffInMinutes(Carbon::parse($attendance->time_in), true));
+            
             $hend = (Carbon::parse($request->input('timeout'))->diffInMinutes(Carbon::parse($attendance->time_in_break), true));
 
             $manhr = ($hstart + $hend);

@@ -206,6 +206,7 @@
                         </div>
 
                         <div class="d-flex gap-2 flex-md-row flex-column">
+                            {{-- 
                             @if(Auth::user()->hasAnyPermission(['payroll admin access', 'payroll employee access']))
                                 @can('payroll admin access')
                                     <a href="{{ route('payrolladmin.index') }}" 
@@ -225,6 +226,8 @@
                                     {{ __('No Access') }}
                                 </div>
                             @endif
+                            --}}
+                            <strong class="text-danger">{{ __('Undergoing code and function enhancement') }}</strong>
                         </div>
                     </div>
                 </div>
@@ -266,6 +269,7 @@
                             {{ __('Log In as:') }}
                         </div>
                         <div class="d-flex gap-2 flex-md-row flex-column">
+                            {{-- 
                             @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list', 'menu create orders', 'menu view order history', 'menu view coupon list']))
                                 @if(Auth::user()->hasAnyPermission(['menu add item', 'menu edit item', 'menu view order list', 'menu view user list']))
                                     <a href="menu-ordering/admin" 
@@ -285,6 +289,8 @@
                                     {{ __('No Access') }}
                                 </div>
                             @endif
+                            --}}
+                            <strong class="text-danger">{{ __('Undergoing code and function enhancement') }}</strong>
                         </div>
                     </div>
                 </div>
@@ -305,7 +311,7 @@
                     {{ date('Y') }}
                 </span>
                 <span>
-                    {{ __('Last Updated : October 5, 2022') }}
+                    {{ __('Last Updated : October 24, 2022') }}
                 </span>
             </div>
         </div>   

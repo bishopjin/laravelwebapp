@@ -15,6 +15,6 @@ class ApiEmployeeLogsController extends Controller
      */
     public function index()
     {
-        return InventoryEmployeeLog::with('user')->paginate(10, ['*'], 'employeeLogs');
+        return InventoryEmployeeLog::with('user')->latest()->paginate(10, ['*'], 'employeeLogs');
     }
 }

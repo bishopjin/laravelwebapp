@@ -13,12 +13,6 @@
                             {{ __('Dashboard') }}
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a href="#" 
-                            class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
-                            {{ __('Examination') }}
-                        </a>
-                    </li> --}}
                 </ul>
             </div>
 
@@ -53,47 +47,10 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <form method="GET" 
-                                                id="examCodeForm">
-
-                                                <label class="fw-bold pb-2">
-                                                    {{ __('Examination Code') }}
-                                                </label>
-                                                <div class="form-group">
-                                                    <div class="pb-2">
-                                                        <input type="text" 
-                                                            name="exam_code" 
-                                                            value="{{ old('examCode') }}" 
-                                                            autofocus="" 
-                                                            id="exam_code" 
-                                                            class="form-control @error('examCode') is-invalid @enderror @error('examTaken') is-invalid @enderror">
-                                                        
-                                                        @error('examCode')
-                                                            <span class="invalid-feedback" 
-                                                                role="alert">
-
-                                                                <strong>
-                                                                    {{ $message }}
-                                                                </strong>
-                                                            </span>
-                                                        @enderror
-
-                                                        @error('examTaken')
-                                                            <span class="invalid-feedback" 
-                                                                role="alert">
-
-                                                                <strong>
-                                                                    {{ $message }}
-                                                                </strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                    <input type="button" 
-                                                        value="Submit" 
-                                                        class="btn btn-outline-primary px-md-5" 
-                                                        id="submitBtn">
-                                                </div>
-                                            </form>
+                                            <student-exam-code-component
+                                                url="online-exam/studentexam/"
+                                                :user-id="{{ auth()->user()->id }}"
+                                            ></student-exam-code-component>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +68,7 @@
                                                         {{ __('Exam Code: ') }}
                                                     </span>
                                                     <span class="text-info">
-                                                        {{ $score->onlineexam->exam_code }
+                                                        {{ $score->onlineexam->exam_code }}
                                                     </span>
                                                 </div>
                                                 <div class="fw-bolder">
@@ -163,7 +120,7 @@
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>
@@ -171,51 +128,4 @@
         </div>
     </div>
 </div>
-<!-- modal/overlay -->
-<div class="modal pt-5">
-    <div class="modal-dialog">
-        <div class="modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary"> 
-                    <span class="text-light">
-                        {{ __('Edit Subject') }}
-                    </span>
-                    <a href="javascript:void(0);" 
-                        id="closeDialog" 
-                        class="ms-auto">
-
-                        <i class="fa fa-times fa-lg text-light" 
-                            aria-hidden="true">
-                        </i>
-                    </a>
-                </div>
-                <div class="modal-body">
-                    
-                </div>
-                <div class="modal-footer bg-primary text-light">
-                    {{ __('Laravel') }} 
-                    {{ app()->version() }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        var modal = $('.modal');
-        $('#closeDialog').on('click', function(){
-            $(modal).hide();
-        });
-
-        $('.editSubject').on('click', function() {
-            $(modal).show();
-            $('#editID').val(this.id);
-            $('#subjectname').val($('#subject' + this.id).html());
-        });
-
-        $('#submitBtn').on('click', function () {
-            $('#examCodeForm').attr('action', '/online-exam/studentexam/' + $('#exam_code').val()).submit();
-        });
-    });
-</script>
 @endsection

@@ -13,18 +13,63 @@ class Datatable extends Component
      */
     public $tableData;
 
+    public $newTableData;
+
     public $tableName;
 
     public $tableHeader;
 
     public $dataKey;
 
-    public function __construct($data, $title, $header, $tData)
+    public $hasRowNumber;
+
+    public $hasEditButton; 
+
+    public $hasAddButton;
+
+    public $hasDeleteButton;
+
+    public $hasViewButton;
+
+    public $addLink;
+
+    public $editLink;
+
+    public $deleteLink;
+
+    public $viewLink;
+
+    public function __construct(
+        $data, 
+        $newTableData = NULL,
+        $title, 
+        $header, 
+        $tData, 
+        $hasRowNumber = false, 
+        $hasEditButton = false, 
+        $hasAddButton = false, 
+        $hasDeleteButton = false,
+        $hasViewButton = false,
+        $addLink = NULL,
+        $editLink = NULL,
+        $deleteLink = NULL,
+        $viewLink = NULL
+    )
     {
         $this->tableData = $data;
+        $this->newTableData = $newTableData;
         $this->tableName = $title;
         $this->tableHeader = $header;
         $this->dataKey = $tData;
+        $this->hasRowNumber = $hasRowNumber;
+        $this->hasEditButton = $hasEditButton;
+        $this->hasAddButton = $hasAddButton;
+        $this->hasDeleteButton = $hasDeleteButton;
+        $this->hasViewButton = $hasViewButton;
+        $this->addLink = $addLink;
+        $this->editLink = $editLink;
+        $this->deleteLink = $deleteLink;
+        $this->viewLink = $viewLink;
     }
 
     /**

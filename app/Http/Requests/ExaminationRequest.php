@@ -24,7 +24,7 @@ class ExaminationRequest extends FormRequest
     public function rules()
     {
         return [
-            'answer.*' => ['required'],
+            'answer.*' => ['nullable'],
             'online_exam_id' => ['required', 'numeric'],
             'faculty_id' => ['required', 'numeric'],
         ];

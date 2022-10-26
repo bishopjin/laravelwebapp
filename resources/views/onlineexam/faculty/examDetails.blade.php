@@ -20,7 +20,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('exam.index') }}" 
+                        <a href="{{ route('exam.create') }}" 
                             class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>

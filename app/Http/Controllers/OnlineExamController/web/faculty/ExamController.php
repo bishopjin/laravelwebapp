@@ -14,24 +14,15 @@ use Illuminate\Support\Str;
 class ExamController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $subjects = OnlineSubject::get();
-        return view('onlineexam.faculty.exam')->with(compact('subjects'));
-    }
-
-    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        $subjectList = OnlineSubject::select(['id', 'subject'])->get();
+
+        return view('onlineexam.faculty.exam')->with(compact('subjectList'));
     }
 
     /**
@@ -42,14 +33,13 @@ class ExamController extends Controller
      */
     public function store(ExamQuestionRequest $request)
     {
-        //dd($request->validated());
         if ($request->validated()) {
             $subjects = null;
             $examCodeId = 0;
             $examCreated = false;
 
             $subjects = OnlineSubject::findOrFail($request->input('online_subject_id'));
-            
+             
             if ($subjects) {
                 $randomChar = Str::random(15);
 
@@ -86,9 +76,7 @@ class ExamController extends Controller
                 }
             }
         
-            $examStatus = $examCreated ? 'Examination created successfully.' : 'Failed to create examination.';
-
-            return redirect()->back()->with('examStatus', $examStatus);
+            return redirect()->route('facultyexam.index');
         }
     }
 
@@ -98,23 +86,13 @@ class ExamController extends Controller
      * @param  string  $code
      * @return \Illuminate\Http\Response
      */
-    public function show($code)
+    public function show($id)
     {
-        $subjects = OnlineSubject::select('id', 'subject')->get();
-
-        $exams = OnlineExam::where([
-            ['exam_code', '=',  $code], 
-            ['user_id', '=', auth()->user()->id]
-        ])->get();
+        $exams = auth()->user()->onlineexam()->findOrFail($id);
             
-        if ($exams->count() > 0) {
-            $examQuestions = OnlineExamQuestion::where('online_exam_id', $exams[0]->id)->get();
+        $examQuestions = OnlineExamQuestion::where('online_exam_id', $exams->id)->get();
 
-            return view('onlineexam.faculty.exam')->with(compact('exams', 'examQuestions', 'code', 'subjects'));
-        
-        } else {
-            return view('onlineexam.faculty.exam')->with(compact('exams', 'code', 'subjects'));
-        }
+        return view('onlineexam.faculty.examPreview')->with(compact('exams', 'examQuestions'));
     }
 
     /**
@@ -125,7 +103,11 @@ class ExamController extends Controller
      */
     public function edit($id)
     {
-        //
+        $exams = auth()->user()->onlineexam()->findOrFail($id);
+
+        $subjectList = OnlineSubject::select(['id', 'subject'])->get();
+
+        return view('onlineexam.faculty.examEdit')->with(compact('exams', 'subjectList'));
     }
 
     /**
@@ -137,11 +119,28 @@ class ExamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $new_key = $request->input('key_to_correct');
+        $validated = $request->validate([
+            'online_subject_id' => ['required', 'numeric'],
+            'timer' => ['required', 'numeric'],
+        ]);
 
-        $update_key = OnlineExamQuestion::findOrFail($id)->update(['key_to_correct' => $new_key]);
+        if ($validated) {
+            $subjects = OnlineSubject::findOrFail($request->input('online_subject_id'));
+             
+            if ($subjects) {
+                $randomChar = Str::random(15);
 
-        return response()->json($new_key);
+                $genExamCode = $subjects->subject.'-'.$randomChar;
+
+                OnlineExam::find($id)->update([
+                    'online_subject_id' => $request->input('online_subject_id'),
+                    'timer' => $request->input('timer'),
+                    'exam_code' => $genExamCode
+                ]);
+            }
+        }
+
+        return redirect()->route('facultyexam.index');
     }
 
     /**

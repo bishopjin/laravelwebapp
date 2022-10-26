@@ -22,10 +22,10 @@ class ApiProductDeliverController extends Controller
             $saveDeliver = $request->user()->inventoryreceive()->create($request->validated());
 
             if($saveDeliver->id > 0) {
-                $currentStock = InventoryItemShoe::select('in_stock')->findOrFail($request->input('shoe_id'));
+                $currentStock = InventoryItemShoe::select('in_stock')->findOrFail($request->inventory_item_shoe_id);
 
-                $updatedStock = InventoryItemShoe::findOrFail($request->input('shoe_id'))
-                    ->update(['in_stock' => (intval($request->input('qty')) + intval($currentStock->in_stock))]);
+                $updatedStock = InventoryItemShoe::findOrFail($request->inventory_item_shoe_id)
+                    ->update(['in_stock' => (intval($request->qty) + intval($currentStock->in_stock))]);
 
                 $return = array('reqStatus' => 1, 'reqResponse' => response()->json($updatedStock));
             }

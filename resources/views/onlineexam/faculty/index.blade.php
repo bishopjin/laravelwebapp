@@ -20,7 +20,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('exam.index') }}" 
+                        <a href="{{ route('exam.create') }}" 
                             class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
@@ -30,106 +30,67 @@
 
             <div class="card border-top-0">
                 <div class="card-header border border-primary bg-primary py-4"></div>
-                <div class="card-body p-md-4">
+                <div class="card-body p-md-4 d-grid gap-3">
+                    @php
+                        $newTableData = [];
 
-                    <div class="card border-warning mb-3">
-                        <div class="card-header border-bottom border-warning">
-                            {{ __('Student List') }}
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                {{ __('Student Name') }}
-                                            </th>
-                                            <th>
-                                                {{ __('Course') }}
-                                            </th>
-                                            <th>
-                                                {{ __('Gender') }}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($studentList as $student)
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('facultyexam.show', $student->user_id) }}" 
-                                                        class="text-decoration-none fw-bold">
-                                                        {{ $student->student->full_name }}
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    {{ $student->student->onlinecourse->course }}
-                                                </td>
-                                                <td>
-                                                    {{ $student->student->gender->gender }}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end">
-                                    @isset($student_list)
-                                        {{ $student_list->links() }}
-                                    @endisset
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        if(isset($studentList)) {
+                            foreach($studentList as $student) {
+                                $newRow = array(
+                                    'id' => $student->user_id,
+                                    'name' => $student->student->full_name,
+                                    'gender' => $student->student->gender->gender,
+                                    'course' => $student->student->onlinecourse->course
+                                );
+                            
+                                array_push($newTableData, $newRow);
+                            }
+                        }
+                    @endphp
 
-                    <div class="card border-warning">
-                        <div class="card-header border-bottom border-warning">
-                            {{ __('Examination List') }}
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                {{ __('Examination Code') }}
-                                            </th>
-                                            <th>
-                                                {{ __('Subject') }}
-                                            </th>
-                                            <th>
-                                                {{ __('Timer(in minutes)') }}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($examList as $exam)
-                                            <tr>
-                                                <td>
-                                                    {{ $exam->exam_code }}
-                                                </td>
-                                                <td>
-                                                    {{ $exam->onlinesubject->subject }}
-                                                </td>
-                                                <td>
-                                                    {{ $exam->timer }}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end">
-                                    @isset($examList)
-                                        {{ $examList->links() }}
-                                    @endisset
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <x-datatable 
+                        :data="$studentList" 
+                        :newTableData="$newTableData"
+                        title="Student List" 
+                        :header="['Student Name', 'Course', 'Gender']" 
+                        :tData="['name', 'course', 'gender']"
+                        :hasViewButton="true"
+                        viewLink="facultyexam.show"
+                    ></x-datatable>
+
+                    @php
+                        $newTableData2 = [];
+
+                        if(isset($examList)) {
+                            foreach($examList as $exam) {
+                                $newRow2 = array(
+                                    'id' => $exam->id,
+                                    'examcode' => $exam->exam_code,
+                                    'subject' => $exam->onlinesubject->subject,
+                                    'timer' => $exam->timer
+                                );
+                            
+                                array_push($newTableData2, $newRow2);
+                            }
+                        }
+                    @endphp
+
+                    <x-datatable 
+                        :data="$examList" 
+                        :newTableData="$newTableData2"
+                        title="Examination List" 
+                        :header="['Examination Code', 'Subject', 'Timer(in minutes)']" 
+                        :tData="['examcode', 'subject', 'timer']"
+                        :hasViewButton="true"
+                        viewLink="exam.show"
+                        :hasEditButton="true"
+                        editLink="exam.edit"
+                    ></x-datatable>
+
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>

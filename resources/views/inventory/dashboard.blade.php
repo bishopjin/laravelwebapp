@@ -2,82 +2,72 @@
 
 @section('inventorycontent')
 <div class="container">
+    <div class="row justify-content-center fw-bold">
+        <div class="col-md-6">
+           <div class="row justify-content-center">
+
+                <x-inventory-card 
+                    linkAdd="{{ route('product.index') }}"
+                    :count="$itemCount"
+                    role="Admin|NoneAdmin"
+                    cardLabel="Item" />
+
+                <x-inventory-card 
+                    linkView="{{ route('size.index') }}"
+                    linkAdd="{{ route('size.create') }}"
+                    :count="$sizeCount"
+                    role="Admin"
+                    cardLabel="Size" />
+
+                <x-inventory-card 
+                    linkView="{{ route('color.index') }}"
+                    linkAdd="{{ route('color.create') }}"
+                    :count="$colorCount"
+                    role="Admin"
+                    cardLabel="Color" />
+
+                <x-inventory-card 
+                    linkView="{{ route('brand.index') }}"
+                    linkAdd="{{ route('brand.create') }}"
+                    :count="$brandCount"
+                    role="Admin"
+                    cardLabel="Brand" />
+           </div> 
+        </div>
+        <div class="col-md-6">
+           <div class="row justify-content-center">
+                <x-inventory-card 
+                    linkView="{{ route('type.index') }}"
+                    linkAdd="{{ route('type.create') }}"
+                    :count="$typeCount"
+                    role="Admin"
+                    cardLabel="Type" />
+
+                <x-inventory-card 
+                    linkView="{{ route('category.index') }}"
+                    linkAdd="{{ route('category.create') }}"
+                    :count="$categoryCount"
+                    role="Admin"
+                    cardLabel="Category" />
+
+                <x-inventory-card 
+                    linkAdd="{{ route('order.index') }}"
+                    :count="$orderCount"
+                    role="Admin|NoneAdmin"
+                    cardLabel="Order" />
+               
+                <x-inventory-card 
+                    linkView="{{ route('userspermission.index') }}"
+                    :count="$userCount"
+                    role="Admin"
+                    cardLabel="User" />
+           </div> 
+        </div>
+    </div>
+    
     <div class="row justify-content-center">
         <div class="col">
-            <div class="card">
-                <div class="card-header fw-bolder">
-                    {{ __('Inventory') }}
-                </div>
-
-                <div class="card-body table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    {{ __('Product ID') }}
-                                </th>
-                                <th>
-                                    {{ __('Brand') }}
-                                </th>
-                                <th>
-                                    {{ __('Size') }}
-                                </th>
-                                <th>
-                                    {{ __('Color') }}
-                                </th>
-                                <th>
-                                    {{ __('Type') }}
-                                </th>
-                                <th>
-                                    {{ __('Category') }}
-                                </th>
-                                <th>
-                                    {{ __('Price') }}
-                                </th>
-                                <th>
-                                    {{ __('In Stock') }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($shoeInventory as $item)
-                                <tr>
-                                    <td class="fw-bolder">
-                                        {{ $item->id }}
-                                    </td>
-                                    <td>
-                                        {{ $item->brand->brand }}
-                                    </td>
-                                    <td>
-                                        {{ $item->size->size }}
-                                    </td>
-                                    <td>
-                                        {{ $item->color->color }}
-                                    </td>
-                                    <td>
-                                        {{ $item->type->type }}
-                                    </td>
-                                    <td>
-                                        {{ $item->category->category }}
-                                    </td>
-                                    <td>
-                                        {{ $item->price }}
-                                    </td>
-                                    <td>
-                                        {{ $item->in_stock }}
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div class="d-flex justify-content-end">
-                        @isset($shoeInventory)
-                            {{ $shoeInventory->links() }}
-                        @endisset
-                    </div>
-                </div>
-            </div>
+            <dashboard-datatable-component></dashboard-datatable-component>
         </div>
     </div>
     <x-footer/>

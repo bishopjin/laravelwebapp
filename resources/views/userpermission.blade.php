@@ -139,47 +139,33 @@
                         </div>
 
                         @isset($curuser)
-                            <div class="fw-bold pb-2">
-                                {{ __('User\'s Role(s)') }}
-                            </div>
+                            @if (isset($userroles))
+                                <div class="fw-bold pb-2">
+                                    {{ __('User\'s Role(s)') }}
+                                </div>
 
-                            @if(isset($action))
-                                <form method="POST" 
-                                    action="{{ route('userspermission.update', $curuser->id) }}">
+                                @if(isset($action))
+                                    <form method="POST" 
+                                        action="{{ route('userspermission.update', $curuser->id) }}">
 
-                                    @csrf
+                                        @csrf
 
-                                    @method('PUT')
+                                        @method('PUT')
 
-                                    @forelse($roles as $role)
-                                        @if($userroles->count() > 0)
-                                            @php
-                                                $user_role = null;
-                                                foreach($userroles as $userrole) {
-                                                    if ($userrole == $role->name) {
-                                                        $user_role = $userrole;
+                                        @forelse($roles as $role)
+                                            @if($userroles->count() > 0)
+                                                @php
+                                                    $user_role = null;
+                                                    foreach($userroles as $userrole) {
+                                                        if ($userrole == $role->name) {
+                                                            $user_role = $userrole;
 
-                                                        break;
+                                                            break;
+                                                        }
                                                     }
-                                                }
-                                            @endphp
+                                                @endphp
 
-                                            @if($role->name != 'Super Admin')
-                                                <div class="form-group pb-2 px-4">
-                                                    <input type="checkbox" 
-                                                        name="role[]" 
-                                                        id="{{ $role->name }}" 
-                                                        value="{{ $role->name }}" 
-                                                        class="form-check-input"
-                                                        {{ $user_role != null ? 'checked' : '' }}>
-
-                                                    <label class="form-check-label" 
-                                                        for="{{ $role->name }}">
-                                                        {{ $role->name }}
-                                                    </label>
-                                                </div>
-                                            @else
-                                                @if($curuser->id == 1)
+                                                @if($role->name != 'Super Admin')
                                                     <div class="form-group pb-2 px-4">
                                                         <input type="checkbox" 
                                                             name="role[]" 
@@ -193,25 +179,26 @@
                                                             {{ $role->name }}
                                                         </label>
                                                     </div>
+                                                @else
+                                                    @if($curuser->id == 1)
+                                                        <div class="form-group pb-2 px-4">
+                                                            <input type="checkbox" 
+                                                                name="role[]" 
+                                                                id="{{ $role->name }}" 
+                                                                value="{{ $role->name }}" 
+                                                                class="form-check-input"
+                                                                {{ $user_role != null ? 'checked' : '' }}>
+
+                                                            <label class="form-check-label" 
+                                                                for="{{ $role->name }}">
+                                                                {{ $role->name }}
+                                                            </label>
+                                                        </div>
+                                                    @endif
                                                 @endif
-                                            @endif
 
-                                        @else
-                                            @if($role->name != 'Super Admin')
-                                                <div class="form-group pb-2 px-4">
-                                                    <input type="checkbox" 
-                                                        name="role[]" 
-                                                        id="{{ $role->name }}" 
-                                                        value="{{ $role->name }}" 
-                                                        class="form-check-input">
-
-                                                    <label class="form-check-label" 
-                                                        for="{{ $role->name }}">
-                                                        {{ $role->name }}
-                                                    </label>
-                                                </div>
                                             @else
-                                                @if($curuser->id == 1)
+                                                @if($role->name != 'Super Admin')
                                                     <div class="form-group pb-2 px-4">
                                                         <input type="checkbox" 
                                                             name="role[]" 
@@ -224,40 +211,58 @@
                                                             {{ $role->name }}
                                                         </label>
                                                     </div>
+                                                @else
+                                                    @if($curuser->id == 1)
+                                                        <div class="form-group pb-2 px-4">
+                                                            <input type="checkbox" 
+                                                                name="role[]" 
+                                                                id="{{ $role->name }}" 
+                                                                value="{{ $role->name }}" 
+                                                                class="form-check-input">
+
+                                                            <label class="form-check-label" 
+                                                                for="{{ $role->name }}">
+                                                                {{ $role->name }}
+                                                            </label>
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             @endif
-                                        @endif
+                                        @empty
+                                        @endforelse
+                                        <div class="form-group px-4">
+                                            <input type="submit" 
+                                                value="Save" 
+                                                class="btn btn-primary text-light">
+                                        </div>
+                                    </form>
+                                @else
+                                    @forelse($userroles->roles as $role)
+                                        <div class="fw-bold px-4 t">
+                                            {{ __('- ') }} 
+                                            {{ $role->name }}
+                                        </div>
+                                    @empty
+                                        <div class="fw-bold px-4 text-danger">
+                                            {{ __('User\'s has no role(s)') }}
+                                        </div>
                                     @endforelse
-                                    <div class="form-group px-4">
-                                        <input type="submit" 
-                                            value="Save" 
-                                            class="btn btn-primary text-light">
-                                    </div>
-                                </form>
+                                @endif
+                            
+
                             @else
-                                @forelse($userroles->roles as $role)
-                                    <div class="fw-bold px-4 t">
-                                        {{ __('- ') }} 
-                                        {{ $role->name }}
+                                <div class="fw-bold pb-2">
+                                    {{ __('User\'s Permission(s)') }}
+                                </div>
+
+                                @forelse($userpermissions as $permission)
+                                    <div class="fw-bold ps-4">
+                                        {{ __('- ').$permission->name }}
                                     </div>
                                 @empty
-                                    <div class="fw-bold px-4 text-danger">
-                                        {{ __('User\'s has no role(s)') }}
-                                    </div>
+                                    <div class="fw-bold ps-4 text-danger">{{ __('- no permission') }}</div>
                                 @endforelse
                             @endif
-                            
-                            <div class="fw-bold pb-2">
-                                {{ __('User\'s Permission(s)') }}
-                            </div>
-
-                            @forelse($userpermissions as $permission)
-                                <div class="fw-bold ps-4">
-                                    {{ __('- ').$permission->name }}
-                                </div>
-                            @empty
-                                <div class="fw-bold ps-4 text-danger">{{ __('- no permission') }}</div>
-                            @endforelse
                         @endisset
                     </div>
                 </div>

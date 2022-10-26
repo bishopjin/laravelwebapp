@@ -86,7 +86,7 @@ class ScheduleController extends Controller
 
         if ($validated) {
             $updated = PayrollWorkSchedule::find($id)
-                ->update(['schedule' => ($request->startTme.' - '.$request->endTme)]);
+                ->update(['schedule' => ($validated->startTme.' - '.$validated->endTme)]);
 
             $message = $updated ? 'Record updated' : 'Failed';
 

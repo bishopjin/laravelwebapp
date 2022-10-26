@@ -209,7 +209,7 @@
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>

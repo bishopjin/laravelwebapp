@@ -15,8 +15,6 @@
     <!-- Styles -->
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ mix('/js/app.js') }}"></script>
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9822106822353440"
      crossorigin="anonymous"></script>
@@ -29,7 +27,7 @@
             </span>
         </div>
     </noscript>
-    <div>
+    <div id="customApp">
         @guest     
             <main class="min-vh-100 d-flex align-items-center">
                 @yield('content')
@@ -41,6 +39,9 @@
         @endguest
     </div> 
     
+    <!-- Scripts -->
+    <script src="{{ mix('/customjs/customjs.js') }}"></script>
+
     <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
     <script type="text/javascript">
         $(document).ready(function() {

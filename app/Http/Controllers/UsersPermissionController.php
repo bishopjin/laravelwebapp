@@ -77,6 +77,8 @@ class UsersPermissionController extends Controller
         
         $curuser = User::find($id);
 
+        $userpermissions = $curuser != null ? $curuser->getAllPermissions() : null;
+
         $userroles = $curuser != null ? $curuser->getRoleNames() : null;
 
         $rolepermission = Role::with('permissions')->get();
@@ -85,7 +87,7 @@ class UsersPermissionController extends Controller
 
         $users = User::paginate(10, ['*'], 'user');
 
-        return view('userpermission')->with(compact('userroles', 'roles', 'users', 'curuser', 'action', 'rolepermission'));
+        return view('userpermission')->with(compact('userroles', 'roles', 'users', 'userpermissions', 'curuser', 'action', 'rolepermission'));
     }
 
     /**

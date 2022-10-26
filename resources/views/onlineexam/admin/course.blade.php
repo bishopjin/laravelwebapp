@@ -72,121 +72,26 @@
                             </form>
                         </div>        
                         <div class="col-md-8">
-                            <div class="fs-5 fw-bold">
-                                {{ __('Course List') }}
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                {{ __('Course') }}
-                                            </th>
-                                            <th>
-                                                {{ __('Action') }}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($courseList as $course)
-                                            @php
-                                                $courseID = 'course'.$course->id;
-                                            @endphp
-                                            <tr>
-                                                <td id="{{ $courseID }}">
-                                                    {{ $course->course }}
-                                                </td>
-                                                <td>
-                                                    <button type="button" 
-                                                        class="btn btn-outline-success editCourse" 
-                                                        id="{{ $course->id }}">
-                                                        {{ __('Edit') }}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end">
-                                    @isset($courseList)
-                                        {{ $courseList->links() }}
-                                    @endisset
-                                </div>
-                            </div>
+                            
+                            <x-datatable 
+                                :data="$courseList" 
+                                title="Course List" 
+                                :header="['Course']" 
+                                :tData="['course']"
+                                :hasEditButton="true"
+                                editLink="courseexam.edit"
+                            ></x-datatable>
+
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- modal/overlay -->
-<div class="modal pt-5">
-    <div class="modal-dialog">
-        <div class="modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary"> 
-                    <span class="text-light">
-                        {{ __('Edit Course') }}
-                    </span>
-                    <a href="javascript:void(0);" 
-                        id="closeDialog" 
-                        class="ms-auto">
-
-                        <i class="fa fa-times fa-lg text-light" 
-                            aria-hidden="true">
-                        </i>
-                    </a>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" 
-                        class="p-md-4" id="modalForm">
-
-                        @csrf
-                        @method('PUT')
-
-                        <div class="form-group mb-3">
-                            <input type="text" 
-                                name="course" 
-                                id="coursename" 
-                                class="form-control" 
-                                autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <div class="d-flex justify-content-end">
-                                <input type="submit" 
-                                    value="Save" 
-                                    class="btn btn-outline-primary">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer bg-primary text-light">
-                    {{ __('Laravel') }} {{ app()->version() }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        var modal = $('.modal');
-        
-        $('#closeDialog').on('click', function(){
-            $(modal).hide();
-        });
-
-        $('.editCourse').on('click', function() {
-            $(modal).show();
-            $('#modalForm').attr("action", "/online-exam/courseexam/" + this.id);
-            $('#coursename').val($('#course' + this.id).html());
-        });
-    });
-</script>
 @endsection

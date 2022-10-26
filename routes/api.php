@@ -4,9 +4,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\OnlineMenuController\MenuController;
-use App\Http\Controllers\InventoryController\DashboardController;
-use App\Http\Controllers\InventoryController\ProductController;
-use App\Http\Controllers\InventoryController\EmployeeController;
+
+use App\Http\Controllers\InventoryController\api\ApiDashboardController;
+use App\Http\Controllers\InventoryController\api\ApiProductController;
+use App\Http\Controllers\InventoryController\api\ApiProductDeliverController;
+use App\Http\Controllers\InventoryController\api\ApiProductOrderController;
+use App\Http\Controllers\InventoryController\api\ApiEmployeeController;
+use App\Http\Controllers\InventoryController\api\ApiEmployeeLogsController;
+
+use App\Http\Controllers\OnlineExamController\api\ApiProfileController;
+use App\Http\Controllers\OnlineExamController\api\admin\ApiAdminExamController;
+use App\Http\Controllers\OnlineExamController\api\admin\ApiAdminExamCourseController;
+use App\Http\Controllers\OnlineExamController\api\faculty\ApiFacultyExamDashboardController;
+use App\Http\Controllers\OnlineExamController\api\faculty\ApiExamController;
+use App\Http\Controllers\OnlineExamController\api\faculty\ApiSubjectController;
+use App\Http\Controllers\OnlineExamController\api\student\ApiStudentExamController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,30 +45,47 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('/logout', [ApiUserController::class, 'logout'])->name('logout');
 
-	//Route::apiResource('', );
 	/* inventory route */
 	Route::middleware('permission:inventory add stock|inventory get stock|inventory add new item')->prefix('/inventory')->group(function() {
-		Route::post('/addStock/store', [ProductController::class, 'DeliverStore']);
-		Route::post('/getStock/store', [ProductController::class, 'OrderStore']);
-		Route::post('/product/store', [ProductController::class, 'ProductStoreApi']);
-		Route::get('/employeelogs/index', [ProductController::class, 'OrderIndexApi']);
-		Route::get('/orders/index', [ProductController::class, 'OrderIndexApi']);
-		Route::get('/product/index', [ProductController::class, 'ProductIndexApi']);
-		Route::get('/index', [DashboardController::class, 'IndexApi']);
-		Route::get('/get/{id}', [ProductController::class, 'ProductShowApi']);
+		Route::get('/', [ApiDashboardController::class, 'index']);
 
-		Route::prefix('/employee')->group(function() {
+		Route::prefix('employee')->group(function() {
 			Route::middleware('permission:inventory view user|inventory edit user')->group(function () {
-				Route::get('/logs', [EmployeeController::class, 'IndexApi']);
-				Route::get('/edit', [EmployeeController::class, 'ShowApi']);
-				Route::delete('/delete', [EmployeeController::class, 'DeleteApi']);
-
-				Route::put('/access/save', [EmployeeController::class, 'Store']);
-				Route::get('/access/{id}/edit', [EmployeeController::class, 'Edit']);
+				Route::get('/employeelogs', [ApiEmployeeLogsController::class, 'index']);
+				Route::apiResource('employee', ApiEmployeeController::class);
 			});
 		});
+
+		Route::prefix('product')->group(function () {
+			Route::apiResource('deliver', ApiProductDeliverController::class);
+			Route::apiResource('order', ApiProductOrderController::class);
+		});	
+
+		Route::middleware('permission:inventory add new item')->apiResource('product', ApiProductController::class);
 	});
 	/* End */
+
+	/* Online Exam route */
+	Route::prefix('online-exam')->group(function() {
+		Route::middleware('permission:exam admin access')->group(function () {
+			Route::apiResource('adminexam', ApiAdminExamController::class);
+			Route::apiResource('courseexam', ApiAdminExamCourseController::class);
+		});
+
+		Route::middleware('permission:exam faculty access')->group(function () {
+			Route::apiResource('facultyexam', ApiFacultyExamDashboardController::class);
+			Route::apiResource('exam', ApiExamController::class);
+			Route::apiResource('subjectexam', ApiSubjectController::class);
+		});
+
+		Route::middleware('permission:exam student access')->group(function () {
+			Route::apiResource('studentexam', ApiStudentExamController::class);
+		});
+
+		Route::apiResource('profile.user', ApiProfileController::class);
+	});
+	/* END */
+
 
 	/* Customer route */
 	Route::middleware('ability:menu-create-orders,menu-view-order-history,menu-view-coupon-list')->group(function () {

@@ -26,7 +26,10 @@ class AdminDashboardController extends Controller
         $burgers = OrderBurger::select('id', 'name', 'price')->get();
         $combos = OrderComboMeal::select('id', 'name', 'price')->get();
         $beverages = OrderBeverage::with(['beveragename', 'beveragesize'])->get();
-        $orders = OrderOrder::where('user_id', auth()->user()->id)->select('order_number')->groupBy('order_number')->paginate(10);
+        $orders = OrderOrder::where('user_id', auth()->user()->id)
+            ->select('id')
+            ->groupBy('id')
+            ->paginate(10);
         $coupons = OrderCoupon::select('id', 'code', 'discount')->get();
         $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
 
@@ -34,7 +37,7 @@ class AdminDashboardController extends Controller
 
         $users = $this->GetAllUsers();
 
-        return view('menuorder.maintenance')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
+        return view('menuorder.index')->with(compact('burgers', 'combos', 'beverages', 'pagination', 'users', 'taxes', 'coupons'));
     }
 
     /**
@@ -59,8 +62,7 @@ class AdminDashboardController extends Controller
         $itemSizePrice = (float) $request->input('param2');
         $itemPrice = (float) $request->input('param3');
 
-        switch ($request->input('param0')) 
-        {
+        switch ($request->input('param0')) {
             case 'burger':
                 $created = OrderBurger::create(['name' => $itemName, 'price' => $itemSizePrice]);
 
@@ -69,16 +71,14 @@ class AdminDashboardController extends Controller
             case 'beverage':
                     $createRecordName = OrderBeverageName::create(['name' => $itemName]);
                     
-                    if ($createRecordName->id > 0)
-                    {
+                    if ($createRecordName->id > 0) {
                         $created = OrderBeverage::create([
                                 'order_beverage_name_id' => $createRecordName->id,
                                 'order_beverage_size_id' => intval($itemSizePrice),
                                 'price' => $itemPrice
                         ]);
-                    }
-                    else
-                    {
+
+                    } else {
                         $created = array('id' => 0);
                     }
                 break;
@@ -95,6 +95,7 @@ class AdminDashboardController extends Controller
                 $created = OrderCoupon::create(['code' => $itemName, 'discount' => ($itemSizePrice / 100)]);
                 break;
         }
+
         return response()->json($created->id);
     }
 
@@ -107,23 +108,19 @@ class AdminDashboardController extends Controller
     public function show($category, $id)
     {
         /* for pagination users and orders */
-        if ($request->ajax())
-        {
-            if ($category == 'user')
-            {   
+        if ($request->ajax()) {
+            if ($category == 'user') {   
                 $users = $this->GetAllUsers();
+
                 return view('menuorder.pagination.admin_user')->with(compact('users'))->render();
-            }
-            else
-            {
+
+            } else {
                 $currentPage = $id;
 
-                if (OrderTax::exists())
-                {
+                if (OrderTax::exists()) {
                     $taxes = OrderTax::select('id', 'tax', 'percentage')->get();
-                }
-                else 
-                { 
+
+                } else  { 
                     $taxes = collect(new OrderTax); 
                 }
 
@@ -142,8 +139,7 @@ class AdminDashboardController extends Controller
      */
     public function edit($category, $id)
     {
-        switch ($category) 
-        {
+        switch ($category) {
             case 'burger':
                 $data = OrderBurger::find($id);
                 break;
@@ -164,6 +160,7 @@ class AdminDashboardController extends Controller
                 $data = OrderCoupon::find($id);
                 break;
         }
+
         return $data;
     }
 
@@ -180,8 +177,7 @@ class AdminDashboardController extends Controller
         $itemSizePrice = (float) $request->input('param2');
         $itemPrice = (float) $request->input('param3');
 
-        switch ($request->input('param0')) 
-        {
+        switch ($request->input('param0')) {
             case 'burger':
                 $result = OrderBurger::find($id)->update(['name' => $itemName, 'price' => $itemSizePrice]);
 
@@ -209,6 +205,7 @@ class AdminDashboardController extends Controller
                 $result = OrderCoupon::find($id)->update(['code' => $itemName, 'discount' => ($itemSizePrice / 100)]);
                 break;
         }
+        
         return response()->json($result);
     }
 

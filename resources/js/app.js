@@ -7,6 +7,8 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify'
 import router from './routes'
+import store from './store/index'
+import App from './App.vue'
 
 require('./bootstrap');
 window.Vue = require('vue').default;
@@ -22,7 +24,7 @@ Vue.use(Vuetify);
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-Vue.component('app-component', require('./components/AppComponent.vue').default);
+//Vue.component('item-card-component', require('./components/ItemCardComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -34,4 +36,6 @@ const app = new Vue({
     el: '#app',
     vuetify: new Vuetify(),
     router,
+    store,
+    render: (h) => h(App)
 });

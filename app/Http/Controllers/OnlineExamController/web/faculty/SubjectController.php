@@ -16,7 +16,10 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subjectList = OnlineSubject::select('subject')->latest()->paginate(10);
+        $subjectList = OnlineSubject::select('subject')
+            ->latest()
+            ->paginate(10)
+            ->onEachSide(1);
 
         return view('onlineexam.faculty.subject')->with(compact('subjectList'));
     }

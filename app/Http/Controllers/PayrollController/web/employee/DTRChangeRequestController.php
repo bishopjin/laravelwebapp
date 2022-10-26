@@ -20,6 +20,7 @@ class DTRChangeRequestController extends Controller
     public function edit($id)
     {
         $dtrData = PayrollAttendance::with('attendancerequest')->find($id);
+        
         $users = PayrollEmployee::with('user')->where('user_id', '!=', auth()->user()->id)->get();
 
         return view('payroll.employee.requestchange')->with(compact('dtrData', 'users'));

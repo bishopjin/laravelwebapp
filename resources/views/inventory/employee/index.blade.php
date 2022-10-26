@@ -4,82 +4,41 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
-            <div class="card">
-                <div class="card-header fw-bolder d-flex flex-row justify-content-between align-items-center">
-                    <span>
-                        {{ __('Employee Log') }}
-                    </span>
-                    <span>
-                        <a href="{{ route('employee.index') }}" 
-                            class="btn btn-outline-success px-3 fw-bolder">
-                            {{ __('Edit User') }}
-                        </a>
-                    </span>
-                </div>
+            <a href="{{ route('employee.index') }}" 
+                class="btn btn-outline-success px-3 fw-bolder border-0 mb-2">
+                {{ __('Edit User') }}
+            </a>
 
-                <div class="card-body table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    {{ __('UID') }}
-                                </th>
-                                <th>
-                                    {{ __('Employee Name') }}
-                                </th>
-                                <th>
-                                    {{ __('Time In') }}
-                                </th>
-                                <th>
-                                    {{ __('Login Date') }}
-                                </th>
-                                <th>
-                                    {{ __('Time Out') }}
-                                </th>
-                                <th>
-                                    {{ __('Logout Date') }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($employeeLog as $item)
-                                @php
-                                    $date_in = explode(' ', $item->time_in);
+            @php
+                $newTableData = [];
 
-                                    if (is_null($item->time_out)) { $date_out = [null, null]; }
-                                    else { $date_out = explode(' ', $item->time_out); }
-                                @endphp
-                                <tr>
-                                    <td class="fw-bolder">
-                                        {{ $item->user_id }}
-                                    </td>
-                                    <td>
-                                        {{ $item->user->full_name }}
-                                    </td>
-                                    <td>
-                                        {{ $date_in[1] }}
-                                    </td>
-                                    <td>
-                                        {{ $date_in[0] }}
-                                    </td>
-                                    <td>
-                                        {{ $date_out[1] }}
-                                    </td>
-                                    <td>
-                                        {{ $date_out[0] }}
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
-                    @isset($employeeLog)
-                        <div class="d-flex justify-content-end">
-                            {{ $employeeLog->links() }}
-                        </div>
-                    @endisset
-                </div>
-            </div>
+                if(isset($employeeLog)) {
+                    foreach($employeeLog as $item) {
+                        $date_in = explode(' ', $item->time_in);
+                        $date_out = explode(' ', $item->time_out); 
+
+                        $newRow = array(
+                            'id' => $item->user_id,
+                            'name' => $item->user->full_name,
+                            'timein' => $date_in[1] ?? '',
+                            'datein' => $date_in[0] ?? '',
+                            'timeout' => $date_out[1] ?? '',
+                            'dateout' => $date_out[0] ?? ''
+                        );
+                    
+                        array_push($newTableData, $newRow);
+                    }
+                }
+            @endphp
+
+            <x-datatable 
+                :data="$employeeLog" 
+                :newTableData="$newTableData"
+                title="Employee Logs" 
+                :header="['UID', 'Employee Name', 'Time In', 'Login Date', 'Time Out', 'Logout Date']" 
+                :tData="['id', 'name', 'timein', 'datein', 'timeout', 'dateout']">
+            </x-datatable>
+            
         </div>
     </div>
     <x-footer/>

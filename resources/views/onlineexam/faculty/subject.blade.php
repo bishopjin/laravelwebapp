@@ -21,7 +21,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('exam.index') }}" 
+                        <a href="{{ route('exam.create') }}" 
                             class="nav-link border border-bottom-0 text-light rounded py-3 px-5">
                             {{ __('Examination') }}
                         </a>
@@ -72,24 +72,19 @@
                         </div>
 
                         <div class="col-md-8">
-                            @php 
-                                $title = 'Subject List'; 
-                                $header = ['Subject'];
-                                $dataKey = ['subject'];
-                            @endphp
-                            @isset($subjectList)
-                                <x-datatable :data="$subjectList" 
-                                    :title="$title" 
-                                    :header="$header" 
-                                    :tData="$dataKey">
-                                </x-datatable>
-                            @endisset
+                            <x-datatable 
+                                :data="$subjectList" 
+                                title="Subject List" 
+                                :header="['Subject']" 
+                                :tData="['subject']"
+                                :hasRowNumber="true">
+                            </x-datatable>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-primary">
                     <div class="container">
-                        <x-footerexam :color="'text-light'"/>
+                        <x-footerexam color="text-light"></x-footerexam>
                     </div>
                 </div>
             </div>

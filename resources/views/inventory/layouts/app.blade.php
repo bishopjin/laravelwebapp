@@ -15,8 +15,7 @@
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ mix('/js/app.js') }}"></script>
+    
 </head>
 <body>
     <noscript>
@@ -26,7 +25,7 @@
             </span>
         </div>
     </noscript>
-    <div>
+    <div id="customApp">
         <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" 
@@ -51,7 +50,7 @@
                             <li class="">
                                 <a href="{{ route('inventorydashboard.index') }}" 
                                     class="sidebar-link">
-                                    {{ __('Inventory') }}
+                                    {{ __('Dashboard') }}
                                 </a>
                             </li>
                             <li class="">
@@ -66,7 +65,7 @@
                                     {{ __('Order Item') }}
                                 </a>
                             </li>
-                            @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
+                            @hasrole('Admin')
                                 <li class="">
                                     <a href="{{ route('product.index') }}" 
                                         class="sidebar-link">
@@ -79,7 +78,7 @@
                                         {{ __('Employee Logs') }}
                                     </a>
                                 </li>
-                            @endif
+                            @endhasrole
                             <li class="d-md-none d-lg-none d-sm-block">
                                 <a class="sidebar-link" 
                                     href="{{ route('index') }}">
@@ -120,7 +119,7 @@
                 <li class="">
                     <a href="{{ route('inventorydashboard.index') }}" 
                         class="sidebar-link @if(Route::current()->getName() === 'inventorydashboard.index') selected-link @endif">
-                        {{ __('Inventory') }}
+                        {{ __('Dashboard') }}
                     </a>
                 </li>
                 <li class="">
@@ -135,7 +134,7 @@
                         {{ __('Order Item') }}
                     </a>
                 </li>
-                @if(auth()->user()->can('inventory view user') && auth()->user()->can('inventory edit user'))
+                @hasrole('Admin')
                     <li class="">
                         <a href="{{ route('product.index') }}" 
                             class="sidebar-link @if(Route::current()->getName() === 'product.index' || Route::current()->getName() === 'product.view') selected-link @endif">
@@ -148,7 +147,7 @@
                             {{ __('Employee Logs') }}
                         </a>
                     </li>
-                @endif
+                @endhasrole
                 <li class="d-md-none d-lg-none d-sm-block">
                     <a class="sidebar-link" href="{{ route('index') }}">
                         {{ __('Home') }}
@@ -158,8 +157,12 @@
         </div>
         <!-- Main -->
         <main class="py-4 main">
-            @yield('inventorycontent')
+            <v-app>
+                @yield('inventorycontent')
+            </v-app>
         </main>
     </div>
+    <!-- Scripts -->
+    <script src="{{ mix('/customjs/customjs.js') }}"></script>
 </body>
 </html>

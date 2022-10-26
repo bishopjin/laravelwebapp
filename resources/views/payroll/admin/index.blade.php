@@ -470,7 +470,7 @@
 									</th>
 								</thead>
 								<tbody>
-									@foreach($users as $user)
+									@forelse($users as $user)
 										<tr>
 											@php 
 												$sched = explode('-', $user->workschedule->schedule);

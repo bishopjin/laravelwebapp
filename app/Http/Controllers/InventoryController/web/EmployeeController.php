@@ -17,7 +17,12 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $userDetails = User::withTrashed()->notadmin()->notself(auth()->user()->id)->paginate(10);
+        $userDetails = User::withTrashed()
+            ->notadmin()
+            ->notself(auth()->user()->id)
+            ->latest()
+            ->paginate(10, ['*'], 'edituser');
+
         return view('inventory.employee.edit')->with(compact('userDetails'));
     }
 
@@ -41,6 +46,7 @@ class EmployeeController extends Controller
     {
         if ($request->validated()) {
             $user = User::findOrFail($request->safe()->only(['id']));
+
             $user->assignRole($request->safe()->only(['user_role']));
             
             return redirect()->route('inventory.employee.edit.index');
@@ -67,7 +73,9 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $userDetails = User::findOrFail($id);
+        
         $roles = Role::select('id', 'name')->where('id', '<', 3)->get();
+
         return view('inventory.employee.editaccess')->with(compact('userDetails', 'roles'));
     }
 

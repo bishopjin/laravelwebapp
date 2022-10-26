@@ -4,101 +4,35 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
-            <div class="card">
-                <div class="card-header fw-bolder d-flex flex-row justify-content-between align-items-center">
-                    <span>{{ __('Edit Users') }}</span>
-                </div>
 
-                <div class="card-body table-responsive">
-                    <table class="table" 
-                        id="datatable">
-                        <thead>
-                            <tr class="small">
-                                <th class="text-center">
-                                    {{ __('User ID') }}
-                                </th>
-                                <th class="text-center">
-                                    {{ __('Users') }}
-                                </th>
-                                <th class="text-center">
-                                    {{ __('Access Type') }}
-                                </th>
-                                <th class="text-center">
-                                    {{ __('Change Access Type') }}
-                                </th>
-                                <th class="text-center">
-                                    {{ __('Change Account Status') }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($userDetails as $user)
-                                @php
-                                    $active = false;
-                                    $notactive = false;
-                                    if ($user->trashed()) {   
-                                        $btn_label = 'Enable';
-                                        $notactive = true;
+            @php
+                $newTableData = [];
 
-                                    } else {
-                                        $btn_label = 'Disable';
-                                        $active = true;
-                                    }
-                                @endphp
+                if(isset($userDetails)) {
+                    foreach($userDetails as $user) {
+                        $newRow = array(
+                            'id' => $user->id,
+                            'name' => $user->full_name,
+                            'accesType' => 'For standalone system only',
+                            'changeAccess' => 'For standalone system only',
+                            'changeStatus' => $user->trashed()
+                        );
+                    
+                        array_push($newTableData, $newRow);
+                    }
+                }
+            @endphp
 
-                                <tr>
-                                    <td class="text-center">
-                                        {{ $user->id }}
-                                    </td>
-                                    <td>
-                                        {{ $user->full_name }}
-                                    </td>
-                                    <!-- standalone system -->
-                                    {{-- <td class="text-center">
-                                        {{ $user->user_type }}
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('employee.edit', $user->id) }}" 
-                                            class="btn btn-outline-primary">
-                                            {{ __('Edit Access Level') }}
-                                        </a>
-                                    </td> --}}
-                                    <!-- End -->
-                                    <!-- consolidated system  -->
-                                    <td class="text-center text-danger">
-                                        {{ __('For standalone system only') }}
-                                    </td>
-                                    <td class="text-center text-danger">
-                                        {{ __('For standalone system only') }}
-                                    </td>
-                                    <!-- End -->
-                                    <td class="text-center">
-                                        <form method="POST" 
-                                            action="{{ route('employee.destroy', $user->id) }}">
-                                            
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <input type="submit" 
-                                                value="{{ $btn_label }}"
-                                                @class([
-                                                    'fw-bold', 'text-danger' => $active, 
-                                                    'text-success' => $notactive,
-                                                ])>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div class="d-flex justify-content-end">
-                        @isset($userDetails)
-                            {{ $userDetails->links() }}
-                        @endisset
-                    </div>
-                </div>
-            </div>
+            <x-datatable 
+                :data="$userDetails" 
+                :newTableData="$newTableData"
+                title="Edit Users" 
+                :header="['User ID', 'Users', 'Access Type', 'Change Access Type']" 
+                :tData="['id', 'name', 'accesType', 'changeAccess']"
+                :hasDeleteButton="true"
+                deleteLink="employee.destroy"
+            ></x-datatable>
+            
         </div>
     </div>
     <x-footer/>

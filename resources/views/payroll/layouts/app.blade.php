@@ -15,8 +15,6 @@
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}"></script>
 </head>
 <body style="background-color: #C8C8C8;">
     <noscript>
@@ -26,7 +24,7 @@
             </span>
         </div>
     </noscript>
-    <div id="">
+    <div id="customApp">
         <nav class="navbar navbar-expand-md navbar-light sticky-top shadow-sm payroll-nav-bg">
             <div class="container">
                 <span class="navbar-brand pe-4">
@@ -333,5 +331,7 @@
             </div>
         </div>
     </div>
+    <!-- Scripts -->
+    <script src="{{ mix('/customjs/customjs.js') }}"></script>
 </body>
 </html>

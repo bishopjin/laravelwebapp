@@ -5,18 +5,22 @@ use App\Http\Controllers\UsersPermissionController;
 use App\Http\Controllers\UsersRoleController;
 use App\Http\Controllers\InventoryController\web\DashboardController;
 use App\Http\Controllers\InventoryController\web\ProductController;
-use App\Http\Controllers\InventoryController\web\ProductDeliverController;
-use App\Http\Controllers\InventoryController\web\ProductOrderController;
 use App\Http\Controllers\InventoryController\web\EmployeeController;
 use App\Http\Controllers\InventoryController\web\EmployeeLogsController;
+use App\Http\Controllers\InventoryController\web\ItemBrandController;
+use App\Http\Controllers\InventoryController\web\ItemCategoryController;
+use App\Http\Controllers\InventoryController\web\ItemColorController;
+use App\Http\Controllers\InventoryController\web\ItemSizeController;
+use App\Http\Controllers\InventoryController\web\ItemTypeController;
 
 use App\Http\Controllers\OnlineExamController\web\ProfileController;
-use App\Http\Controllers\OnlineExamController\web\admin\AdminExamDashboardController;
+use App\Http\Controllers\OnlineExamController\web\admin\AdminExamController;
 use App\Http\Controllers\OnlineExamController\web\admin\AdminExamCourseController;
 use App\Http\Controllers\OnlineExamController\web\faculty\FacultyExamDashboardController;
 use App\Http\Controllers\OnlineExamController\web\faculty\ExamController;
 use App\Http\Controllers\OnlineExamController\web\faculty\SubjectController;
-use App\Http\Controllers\OnlineExamController\web\student\StudentExamDashboardController;
+use App\Http\Controllers\OnlineExamController\web\faculty\ExamQuestionController;
+use App\Http\Controllers\OnlineExamController\web\student\StudentExamController;
 
 use App\Http\Controllers\OnlineMenuController\web\AdminDashboardController;
 use App\Http\Controllers\OnlineMenuController\web\CustomerDashboardController;
@@ -66,8 +70,14 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		});
 
 		Route::prefix('product')->group(function () {
-			Route::resource('deliver', ProductDeliverController::class);
-			Route::resource('order', ProductOrderController::class);
+			Route::resource('size', ItemSizeController::class);
+			Route::resource('color', ItemColorController::class);
+			Route::resource('brand', ItemBrandController::class);
+			Route::resource('type', ItemTypeController::class);
+			Route::resource('category', ItemCategoryController::class);
+
+			Route::view('/deliver', 'inventory.product.receive')->name('deliver.index');
+			Route::view('/order', 'inventory.product.order')->name('order.index');
 		});	
 		
 		Route::middleware('permission:inventory add new item')->resource('product', ProductController::class);
@@ -77,7 +87,7 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	/* Online Exam route */
 	Route::prefix('online-exam')->group(function() {
 		Route::middleware('permission:exam admin access')->group(function () {
-			Route::resource('adminexam', AdminExamDashboardController::class);
+			Route::resource('adminexam', AdminExamController::class);
 			Route::resource('courseexam', AdminExamCourseController::class);
 		});
 
@@ -85,10 +95,12 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::resource('facultyexam', FacultyExamDashboardController::class);
 			Route::resource('exam', ExamController::class);
 			Route::resource('subjectexam', SubjectController::class);
+			Route::resource('examquestion', ExamQuestionController::class);
 		});
 
 		Route::middleware('permission:exam student access')->group(function () {
-			Route::resource('studentexam', StudentExamDashboardController::class);
+			Route::resource('studentexam', StudentExamController::class);
+			Route::view('/examination', 'onlineexam.student.examination');
 		});
 
 		Route::resource('profile.user', ProfileController::class);
@@ -99,11 +111,11 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 	Route::prefix('menu-ordering')->group(function() {
 		/* Customer route */
 		Route::middleware('permission:menu create orders|menu view order history|menu view coupon list')->group(function () {
-			Route::resource('customer', CustomerDashboardController::class);//->only(['index', 'store']);
+			Route::get('/customer', [CustomerDashboardController::class, 'index'])->name('customer.index');
 		});
 		/* Admin Maintenance route */
 		Route::middleware('permission:menu view order list|menu view user list')->group(function(){
-			Route::resource('admin', AdminDashboardController::class);
+			Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.index');
 		});
 	});
 	/* END */
