@@ -30,7 +30,11 @@
 							@endif
 							
 							@for ($i = 0; $i < sizeOf($dataKey); $i++)
-								<td>{{ $row[$dataKey[$i]][$dataKey[$i]] ?? $row[$dataKey[$i]] }}</td>
+								@if($deepRelation)
+									<td>{{ $row[$rootRelationKey][$dataKey[$i]][$dataKey[$i]] ?? $row[$dataKey[$i]] }}</td>
+								@else
+									<td>{{ $row[$dataKey[$i]][$dataKey[$i]] ?? $row[$dataKey[$i]] }}</td>
+								@endif
 							@endfor
 
 							@if ($hasEditButton OR $hasAddButton OR $hasDeleteButton OR $hasViewButton) 

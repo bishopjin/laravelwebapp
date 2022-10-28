@@ -22,13 +22,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $brand = InventoryItemBrand::get();
-        $category = InventoryItemCategory::get();
-        $type = InventoryItemType::get();
-        $color = InventoryItemColor::get();
-        $size = InventoryItemSize::get();
-    
-        return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
+        return view('inventory.product.inventory');
     }
 
     /**
@@ -38,7 +32,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $brand = InventoryItemBrand::get();
+        $category = InventoryItemCategory::get();
+        $type = InventoryItemType::get();
+        $color = InventoryItemColor::get();
+        $size = InventoryItemSize::get();
+    
+        return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Models\InventoryItemCategory;
 use App\Models\InventoryItemOrder;
 use App\Models\User;
 
+
 class DashboardController extends Controller
 {
     /**
@@ -37,7 +38,20 @@ class DashboardController extends Controller
         $userCount = User::role(['Admin', 'NoneAdmin'])->count();
 
         $itemCount = InventoryItemShoe::count();
-    
+
+        $outOfStock = InventoryItemShoe::where('in_stock', 0)->select(['id', 'in_stock'])->latest('id')->get();
+
+        $mostOrdered = InventoryItemOrder::selectRaw('sum(qty) as qty, inventory_item_shoe_id as inventory_item_shoe_id')
+            ->groupBy('inventory_item_shoe_id')
+            ->latest('qty')
+            ->take(10)
+            ->get();
+
+        $newProduct = InventoryItemShoe::where('created_at', 'like', date('Y-m-d').'%')
+            ->select(['id', 'in_stock'])
+            ->latest()
+            ->get();
+
         return view('inventory.dashboard')
             ->with(compact(
                 'sizeCount', 
@@ -47,7 +61,10 @@ class DashboardController extends Controller
                 'categoryCount',
                 'orderCount',
                 'userCount',
-                'itemCount'
+                'itemCount',
+                'outOfStock',
+                'mostOrdered',
+                'newProduct'
             ));
     }
 }

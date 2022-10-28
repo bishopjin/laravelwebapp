@@ -56,7 +56,7 @@
                             <li class="">
                                 <a href="{{ route('deliver.index') }}" 
                                     class="sidebar-link">
-                                    {{ __('Add New Stock') }}
+                                    {{ __('Receive Item') }}
                                 </a>
                             </li>
                             <li class="">
@@ -67,9 +67,9 @@
                             </li>
                             @hasrole('Admin')
                                 <li class="">
-                                    <a href="{{ route('product.index') }}" 
+                                    <a href="{{ route('product.create') }}" 
                                         class="sidebar-link">
-                                        {{ __('Add New Product') }}
+                                        {{ __('New Product') }}
                                     </a>
                                 </li>
                                 <li class="">
@@ -122,10 +122,18 @@
                         {{ __('Dashboard') }}
                     </a>
                 </li>
+                @if(Route::current()->getName() === 'product.index')
+                    <li class="">
+                        <a href="#" 
+                            class="sidebar-link selected-link">
+                            {{ __('Inventory') }}
+                        </a>
+                    </li>
+                @endif
                 <li class="">
                     <a href="{{ route('deliver.index') }}" 
                         class="sidebar-link @if(Route::current()->getName() === 'deliver.index') selected-link @endif">
-                        {{ __('Add New Stock') }}
+                        {{ __('Receive Item') }}
                     </a>
                 </li>
                 <li class="">
@@ -136,9 +144,9 @@
                 </li>
                 @hasrole('Admin')
                     <li class="">
-                        <a href="{{ route('product.index') }}" 
-                            class="sidebar-link @if(Route::current()->getName() === 'product.index' || Route::current()->getName() === 'product.view') selected-link @endif">
-                            {{ __('Add New Product') }}
+                        <a href="{{ route('product.create') }}" 
+                            class="sidebar-link @if(Route::current()->getName() === 'product.create') selected-link @endif">
+                            {{ __('New Product') }}
                         </a>
                     </li>
                     <li class="">
@@ -156,7 +164,7 @@
             </ul>
         </div>
         <!-- Main -->
-        <main class="py-4 main">
+        <main class="main">
             <v-app>
                 @yield('inventorycontent')
             </v-app>

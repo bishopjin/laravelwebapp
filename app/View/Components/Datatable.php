@@ -39,6 +39,10 @@ class Datatable extends Component
 
     public $viewLink;
 
+    public $deepRelation;
+
+    public $rootRelationKey;
+
     public function __construct(
         $data, 
         $newTableData = NULL,
@@ -53,7 +57,9 @@ class Datatable extends Component
         $addLink = NULL,
         $editLink = NULL,
         $deleteLink = NULL,
-        $viewLink = NULL
+        $viewLink = NULL,
+        $deepRelation = false,
+        $rootRelationKey = NULL
     )
     {
         $this->tableData = $data;
@@ -70,6 +76,8 @@ class Datatable extends Component
         $this->editLink = $editLink;
         $this->deleteLink = $deleteLink;
         $this->viewLink = $viewLink;
+        $this->deepRelation = $deepRelation;
+        $this->rootRelationKey = $rootRelationKey;
     }
 
     /**

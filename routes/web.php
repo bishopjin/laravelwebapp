@@ -12,6 +12,9 @@ use App\Http\Controllers\InventoryController\web\ItemCategoryController;
 use App\Http\Controllers\InventoryController\web\ItemColorController;
 use App\Http\Controllers\InventoryController\web\ItemSizeController;
 use App\Http\Controllers\InventoryController\web\ItemTypeController;
+use App\Http\Controllers\InventoryController\web\OutOfStockItemController;
+use App\Http\Controllers\InventoryController\web\MostOrderedItemController;
+use App\Http\Controllers\InventoryController\web\NewProductListController;
 
 use App\Http\Controllers\OnlineExamController\web\ProfileController;
 use App\Http\Controllers\OnlineExamController\web\admin\AdminExamController;
@@ -75,6 +78,9 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 			Route::resource('brand', ItemBrandController::class);
 			Route::resource('type', ItemTypeController::class);
 			Route::resource('category', ItemCategoryController::class);
+			Route::resource('outofstock', OutOfStockItemController::class);
+			Route::resource('mostordered', MostOrderedItemController::class);
+			Route::resource('newproduct', NewProductListController::class);
 
 			Route::view('/deliver', 'inventory.product.receive')->name('deliver.index');
 			Route::view('/order', 'inventory.product.order')->name('order.index');
