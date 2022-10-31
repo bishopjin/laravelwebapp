@@ -36,7 +36,7 @@ class CreateUsersTable extends Migration
             'middlename' => 'Smith',
             'lastname' => 'Wick',
             'email' => 'john@mail.com',
-            'password' => '$2y$10$a6a8RxxpTgoIYMeA8Frr9OQsPNMY.3r708jlOHkPKTxrfjA2ncsay', 
+            'password' => '\$2y$10$a6a8RxxpTgoIYMeA8Frr9OQsPNMY.3r708jlOHkPKTxrfjA2ncsay', 
             'gender_id' => 1,
             'online_course_id' => 1,
             'DOB' => date('Y-m-d', strtotime('1990-12-01')),

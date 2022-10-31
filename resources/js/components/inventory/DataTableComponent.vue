@@ -66,7 +66,7 @@
 				this.$store.dispatch('nextPage', nextPage)
 			},
 			toLowerString(data) {
-				return data.toString().toLowerCase()
+				return String(data).toLowerCase()
 			},
 			emitEvent() {
 				this.$emit('btnClicked')

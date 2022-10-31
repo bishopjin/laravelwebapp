@@ -13,6 +13,7 @@
 
         <x-inventory-card 
             linkAdd="{{ route('order.index') }}"
+            linkView="{{ route('ordersummary.index') }}"
             :count="$orderCount"
             role="Admin|NoneAdmin"
             cardLabel="Order" 

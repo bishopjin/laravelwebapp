@@ -65,13 +65,13 @@
                                     {{ __('Order Item') }}
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ route('product.create') }}" 
+                                    class="sidebar-link">
+                                    {{ __('New Product') }}
+                                </a>
+                            </li>
                             @hasrole('Admin')
-                                <li class="">
-                                    <a href="{{ route('product.create') }}" 
-                                        class="sidebar-link">
-                                        {{ __('New Product') }}
-                                    </a>
-                                </li>
                                 <li class="">
                                     <a href="{{ route('employeelogs.index') }}" 
                                         class="sidebar-link">
@@ -142,13 +142,13 @@
                         {{ __('Order Item') }}
                     </a>
                 </li>
+                <li class="">
+                    <a href="{{ route('product.create') }}" 
+                        class="sidebar-link @if(Route::current()->getName() === 'product.create') selected-link @endif">
+                        {{ __('New Product') }}
+                    </a>
+                </li>
                 @hasrole('Admin')
-                    <li class="">
-                        <a href="{{ route('product.create') }}" 
-                            class="sidebar-link @if(Route::current()->getName() === 'product.create') selected-link @endif">
-                            {{ __('New Product') }}
-                        </a>
-                    </li>
                     <li class="">
                         <a href="{{ route('employeelogs.index') }}" 
                             class="sidebar-link @if(Route::current()->getName() === 'employeelogs.index' || Route::current()->getName() === 'employee.edit') selected-link @endif">

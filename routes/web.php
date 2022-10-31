@@ -84,9 +84,10 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 
 			Route::view('/deliver', 'inventory.product.receive')->name('deliver.index');
 			Route::view('/order', 'inventory.product.order')->name('order.index');
+			Route::view('/ordersummary', 'inventory.product.orderSummary')->name('ordersummary.index');
 		});	
 		
-		Route::middleware('permission:inventory add new item')->resource('product', ProductController::class);
+		Route::resource('product', ProductController::class);
 	});
 	/* END */
 

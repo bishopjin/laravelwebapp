@@ -66,17 +66,6 @@
                             </div>
                         </div>
                         <div class="row justify-content-center">
-                            <div class="col-md-10 d-flex justify-content-end small">
-                                <div class="small">
-                                    <div class="small">
-                                        <span class="fw-bold border rounded-pill small p-1" id="capslock">
-                                            {{ __('CAPS LOCK') }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
                             <div class="col-md-10 d-flex justify-content-between align-items-end">
                                 <div class="d-flex flex-column">
                                     <a href=" {{ route('register') }} " class="fw-bold">{{ __('Create Account') }}</a>

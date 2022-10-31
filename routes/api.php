@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
 			Route::apiResource('order', ApiProductOrderController::class);
 		});	
 
-		Route::middleware('permission:inventory add new item')->apiResource('product', ApiProductController::class);
+		Route::apiResource('product', ApiProductController::class);
 	});
 	/* End */
 

@@ -17,11 +17,18 @@ class ApiProductOrderController extends Controller
      */
     public function index()
     {
-        return auth()->user()->inventoryorder()
-            ->with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
-            ->latest()
-            ->paginate(10, ['*'], 'order')
-            ->onEachSide(1);
+        if (auth()->user()->id == 1) {
+            return InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+                ->latest()
+                ->paginate(10, ['*'], 'order')
+                ->onEachSide(1);
+        } else {
+            return auth()->user()->inventoryorder()
+                ->with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
+                ->latest()
+                ->paginate(10, ['*'], 'order')
+                ->onEachSide(1);
+        }
     }
 
     /**

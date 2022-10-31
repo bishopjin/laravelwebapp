@@ -26,6 +26,7 @@ Vue.component('item-card-component', require('./components/ItemCardComponent.vue
 Vue.component('add-new-stock-component', require('./components/inventory/AddNewStockComponent.vue').default);
 Vue.component('dashboard-datatable-component', require('./components/inventory/DashboardDatatableComponent.vue').default);
 Vue.component('order-item-component', require('./components/inventory/OrderItemComponent.vue').default);
+Vue.component('order-summary-component', require('./components/inventory/OrderSummaryComponent.vue').default);
 Vue.component('student-exam-code-component', require('./components/onlineexam/StudentExamCodeComponent.vue').default);
 Vue.component('student-examination-component', require('./components/onlineexam/StudentExaminationComponent.vue').default);
 Vue.component('create-examination-form', require('./components/onlineexam/CreateExaminationForm.vue').default);

@@ -4,7 +4,7 @@
             <span>
             	{{ $cardHeader }}
             </span>
-            @if($cardData) 
+            @if($cardData->count() > 0) 
             	<a href="{{ route($url) }}"
             		class="text-decoration-none fw-bold text-info">
             		{{ __('View') }}
@@ -12,8 +12,11 @@
             @endif
         </div>
         <div class="card-body overflow-auto">
-        	@if($cardData)
-	        	<div class="@if ($labelQty) d-flex justify-content-around @endif fw-bold my-n2 pb-3">
+        	@if($cardData->count() > 0)
+	        	<div class="px-5 @if ($labelQty) d-flex justify-content-between @endif fw-bold my-n2 pb-3">
+                    <span>
+                        {{ __('#') }}
+                    </span>
 	        		<span>
 	        			{{ $labelName }}
 	        		</span>
@@ -26,8 +29,13 @@
         	@endif
 
         	@forelse($cardData as $data)
-        		<div class="@if ($labelQty)  d-flex justify-content-around @endif">
-	        		<span>{{ $data[$dataIndex[0]] }}</span>
+        		<div class="px-5 @if ($labelQty)  d-flex justify-content-between @endif">
+                    <span>
+                        {{ $loop->index + 1 }}
+                    </span>
+	        		<span>
+                        {{ $data[$dataIndex[0]] }}
+                    </span>
 	        		@if ($labelQty) 
 	        			<span>{{ $data[$dataIndex[1]] }}</span>
 	        		@endif

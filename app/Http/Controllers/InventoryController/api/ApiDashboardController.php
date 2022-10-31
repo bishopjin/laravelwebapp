@@ -35,7 +35,11 @@ class ApiDashboardController extends Controller
 
         $categoryCount = InventoryItemCategory::count();
 
-        $orderCount = InventoryItemOrder::count();
+        if (auth()->user()->id == 1) {
+            $orderCount = InventoryItemOrder::count();
+        } else {
+            $orderCount = auth()->user()->inventoryorder()->count();
+        }
 
         $userCount = User::role(['Admin', 'NoneAdmin'])->count();
 
