@@ -60,6 +60,7 @@ class ApiProductOrderController extends Controller
                 $orderCreated = $request->user()->inventoryorder()->create($request->validated());
 
                 if($orderCreated->id > 0){
+                    /* Added comment */
                     broadcast(new OrderCreated($orderCreated->id, 'Admin'))->toOthers();
 
                     $newstock = intval($itemshoe->in_stock) - intval($request->qty);
