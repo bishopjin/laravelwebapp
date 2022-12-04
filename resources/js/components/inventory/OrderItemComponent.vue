@@ -203,7 +203,6 @@
 					else {
 						this.alertType = 'error'
 						this.alertMsg = 'Failed' 
-						console.log(response.data)
 					}
 					/* refresh data of datatable */
 					this.$store.dispatch('getOrderInventory')

@@ -13,7 +13,6 @@ use App\Models\InventoryItemCategory;
 use App\Models\InventoryItemOrder;
 use App\Models\User;
 
-
 class DashboardController extends Controller
 {
     /**
@@ -33,11 +32,7 @@ class DashboardController extends Controller
 
         $categoryCount = InventoryItemCategory::count();
 
-        if (auth()->user()->id == 1) {
-            $orderCount = InventoryItemOrder::count();
-        } else {
-            $orderCount = auth()->user()->inventoryorder()->count();
-        }
+        $orderCount = auth()->user()->inventoryorder()->count();
 
         $userCount = User::role(['Admin', 'NoneAdmin'])->count();
 

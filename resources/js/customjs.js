@@ -22,7 +22,7 @@ Vue.use(Vuetify);
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-Vue.component('item-card-component', require('./components/ItemCardComponent.vue').default);
+Vue.component('alert-component', require('./components/AlertComponent.vue').default);
 Vue.component('add-new-stock-component', require('./components/inventory/AddNewStockComponent.vue').default);
 Vue.component('dashboard-datatable-component', require('./components/inventory/DashboardDatatableComponent.vue').default);
 Vue.component('order-item-component', require('./components/inventory/OrderItemComponent.vue').default);

@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ ('Inventory System - Laravel') }} &nbsp; {{ app()->version() }}</title>
+    <title>{{ __('Inventory System - Laravel') }} &nbsp; {{ app()->version() }}</title>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <!-- Styles -->
@@ -89,7 +89,7 @@
                     </div>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto me-5 d-none d-md-block d-lg-block">
+                    <ul class="navbar-nav ms-auto me-5 d-none d-md-flex d-lg-flex align-items-center">
                         <li class="nav-item dropdown ">
                             <a id="navbarDropdown" 
                                 class="nav-link dropdown-toggle" 
@@ -169,8 +169,57 @@
                 @yield('inventorycontent')
             </v-app>
         </main>
+        <!-- Modal -->
+        <div class="modal fade" 
+            id="exampleModal" 
+            tabindex="-1" 
+            role="dialog" 
+            aria-labelledby="exampleModalLabel" 
+            aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="modalbody">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success fw-bold" data-bs-dismiss="modal">{{ __('OK') }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  -->
     </div>
     <!-- Scripts -->
     <script src="{{ mix('/customjs/customjs.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Echo.private('{{ auth()->user()->hasRole("Admin") ? "orderchannel.Admin" : "orderchannel.NoneAdmin" }}')
+                .listen('OrderCreated', (e) => {
+
+                    $('#exampleModalLabel').html('New Order');
+                    $('#modalbody').html(`
+                        <div class="fw-bold">
+                            Order Number: ${e.order}
+                        </div>
+                        
+                        <div class="fw-bold">
+                            <a href="{{ route('ordersummary.index') }}" 
+                                class="btn btn-outline-primary text-decoration-none">
+                                View Order
+                            </a>
+                        </div>
+                    `);
+                    $('#exampleModal').modal({backdrop: 'static', keyboard: false});
+                    $('#exampleModal').modal('show');
+                });
+        });
+    </script>
 </body>
 </html>

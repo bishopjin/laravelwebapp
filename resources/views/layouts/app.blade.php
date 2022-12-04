@@ -45,19 +45,6 @@
     <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            var capslock = $('#capslock');
-
-            $('#password, #username').on('keypress', function(e){
-                var s = String.fromCharCode( e.which );
-                if (( s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey )
-                ||  ( s.toLowerCase() === s && s.toUpperCase() !== s && e.shiftKey )) {
-                    $(capslock).css('background-color', '#0f0');
-                }
-                else {
-                    $(capslock).css('background-color', '#fff');   
-                }
-            });
-
             PayPal.Donation.Button({
                 env:'production',
                 hosted_button_id:'RTNBQFUDN867N',

@@ -39,6 +39,9 @@ use App\Http\Controllers\PayrollController\web\admin\SalaryGradeController;
 use App\Http\Controllers\PayrollController\web\admin\UserRegistrationController;
 
 use App\Http\Controllers\PayrollController\web\employee\EmployeePayrollDashboardController;
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,9 +63,12 @@ Route::middleware(['auth', 'auth:sanctum'])->group(function () {
 		Route::resource('usersrole', UsersRoleController::class);
 	});
 	/* End */
-
+	dd(Permission::with('users')->get());
+	$permissionArr = array('inventory add stock', 'inventory get stock','inventory view user', 'inventory edit user', 'inventory add new item');
+	$permissionStr = implode('|', $permissionArr);
 	/* Inventory Route */
-	Route::middleware('permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item')->prefix('inventory')->group(function() {
+	// 'permission:inventory add stock|inventory get stock|inventory view user|inventory edit user|inventory add new item'
+	Route::middleware('permission:'.$permissionStr)->prefix('inventory')->group(function() {
 		Route::get('/', [DashboardController::class, 'index'])->name('inventorydashboard.index');
 
 		Route::prefix('employee')->group(function() {

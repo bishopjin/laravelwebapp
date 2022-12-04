@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\InventoryItemOrder;
 use App\Models\InventoryItemShoe;
 use App\Http\Requests\ProductOrderAndDeliverRequest;
+use App\Events\OrderCreated;
 
 class ApiProductOrderController extends Controller
 {
@@ -17,18 +18,31 @@ class ApiProductOrderController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->id == 1) {
-            return InventoryItemOrder::with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
-                ->latest()
-                ->paginate(10, ['*'], 'order')
-                ->onEachSide(1);
+        if (!cache()->has('ordersCount')) {
+            cache()->remember('ordersCount', $seconds = 86400, function () {
+                return auth()->user()->inventoryorder()->count();
+            });
         } else {
-            return auth()->user()->inventoryorder()
+            if (cache('ordersCount') < auth()->user()->inventoryorder()->count()) {
+                cache()->tags(['pagination', 'orders'])->flush();
+
+                cache()->remember('ordersCount', $seconds = 86400, function () {
+                    return auth()->user()->inventoryorder()->count();
+                });
+            }
+        }
+        
+        cache()->tags(['pagination', 'orders'])->remember(url()->full(), $seconds = 86400, function () {
+            $orderlist = auth()->user()->inventoryorder()
                 ->with(['shoe.brand', 'shoe.size', 'shoe.color', 'shoe.type', 'shoe.category'])
                 ->latest()
-                ->paginate(10, ['*'], 'order')
+                ->paginate(10)
                 ->onEachSide(1);
-        }
+                
+            return $orderlist;
+        });
+
+        return cache()->tags(['pagination', 'orders'])->get(url()->full());
     }
 
     /**
@@ -46,7 +60,10 @@ class ApiProductOrderController extends Controller
                 $orderCreated = $request->user()->inventoryorder()->create($request->validated());
 
                 if($orderCreated->id > 0){
+                    broadcast(new OrderCreated($orderCreated->id, 'Admin'))->toOthers();
+
                     $newstock = intval($itemshoe->in_stock) - intval($request->qty);
+
                     $updateStock = $itemshoe->update(['in_stock' => $newstock]); 
                 }
             }

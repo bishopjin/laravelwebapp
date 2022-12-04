@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+/* Set the broadcast channel */
+Broadcast::channel('orderchannel.{role}', function ($user, $role) {
+    return $user->hasRole($role);
+});
+
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });

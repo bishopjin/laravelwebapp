@@ -31,7 +31,7 @@
 				{ text: 'Category', value: 'category' },
 				{ text: 'Price', value: 'price' },
 				{ text: 'In Stock', value: 'in_stock' },
-			],
+			]
 		}),
 		created() {
 			this.$store.dispatch('setOverlay', true)
@@ -41,6 +41,7 @@
 				this.$store.dispatch('setOverlay', false)
 			})
 		},
+
 		computed: {
 			isLoading() {
 				return this.$store.getters.getOverlay

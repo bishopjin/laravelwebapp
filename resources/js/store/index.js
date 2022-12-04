@@ -10,7 +10,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		baseurl: 'http://127.0.0.1:8000/api/',
+		baseurl: 'http://192.168.1.42:8080/api/',
 		overlayShow: false,
 		userIsLoggedIn: false,
 	},

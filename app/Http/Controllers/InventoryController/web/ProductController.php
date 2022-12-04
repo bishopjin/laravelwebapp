@@ -4,17 +4,14 @@ namespace App\Http\Controllers\InventoryController\web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\InventoryItemBrand;
-use App\Models\InventoryItemCategory;
-use App\Models\InventoryItemColor;
-use App\Models\InventoryItemSize;
-use App\Models\InventoryItemType;
 use App\Models\InventoryItemShoe;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Arr;
+use App\Http\Controllers\Traits\ProductAttributesTraits;
 
 class ProductController extends Controller
 {
+    use ProductAttributesTraits;
     /**
      * Display a listing of the resource.
      *
@@ -32,12 +29,12 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $brand = InventoryItemBrand::get();
-        $category = InventoryItemCategory::get();
-        $type = InventoryItemType::get();
-        $color = InventoryItemColor::get();
-        $size = InventoryItemSize::get();
-    
+        $brand = $this->getProductAttribute('brandCache', 'brand');
+        $category = $this->getProductAttribute('categoryCache', 'category');
+        $type = $this->getProductAttribute('typeCache', 'type');
+        $color = $this->getProductAttribute('colorCache', 'color');
+        $size = $this->getProductAttribute('sizeCache', 'size');
+
         return view('inventory.product.add')->with(compact('brand', 'category', 'type', 'color', 'size'));
     }
 

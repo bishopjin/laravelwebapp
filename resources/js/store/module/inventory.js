@@ -164,6 +164,7 @@ const inventory = {
 				headers: rootGetters.getHeaders,
 			})
 			.then(response => {
+				//console.log(response)
 				updated = response.data
 			})
 			.catch(error => {
